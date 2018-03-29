@@ -14,10 +14,17 @@ scram b -j 10
 cd PhysicsTools/NanoAODJMAR/test
 ```
 
-Note: Do not do a `checkdeps` after checking out the topic. It adds some dictionaries to `DataFormats/PatCandidates` and hence checking out dependencies would bring in much of CMSSW. It also adds
+Note: Do not do a `checkdeps` after checking out the topic. It adds some dictionaries to `DataFormats/PatCandidates` and hence checking out dependencies would bring in much of CMSSW.
 
 ## MC Usage:
 
 ```
 cmsRun test94X_NANO_recluster.py
+cmsRun test80X_NANO.py
+```
+
+## Data usage:
+```
+cmsRun test_data_80X_NANO.py
+cmsRun test_data_92X_NANO.py
 ```
