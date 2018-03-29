@@ -2,12 +2,12 @@
 # using: 
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
-# with command line options: test94X -s NANO --mc --eventcontent NANOAODSIM --datatier NANOAODSIM --filein /store/relval/CMSSW_9_4_0_pre1/RelValTTbar_13/MINIAODSIM/PU25ns_93X_mc2017_realistic_v3-v1/00000/92FD5642-509D-E711-ADAB-0025905B85C6.root --no_exec --conditions auto:phase1_2017_realistic --era Run2_2017
+# with command line options: test80X -s NANO --mc --eventcontent NANOAODSIM --datatier NANOAODSIM --filein /store/mc/RunIISummer16MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v2/120000/02A210D6-F5C3-E611-B570-008CFA197BD4.root --no_exec --conditions auto:run2_mc -n 1000 --era Run2_2016,run2_miniAOD_80XLegacy
 import FWCore.ParameterSet.Config as cms
 
 from Configuration.StandardSequences.Eras import eras
 
-process = cms.Process('NANO',eras.Run2_2017)
+process = cms.Process('NANO',eras.Run2_2016,eras.run2_miniAOD_80XLegacy)
 
 # import of standard configurations
 process.load('Configuration.StandardSequences.Services_cff')
@@ -22,15 +22,14 @@ process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(2000)
+    input = cms.untracked.int32(1000)
 )
 
 # Input source
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('/store/mc/RunIIFall17MiniAOD/DY1JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/20000/001C74A0-B4D6-E711-BD4B-FA163EB4F61D.root'),
+    fileNames = cms.untracked.vstring('/store/mc/RunIISummer16MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v2/120000/02A210D6-F5C3-E611-B570-008CFA197BD4.root'),
     secondaryFileNames = cms.untracked.vstring()
 )
-process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.options = cms.untracked.PSet(
 
@@ -38,7 +37,7 @@ process.options = cms.untracked.PSet(
 
 # Production Info
 process.configurationMetadata = cms.untracked.PSet(
-    annotation = cms.untracked.string('test94X nevts:1'),
+    annotation = cms.untracked.string('test80X nevts:1000'),
     name = cms.untracked.string('Applications'),
     version = cms.untracked.string('$Revision: 1.19 $')
 )
@@ -52,16 +51,16 @@ process.NANOAODSIMoutput = cms.OutputModule("NanoAODOutputModule",
         dataTier = cms.untracked.string('NANOAODSIM'),
         filterName = cms.untracked.string('')
     ),
-    fileName = cms.untracked.string('test94X_NANO.root'),
-    outputCommands = process.NANOAODSIMEventContent.outputCommands
+    fileName = cms.untracked.string('test80X_NANO.root'),
+    outputCommands = process.NANOAODSIMEventContent.outputCommands,
+    fakeNameForCrab =cms.untracked.bool(True)
 )
-
 
 # Additional output definition
 
 # Other statements
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, '94X_mc2017_realistic_v12', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc', '')
 
 # Path and EndPath definitions
 process.nanoAOD_step = cms.Path(process.nanoSequenceMC)
@@ -75,7 +74,7 @@ associatePatAlgosToolsTask(process)
 
 # customisation of the process.
 
-# addition of the customisation function from PhysicsTools.NanoAODJMAR.nano_cff
+# Automatic addition of the customisation function from PhysicsTools.NanoAOD.nano_cff
 from PhysicsTools.NanoAODJMAR.nano_jmar_cff import nanoAOD_customizeMC_JMAR
 
 #call to customisation function nanoAOD_customizeMC imported from PhysicsTools.NanoAOD.nano_cff
@@ -84,8 +83,6 @@ process = nanoAOD_customizeMC_JMAR(process)
 # End of customisation functions
 
 # Customisation from command line
-
-
 
 # Add early deletion of temporary data products to reduce peak memory need
 from Configuration.StandardSequences.earlyDeleteSettings_cff import customiseEarlyDelete
