@@ -26,7 +26,9 @@ finalJetsAK8ConstituentsTable = cms.EDProducer("SimpleCandidateFlatTableProducer
     doc = cms.string("interesting gen particles from AK8 jets"),
     singleton = cms.bool(False), # the number of entries is variable
     extension = cms.bool(False), # this is the main table for the AK8 constituents
-    variables = cms.PSet(CandVars
+    variables = cms.PSet(CandVars,
+                            puppiWeight = Var("puppiWeight()", float, doc="Puppi weight",precision=10),
+                            puppiWeightNoLep = Var("puppiWeightNoLep()", float, doc="Puppi weight removing leptons",precision=10),
     )
 )
 
