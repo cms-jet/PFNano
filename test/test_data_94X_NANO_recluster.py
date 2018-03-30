@@ -51,7 +51,8 @@ process.NANOAODoutput = cms.OutputModule("NanoAODOutputModule",
         filterName = cms.untracked.string('')
     ),
     fileName = cms.untracked.string('test_data_94X_NANO.root'),
-    outputCommands = process.NANOAODEventContent.outputCommands
+    outputCommands = process.NANOAODEventContent.outputCommands,
+    fakeNameForCrab =cms.untracked.bool(True)
 )
 
 # Additional output definition
