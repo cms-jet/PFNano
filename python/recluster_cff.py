@@ -7,13 +7,11 @@ from  PhysicsTools.NanoAOD.common_cff import *
 
 finalJetsAK8Constituents = cms.EDProducer("PatJetConstituentPtrSelector",
                                             src = cms.InputTag("updatedJetsAK8"),
-                                            cut = cms.string("pt > 170.0"),
-                                            unpackAK8 = cms.bool(True)
+                                            cut = cms.string("pt > 170.0")
                                             )
 genJetsAK8Constituents = cms.EDProducer("GenJetPackedConstituentPtrSelector",
                                             src = cms.InputTag("slimmedGenJetsAK8"),
-                                            cut = cms.string("pt > 100.0"),
-                                            unpackAK8 = cms.bool(False)
+                                            cut = cms.string("pt > 100.0")
                                             )
 
 

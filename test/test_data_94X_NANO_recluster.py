@@ -26,7 +26,7 @@ process.maxEvents = cms.untracked.PSet(
 
 # Input source
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('/store/data/Run2017E/SingleMuon/MINIAOD/17Nov2017-v1/50000/000DCB8B-2ADD-E711-9100-008CFAF35AC0.root'),
+    fileNames = cms.untracked.vstring('/store/data/Run2017E/SingleMuon/MINIAOD/31Mar2018-v1/100000/D277C66A-7638-E811-999C-0CC47A78A3EC.root'),
     secondaryFileNames = cms.untracked.vstring()
 )
 
@@ -59,7 +59,7 @@ process.NANOAODoutput = cms.OutputModule("NanoAODOutputModule",
 
 # Other statements
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, '94X_dataRun2_ReReco_EOY17_v2', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, '94X_dataRun2_v6', '')
 
 # Path and EndPath definitions
 process.nanoAOD_step = cms.Path(process.nanoSequence)

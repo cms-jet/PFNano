@@ -3,18 +3,14 @@ This is a [NanoAOD](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoA
 
 ## Recipe
 
-Until this is merged into the `9_4_X` branch, do a checkout on top of `9.4.4`:
-
 ```
-cmsrel CMSSW_9_4_4
-cd CMSSW_9_4_4/src
-git cms-checkout-topic rappoccio:jmar_reclusternano
+cmsrel CMSSW_9_4_11_cand1
+cd CMSSW_9_4_11_cand1/src
 git clone https://github.com/cms-jet/NanoAODJMAR.git PhysicsTools/NanoAODJMAR
 scram b -j 10
 cd PhysicsTools/NanoAODJMAR/test
 ```
 
-Note: Do not do a `checkdeps` after checking out the topic. It adds some dictionaries to `DataFormats/PatCandidates` and hence checking out dependencies would bring in much of CMSSW.
 
 ## MC Usage:
 
