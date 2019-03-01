@@ -9,8 +9,6 @@ This is a [NanoAOD](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoA
 cmsrel  CMSSW_10_2_9
 cd  CMSSW_10_2_9/src
 cmsenv
-git cms-addpkg CommonTools/RecoAlgos
-git cms-addpkg DataFormats/PatCandidates 
 git cms-merge-topic cms-nanoAOD:master-102X
 git clone https://github.com/UBParker/NanoAODJMAR.git PhysicsTools/NanoAODJMAR
 scram b -j 10
