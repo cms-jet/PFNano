@@ -6,10 +6,10 @@ This is a [NanoAOD](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoA
 
 
 ```
-cmsrel CMSSW_9_4_11_cand1
-cd CMSSW_9_4_11_cand1/src
-git cms-merge-topic cms-nanoAOD:master-94X
-git clone https://github.com/cms-jet/NanoAODJMAR.git PhysicsTools/NanoAODJMAR
+cmsrel  CMSSW_10_2_9
+cd  CMSSW_10_2_9/src
+git cms-merge-topic cms-nanoAOD:master-102X
+git clone https://github.com/UBParker/NanoAODJMAR.git PhysicsTools/NanoAODJMAR
 scram b -j 10
 cd PhysicsTools/NanoAODJMAR/test
 ```
