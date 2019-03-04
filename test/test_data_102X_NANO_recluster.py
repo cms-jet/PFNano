@@ -7,7 +7,7 @@ import FWCore.ParameterSet.Config as cms
 
 from Configuration.StandardSequences.Eras import eras
 
-process = cms.Process('NANO',eras.Run2_2018)
+process = cms.Process('NANO',eras.Run2_2018, eras.run2_nanoAOD_102Xv1 )
 
 # import of standard configurations
 process.load('Configuration.StandardSequences.Services_cff')
@@ -81,6 +81,7 @@ process = nanoAOD_customizeData_JMAR(process)
 # End of customisation functions
 
 # Customisation from command line
+process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)))
 
 # Add early deletion of temporary data products to reduce peak memory need
 from Configuration.StandardSequences.earlyDeleteSettings_cff import customiseEarlyDelete

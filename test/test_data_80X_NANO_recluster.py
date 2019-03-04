@@ -7,7 +7,7 @@ import FWCore.ParameterSet.Config as cms
 
 from Configuration.StandardSequences.Eras import eras
 
-process = cms.Process('NANO',eras.Run2_2016,eras.run2_miniAOD_80XLegacy)
+process = cms.Process('NANO',eras.Run2_2016,eras.run2_nanoAOD_94X2016)
 
 # import of standard configurations
 process.load('Configuration.StandardSequences.Services_cff')
@@ -31,7 +31,7 @@ process.source = cms.Source("PoolSource",
 )
 
 process.options = cms.untracked.PSet(
-
+SkipEvent = cms.untracked.vstring('ProductNotFound')
 )
 
 # Production Info
@@ -59,7 +59,7 @@ process.NANOAODoutput = cms.OutputModule("NanoAODOutputModule",
 
 # Other statements
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_data_relval', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, '94X_dataRun2_v10' , '') #run2_data_relval', '')
 
 # Path and EndPath definitions
 process.nanoAOD_step = cms.Path(process.nanoSequence)
@@ -82,6 +82,7 @@ process = nanoAOD_customizeData_JMAR(process)
 # End of customisation functions
 
 # Customisation from command line
+process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)))
 
 # Add early deletion of temporary data products to reduce peak memory need
 from Configuration.StandardSequences.earlyDeleteSettings_cff import customiseEarlyDelete

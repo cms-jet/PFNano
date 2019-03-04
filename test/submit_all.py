@@ -59,6 +59,8 @@ def main():
     config.section_("JobType")
     config.JobType.pluginName = 'Analysis'
     config.JobType.psetName = options.cfg
+    #config.JobType.maxMemoryMB = 13000
+
     
     config.section_("Data")
     config.Data.inputDataset = None
@@ -113,7 +115,7 @@ def main():
         elif datatier == 'MINIAOD': 
           config.Data.splitting = 'LumiBased'
           config.Data.lumiMask = options.lumiMask
-          config.Data.unitsPerJob = 200
+          config.Data.unitsPerJob = 100 # 200
         print 'Submitting ' + config.General.requestName + ', dataset = ' + job
         print 'Configuration :'
         print config
