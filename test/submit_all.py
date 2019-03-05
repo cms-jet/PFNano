@@ -59,7 +59,7 @@ def main():
     config.section_("JobType")
     config.JobType.pluginName = 'Analysis'
     config.JobType.psetName = options.cfg
-    #config.JobType.maxMemoryMB = 13000
+    config.JobType.maxMemoryMB = 5000 # Default is 2500 : Max I have used is 13000
 
     
     config.section_("Data")
