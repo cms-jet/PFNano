@@ -108,7 +108,7 @@ def main():
         config.General.requestName = requestname
         config.Data.inputDataset = job
         config.Data.outputDatasetTag = requestname 
-        config.Data.outLFNDirBase    = '/store/group/lpctlbsm/NanoAODJMAR_V1/CRAB/'
+        config.Data.outLFNDirBase    = '/store/group/lpctlbsm/NanoAODJMAR_2019_V1/CRAB/'
         if datatier == 'MINIAODSIM': 
           config.Data.splitting = 'FileBased'
           config.Data.unitsPerJob = 1

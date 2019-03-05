@@ -7,7 +7,7 @@ import FWCore.ParameterSet.Config as cms
 
 from Configuration.StandardSequences.Eras import eras
 
-process = cms.Process('NANO',eras.Run2_2016,eras.run2_nanoAOD_94X2016)
+process = cms.Process('NANO',eras.Run2_2016,eras.run2_miniAOD_80XLegacy  )  #eras.run2_nanoAOD_94X2016) gives 'key not found' errors
 
 # import of standard configurations
 process.load('Configuration.StandardSequences.Services_cff')

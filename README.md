@@ -4,12 +4,12 @@ This is a [NanoAOD](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoA
 ## Recipe
 
 
-For 2016 and 2017 data (NOT TESTED YET):
+For 2016 and 2017 data and MC:
 
 
 ```
-cmsrel  CMSSW_9_4_4
-cd  CMSSW_9_4_4/src
+cmsrel  CMSSW_9_4_11
+cd  CMSSW_9_4_11/src
 cmsenv
 git cms-merge-topic cms-nanoAOD:master-94X
 git clone https://github.com/UBParker/NanoAODJMAR.git PhysicsTools/NanoAODJMAR
@@ -17,7 +17,7 @@ scram b -j 10
 cd PhysicsTools/NanoAODJMAR/test
 ```
 
-For 2018 data:
+For 2018 data and MC:
 
 
 ```
