@@ -4,59 +4,72 @@ This is a [NanoAOD](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoA
 ## Recipe
 
 
-For 2016 and 2017 data and MC:
-
-
-```
-cmsrel  CMSSW_9_4_11
-cd  CMSSW_9_4_11/src
-cmsenv
-git cms-merge-topic cms-nanoAOD:master-94X
-git clone https://github.com/UBParker/NanoAODJMAR.git PhysicsTools/NanoAODJMAR
-scram b -j 10
-cd PhysicsTools/NanoAODJMAR/test
-```
-
-For 2018 data and MC:
-
+For 2016, 2017 and 2018 data and MC:
 
 ```
 cmsrel  CMSSW_10_2_9
 cd  CMSSW_10_2_9/src
 cmsenv
 git cms-merge-topic cms-nanoAOD:master-102X
-git clone https://github.com/UBParker/NanoAODJMAR.git PhysicsTools/NanoAODJMAR
+git clone https://github.com/cms-jet/NanoAODJMAR.git PhysicsTools/NanoAODJMAR
 scram b -j 10
 cd PhysicsTools/NanoAODJMAR/test
 ```
+Note: This configuration has been tested for this combination of CMSSW release, Global Tag, Era and dataset. When running over a new dataset you should check with [the nanoAOD workbook twiki](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD#Running_on_various_datasets_from) to see if the era modifiers in the CRAB configuration files are correct. 
 
+## Local MC Usage:
 
-## MC Usage:
-
+2016
 ```
-cmsRun test102X_NANO_recluster.py
-cmsRun test94X_NANO_recluster.py
-cmsRun test80X_NANO_recluster.py
-```
-
-## Data usage:
-```
-cmsRun test_data_102X_NANO_recluster.py
-cmsRun test_data_94X_NANO_recluster.py
-cmsRun test_data_80X_NANO_recluster.py
-
+cmsRun nano102x_on_mini94x_2016_mc_NANO.py
 ```
 
+2017
+```
+cmsRun nano102x_on_mini94x_2017_mc_NANO.py
+```
+
+2018
+```
+cmsRun nano102x_on_mini94x_2018_mc_NANO.py
+```
+
+## Local Data usage:
+
+2016
+```
+cmsRun nano102x_on_mini94x_2016_data_NANO.py
+```
+
+2017
+```
+cmsRun nano102x_on_mini94x_2017_data_NANO.py
+```
+
+2018
+```
+cmsRun nano102x_on_mini94x_2018_data_NANO.py
+```
 
 ## Submission to CRAB
+
 ```
-python submit_all.py -c test80X_NANO_recluster.py -f datasets_2016mc.txt  -d NANO2016MC
-python submit_all.py -c test80X_NANO_recluster.py -f datasets_2016mc_ext.txt  -d NANO2016MCEXT
-python submit_all.py -c test94X_NANO_recluster.py -f datasets_2017mc.txt  -d NANO2017MC
-python submit_all.py -c test94X_NANO_recluster.py -f datasets_2017mc_ext.txt  -d NANO2017MCEXT
-python submit_all.py -c test_data_80X_NANO_recluster.py -f datasets_2016rereco.txt -d NANO2016 -l Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt
-python submit_all.py -c test_data_94X_NANO_recluster.py -f datasets_2017rereco.txt -d NANO2017 -l Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt
-python submit_all.py -c test_data_102X_NANO_recluster.py -f datasets_2018.txt -d NANO2018 -l Cert_314472-325175_13TeV_PromptReco_Collisions18_JSON.txt
+python submit_all.py -c nano102x_on_mini94x_2016_mc_NANO.py  -f 2016mc_miniAODv3_DY.txt  -d NANO2016MC
+
+python submit_all.py -c nano102x_on_mini94x_2017_mc_NANO.py -f datasets_2017mc.txt  -d NANO2017MC
+
+python submit_all.py -c nano102x_on_mini94x_2018_mc_NANO.py -f datasets_2018mc.txt  -d NANO2018MC
+
+
+python submit_all.py -c nano102x_on_mini94x_2016_data_NANO.py -f 2016data_17Jul2018.txt -d NANO2016 -l Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt
+
+python submit_all.py -c nano102x_on_mini94x_2017_data_NANO.py  -f datasets_2017rereco.txt -d NANO2017 -l Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt
+
+
+
+python submit_all.py -c nano102x_on_mini102x_2018_data_abc_NANO.py  -f datasets_2018ABC.txt -d NANO2018 -l Cert_314472-325175_13TeV_PromptReco_Collisions18_JSON.txt
+
+python submit_all.py -c nano102x_on_mini102x_2018_data_d_NANO.py  -f datasets_2018D.txt -d NANO2018 -l Cert_314472-325175_13TeV_PromptReco_Collisions18_JSON.txt
 
 ```
 
