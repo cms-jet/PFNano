@@ -56,18 +56,18 @@ cmsRun nano102x_on_mini94x_2018_data_NANO.py
 ```
 python submit_all.py -c nano102x_on_mini94x_2016_mc_NANO.py  -f 2016mc_miniAODv3_DY.txt  -d NANO2016MC
 
-python submit_all.py -c nano102x_on_mini94x_2017_mc_NANO.py -f datasets_2017mc.txt  -d NANO2017MC
+python submit_all.py -c nano102x_on_mini94x_2017_mc_NANO.py -f 2017mc_miniAODv2_DY.txt  -d NANO2017MC
 
-python submit_all.py -c nano102x_on_mini94x_2018_mc_NANO.py -f datasets_2018mc.txt  -d NANO2018MC
+python submit_all.py -c nano102x_on_mini94x_2018_mc_NANO.py -f 2018mc_DY.txt  -d NANO2018MC
 
 
 python submit_all.py -c nano102x_on_mini94x_2016_data_NANO.py -f 2016data_17Jul2018.txt -d NANO2016 -l Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt
 
-python submit_all.py -c nano102x_on_mini94x_2017_data_NANO.py  -f datasets_2017rereco.txt -d NANO2017 -l Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt
+python submit_all.py -c nano102x_on_mini94x_2017_data_NANO.py  -f 2017data_31Mar2018.txt  -d NANO2017 -l Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt
 
 
 
-python submit_all.py -c nano102x_on_mini102x_2018_data_abc_NANO.py  -f datasets_2018ABC.txt -d NANO2018 -l Cert_314472-325175_13TeV_PromptReco_Collisions18_JSON.txt
+python submit_all.py -c nano102x_on_mini102x_2018_data_abc_NANO.py  -f  2018data_17Sep2018.txt  -d NANO2018 -l Cert_314472-325175_13TeV_PromptReco_Collisions18_JSON.txt
 
 python submit_all.py -c nano102x_on_mini102x_2018_data_d_NANO.py  -f datasets_2018D.txt -d NANO2018 -l Cert_314472-325175_13TeV_PromptReco_Collisions18_JSON.txt
 
