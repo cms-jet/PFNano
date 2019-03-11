@@ -11,11 +11,13 @@ cmsrel  CMSSW_10_2_9
 cd  CMSSW_10_2_9/src
 cmsenv
 git cms-merge-topic cms-nanoAOD:master-102X
+git cms-merge-topic  cmantill:lsfinNanoAOD
+git cms-merge-topic jmhogan:master-102X
 git clone https://github.com/cms-jet/NanoAODJMAR.git PhysicsTools/NanoAODJMAR
 scram b -j 10
 cd PhysicsTools/NanoAODJMAR/test
 ```
-Note: This configuration has been tested for this combination of CMSSW release, Global Tag, Era and dataset. When running over a new dataset you should check with [the nanoAOD workbook twiki](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD#Running_on_various_datasets_from) to see if the era modifiers in the CRAB configuration files are correct. 
+Note: This configuration has been tested for this combination of CMSSW release, global tag, era and dataset. When running over a new dataset you should check with [the nanoAOD workbook twiki](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD#Running_on_various_datasets_from) to see if the era modifiers in the CRAB configuration files are correct. The jet correction versions are taken from the global tag.
 
 ## Local MC Usage:
 
