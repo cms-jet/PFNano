@@ -7,8 +7,8 @@ This is a [NanoAOD](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoA
 For 2016, 2017 and 2018 data and MC:
 
 ```
-cmsrel  CMSSW_10_2_9
-cd  CMSSW_10_2_9/src
+cmsrel  CMSSW_10_2_10
+cd  CMSSW_10_2_10/src
 cmsenv
 git cms-merge-topic cms-nanoAOD:master-102X
 git cms-merge-topic  cmantill:lsfinNanoAOD
