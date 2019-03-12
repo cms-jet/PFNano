@@ -103,12 +103,15 @@ def main():
         cond = job.split('/')[2]
         datatier = job.split('/')[3]
         requestname = ptbin + '_' + cond
-        if len(requestname) > 100: requestname = ''.join((requestname[:100-len(requestname)]).split('_')[:-1])
+        if len(requestname) > 93: 
+            requestname = ''.join((requestname[:93-len(requestname)]).split('_')[:-1])
+            if 'ext' in cond and not 'ext' in requestname:
+                requestname = requestname + '_' + cond.split('_')[-1]
         print 'requestname = ', requestname
         config.General.requestName = requestname
         config.Data.inputDataset = job
         config.Data.outputDatasetTag = requestname 
-        config.Data.outLFNDirBase    = '/store/group/lpctlbsm/NanoAODJMAR_2019_V1/CRAB/'
+        config.Data.outLFNDirBase    = '/store/group/lpctlbsm/NanoAODJMAR_2019_V1/Production/CRAB/'
         if datatier == 'MINIAODSIM': 
           config.Data.splitting = 'FileBased'
           config.Data.unitsPerJob = 1
