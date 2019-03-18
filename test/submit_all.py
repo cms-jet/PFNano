@@ -69,7 +69,9 @@ def main():
     config.Data.ignoreLocality = False
     config.Data.publication = True    
     config.Data.publishDBS = 'phys03'
-    
+    config.Site.blacklist = ['T2_IN_TIFR','T2_US_Caltech']
+    config.Site.whitelist = ['T2_US_UCSD','T2_DE_DESY', 'T1_US_FNAL','T2_UK_SGrid_RALPP','T2_PL_Swierk','T2_TW_NCHC','T2_BR_SPRACE']
+
     config.section_("Site")
     config.Site.storageSite = options.storageSite
 
