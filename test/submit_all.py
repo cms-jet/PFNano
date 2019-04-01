@@ -61,7 +61,9 @@ def main():
     config.JobType.psetName = options.cfg
     config.JobType.maxMemoryMB = 5000 # Default is 2500 : Max I have used is 13000
 
-    
+    config.section_("Debug")
+    config.Debug.extraJDL = ['+CMS_ALLOW_OVERFLOW=False']
+
     config.section_("Data")
     config.Data.inputDataset = None
     config.Data.splitting = ''
@@ -69,10 +71,10 @@ def main():
     config.Data.ignoreLocality = False
     config.Data.publication = True    
     config.Data.publishDBS = 'phys03'
-    config.Site.blacklist = ['T2_IN_TIFR','T2_US_Caltech']
-    config.Site.whitelist = ['T2_US_UCSD','T2_DE_DESY', 'T1_US_FNAL','T2_UK_SGrid_RALPP','T2_PL_Swierk','T2_TW_NCHC','T2_BR_SPRACE']
 
     config.section_("Site")
+    config.Site.blacklist = ['T2_IN_TIFR','T2_US_Caltech']
+    #config.Site.whitelist = ['T2_US_UCSD','T2_DE_DESY', 'T1_US_FNAL','T2_UK_SGrid_RALPP','T2_PL_Swierk','T2_TW_NCHC','T2_BR_SPRACE']
     config.Site.storageSite = options.storageSite
 
     print 'Using config ' + options.cfg
@@ -120,7 +122,7 @@ def main():
         elif datatier == 'MINIAOD': 
           config.Data.splitting = 'LumiBased'
           config.Data.lumiMask = options.lumiMask
-          config.Data.unitsPerJob = 100 # 200
+          config.Data.unitsPerJob = 10 # 200
         print 'Submitting ' + config.General.requestName + ', dataset = ' + job
         print 'Configuration :'
         print config
