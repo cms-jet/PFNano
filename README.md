@@ -13,7 +13,7 @@ cmsenv
 git cms-merge-topic cms-nanoAOD:master-102X
 git cms-merge-topic  cmantill:lsfinNanoAOD
 git cms-merge-topic jmhogan:master-102X
-git clone https://github.com/UBParker/NanoAODJMAR.git PhysicsTools/NanoAODJMAR
+git clone https://github.com/UBParker/NanoAODJMAR.git PhysicsTools/NanoAODJMAR  -b test_102x
 scram b -j 10
 cd PhysicsTools/NanoAODJMAR/test
 ```
