@@ -60,7 +60,7 @@ def main():
     config.JobType.pluginName = 'Analysis'
     config.JobType.psetName = options.cfg
     config.JobType.maxMemoryMB = 5000 # Default is 2500 : Max I have used is 13000
-    config.JobType.maxJobRuntimeMin = 5000 #Default is 1315; Max I have used is 9000
+    config.JobType.maxJobRuntimeMin = 2750 #Default is 1315; 2750 minutes guaranteed to be available; Max I have used is 9000
 
     config.section_("Debug")
     config.Debug.extraJDL = ['+CMS_ALLOW_OVERFLOW=False']
@@ -112,7 +112,7 @@ def main():
             requestname = ''.join((requestname[:93-len(requestname)]).split('_')[:-1])
             if 'ext' in cond and not 'ext' in requestname:
                 requestname = requestname + '_' + cond.split('_')[-1]
-        #requestname = requestname + '_try2'
+        #requestname = requestname + '_try3'
         print 'requestname = ', requestname
         config.General.requestName = requestname
         config.Data.inputDataset = job
@@ -124,7 +124,7 @@ def main():
         elif datatier == 'MINIAOD': 
           config.Data.splitting = 'LumiBased'
           config.Data.lumiMask = options.lumiMask
-          config.Data.unitsPerJob = 10 # 200
+          config.Data.unitsPerJob = 50 #10 # 200
         print 'Submitting ' + config.General.requestName + ', dataset = ' + job
         print 'Configuration :'
         print config
