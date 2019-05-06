@@ -88,31 +88,24 @@ Instructions:
 
 1.) Add the following lines to your .bashrc file (or equivalent for your shell). Don't forget to source this file afterwards!
 
-    ```
     export PATH=$HOME/.local/bin:/cvmfs/cms-bril.cern.ch/brilconda/bin:$PATH
     export PATH=/afs/cern.ch/cms/lumi/brilconda-1.1.7/bin:$HOME/.local/bin:$PATH
-    ```
     
 2.) Install brilws:
 
-    ```
     pip install --install-option="--prefix=$HOME/.local" brilws
-    ```
     
 3.) Get the json file for your output dataset. In the area in which you submitted your jobs:
 
-    ```
     crab report -d [your crab directory]
-    ```
     
 The processedLumis.json file will tell you which lumi sections you successfully ran over. If you have incomplete jobs, notFinishedLumis.json will list the unfinished lumi sections.
     
 4.) Run brilcalc on lxplus:
 
-    ```
     brilcalc lumi -i processedLumis.json -u /fb --normtag /cvmfs/cms-bril.cern.ch/cms-lumi-pog/Normtags/normtag_PHYSICS.json -b "STABLE BEAMS"
-    ```
+    
 The luminosity of interest will be listed under "totrecorded(/fb)." You can also run this over notFinishedLumis.json.
     
-Note: -b "STABLE BEAMS" is optional if you've already run over the golden json. 
+Note: '-b "STABLE BEAMS"' is optional if you've already run over the golden json. 
         Using the normtag is NOT OPTIONAL, as it defines the final calibrations and detectors that are used for a given run.
