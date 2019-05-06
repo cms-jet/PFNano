@@ -75,3 +75,37 @@ python submit_all.py -c nano102x_on_mini102x_2018_data_d_NANO.py  -f datasets_20
 
 ```
 
+## Documenting the Extended NanoAOD Samples
+
+Please document the input and output datasets on the following twiki: https://twiki.cern.ch/twiki/bin/view/CMS/JetMET/JMARNanoAODv1. For the MC, the number of events can be found by looking up the output dataset in DAS. For the data, you will need to run brilcalc to get the total luminosity of the dataset. See the instructions below.
+
+## Running brilcalc
+These are condensed instructions from the lumi POG TWiki (https://twiki.cern.ch/twiki/bin/view/CMS/TWikiLUM).
+
+Note: brilcalc should be run on lxplus. It does not work on the lpc.
+
+Instructions:
+1.) Add the following lines to your .bashrc file (or equivalent for your shell). 
+    ```
+    export PATH=$HOME/.local/bin:/cvmfs/cms-bril.cern.ch/brilconda/bin:$PATH
+    export PATH=/afs/cern.ch/cms/lumi/brilconda-1.1.7/bin:$HOME/.local/bin:$PATH
+    ```
+    Don't forget to source this file!
+2.) Install brilws:
+    ```
+    pip install --install-option="--prefix=$HOME/.local" brilws
+    ```
+3.) Get the json file for your output dataset. In the area in which you submitted your jobs:
+    ```
+    crab report -d [your crab directory]
+    ```
+    The processedLumis.json file will tell you which lumi sections you successfully ran over. If you have incomplete jobs, notFinishedLumis.json will list the unfinished lumi sections.
+    
+4.) Run brilcalc on lxplus:
+    ```
+    brilcalc lumi -i processedLumis.json -u /fb --normtag /cvmfs/cms-bril.cern.ch/cms-lumi-pog/Normtags/normtag_PHYSICS.json -b "STABLE BEAMS"
+    ```
+    The luminosity of interest will be listed under "totrecorded(/fb)." You can also run this over notFinishedLumis.json.
+    
+  Note: -b "STABLE BEAMS" is optional if you've already run over the golden json. 
+        Using the normtag is NOT OPTIONAL, as it defines the final calibrations and detectors that are used for a given run.
