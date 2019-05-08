@@ -99,13 +99,13 @@ Instructions:
 
     crab report -d [your crab directory]
     
-The processedLumis.json file will tell you which lumi sections you successfully ran over. If you have incomplete jobs, notFinishedLumis.json will list the unfinished lumi sections.
+The processedLumis.json file will tell you which lumi sections you successfully ran over. The lumi sections for incomplete, failed, or unpublished jobs are listed in notFinishedLumis.json, failedLumis.json, and notPublishedLumis.json. More info can be found at https://twiki.cern.ch/twiki/bin/view/CMSPublic/CRAB3Commands#crab_report.
     
 4.) Run brilcalc on lxplus:
 
     brilcalc lumi -i processedLumis.json -u /fb --normtag /cvmfs/cms-bril.cern.ch/cms-lumi-pog/Normtags/normtag_PHYSICS.json -b "STABLE BEAMS"
     
-The luminosity of interest will be listed under "totrecorded(/fb)." You can also run this over notFinishedLumis.json.
+The luminosity of interest will be listed under "totrecorded(/fb)." You can also run this over the other previously mentioned json files.
     
 Note: '-b "STABLE BEAMS"' is optional if you've already run over the golden json. 
         Using the normtag is NOT OPTIONAL, as it defines the final calibrations and detectors that are used for a given run.
