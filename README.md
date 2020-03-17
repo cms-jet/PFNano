@@ -3,17 +3,15 @@ This is a [NanoAOD](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoA
 
 ## Recipe
 
+**THIS IS A DEVELOPMENT BRANCH dev_106x**
 
 For 2016, 2017 and 2018 data and MC:
 
 ```
-cmsrel  CMSSW_10_2_10
-cd  CMSSW_10_2_10/src
+cmsrel  CMSSW_10_6_10
+cd  CMSSW_10_6_10/src
 cmsenv
-git cms-merge-topic cms-nanoAOD:master-102X
-git cms-merge-topic  cmantill:lsfinNanoAOD
-git cms-merge-topic jmhogan:master-102X
-git clone https://github.com/UBParker/NanoAODJMAR.git PhysicsTools/NanoAODJMAR  -b test_102x
+git clone https://github.com/cms-jet/NanoAODJMAR.git PhysicsTools/NanoAODJMAR  -b dev_106x
 scram b -j 10
 cd PhysicsTools/NanoAODJMAR/test
 ```
@@ -52,7 +50,7 @@ cmsRun nano102x_on_mini94x_2017_data_NANO.py
 ```
 cmsRun nano102x_on_mini94x_2018_data_NANO.py
 ```
-
+<!--
 ## Submission to CRAB
 
 ```
@@ -77,7 +75,7 @@ python submit_all.py -c nano102x_on_mini102x_2018_data_d_NANO.py  -f datasets_20
 
 ## Documenting the Extended NanoAOD Samples
 
-Please document the input and output datasets on the following twiki: https://twiki.cern.ch/twiki/bin/view/CMS/JetMET/JMARNanoAODv1. For the MC, the number of events can be found by looking up the output dataset in DAS. For the data, you will need to run brilcalc to get the total luminosity of the dataset. See the instructions below.
+Please document the input and output datasets on the following twiki: https://twiki.cern.ch/twiki/bin/view/CMS/JetMET/JMARNanoAODv1. For the MC, the number of events can be found by looking up the output dataset in DAS. For the data, you will need to run brilcalc to get the total luminosity of the dataset. See the instructions below. 
 
 ## Running brilcalc
 These are condensed instructions from the lumi POG TWiki (https://twiki.cern.ch/twiki/bin/view/CMS/TWikiLUM). Also see the brilcalc quickstart guide: https://twiki.cern.ch/twiki/bin/viewauth/CMS/BrilcalcQuickStart.
@@ -109,3 +107,4 @@ The luminosity of interest will be listed under "totrecorded(/fb)." You can also
     
 Note: '-b "STABLE BEAMS"' is optional if you've already run over the golden json. 
         Using the normtag is NOT OPTIONAL, as it defines the final calibrations and detectors that are used for a given run.
+-->
