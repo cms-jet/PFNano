@@ -1,10 +1,8 @@
 import FWCore.ParameterSet.Config as cms
 from  PhysicsTools.NanoAOD.common_cff import *
 
-
-
-
-
+##################################################################################
+######### For AK8 PUPPI jets
 finalJetsAK8Constituents = cms.EDProducer("PatJetConstituentPtrSelector",
                                             src = cms.InputTag("updatedJetsAK8"),
                                             cut = cms.string("pt > 170.0")
@@ -42,8 +40,26 @@ genJetsAK8ParticleTable = cms.EDProducer("SimpleCandidateFlatTableProducer",
     )
 )
 
-jetReclusterSequence = cms.Sequence(finalJetsAK8Constituents)
-jetReclusterMCSequence = cms.Sequence(genJetsAK8Constituents)
-jetReclusterTable = cms.Sequence(finalJetsAK8ConstituentsTable)
-jetReclusterMCTable = cms.Sequence(genJetsAK8ParticleTable)
+##################################################################################
+######### For AK4 CHS jets
+finalJetsAK4Constituents = finalJetsAK8Constituents.clone( src = 'updatedJets', cut = 'pt>10.0' )
+finalJetsAK4ConstituentsTable = finalJetsAK8ConstituentsTable.clone(
+                                                                src = cms.InputTag("finalJetsAK4Constituents", "constituents"),
+                                                                name= cms.string("PFCandsAK4"),
+                                                                doc = cms.string("interesting gen particles from AK4 jets"),
+                                                                )
+genJetsAK4Constituents = genJetsAK8Constituents.clone(
+                                            src = cms.InputTag("slimmedGenJets"),
+                                            cut = cms.string("pt > 10.0")
+                                            )
+genJetsAK4ParticleTable = genJetsAK8ParticleTable.clone(
+                                                    src = cms.InputTag("genJetsAK4Constituents", "constituents"),
+                                                    name= cms.string("GenPartAK4"),
+                                                    doc = cms.string("interesting gen particles from AK4 jets"),
+                                                    )
+
+jetReclusterSequence = cms.Sequence(finalJetsAK4Constituents+finalJetsAK8Constituents)
+jetReclusterMCSequence = cms.Sequence(genJetsAK4Constituents+genJetsAK8Constituents)
+jetReclusterTable = cms.Sequence(finalJetsAK4ConstituentsTable+finalJetsAK8ConstituentsTable)
+jetReclusterMCTable = cms.Sequence(genJetsAK4ParticleTable+genJetsAK8ParticleTable)
 
