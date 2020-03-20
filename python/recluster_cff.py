@@ -3,20 +3,25 @@ from  PhysicsTools.NanoAOD.common_cff import *
 
 ##################################################################################
 ######### For AK8 PUPPI jets
-finalJetsAK8Constituents = cms.EDProducer("PatJetConstituentPtrSelector",
-                                            src = cms.InputTag("updatedJetsAK8"),
-                                            cut = cms.string("pt > 170.0")
-                                            )
+#finalJetsAK8Constituents = cms.EDProducer("PatJetConstituentPtrSelector",
+#                                            src = cms.InputTag("updatedJetsAK8"),
+#                                            cut = cms.string("pt > 170.0")
+#                                            )
 genJetsAK8Constituents = cms.EDProducer("GenJetPackedConstituentPtrSelector",
                                             src = cms.InputTag("slimmedGenJetsAK8"),
                                             cut = cms.string("pt > 100.0")
                                             )
 
 
+finalJetsAK8Constituents = cms.EDProducer("JetConstituentTableProducer",
+                                               src = cms.InputTag("updatedJetsAK8"),
+                                               cut = cms.string("pt()>170"),
+                                               name = cms.string("PFCandsAK8"),
+                                               )
 
 ##################### Tables for final output and docs ##########################
 finalJetsAK8ConstituentsTable = cms.EDProducer("SimpleCandidateFlatTableProducer",
-    src = cms.InputTag("finalJetsAK8Constituents", "constituents"),
+    src = cms.InputTag("finalJetsAK8Constituents"),# "constituents"),
     cut = cms.string(""), #we should not filter after pruning
     name= cms.string("PFCandsAK8"),
     doc = cms.string("interesting gen particles from AK8 jets"),
@@ -51,15 +56,15 @@ genJetsAK8ParticleTable = cms.EDProducer("SimpleCandidateFlatTableProducer",
 
 ##################################################################################
 ######### For AK4 CHS jets
-finalJetsAK4Constituents = finalJetsAK8Constituents.clone( src = 'updatedJets', cut = 'pt>10.0' )
+finalJetsAK4Constituents = finalJetsAK8Constituents.clone( src = 'updatedJets', cut = 'pt>20.0', name = cms.string("PFCandsAK4"), isPUPPI = cms.bool(False) )
 finalJetsAK4ConstituentsTable = finalJetsAK8ConstituentsTable.clone(
-                                                                src = cms.InputTag("finalJetsAK4Constituents", "constituents"),
+                                                                src = cms.InputTag("finalJetsAK4Constituents"), #"constituents"),
                                                                 name= cms.string("PFCandsAK4"),
                                                                 doc = cms.string("interesting gen particles from AK4 jets"),
                                                                 )
 genJetsAK4Constituents = genJetsAK8Constituents.clone(
                                             src = cms.InputTag("slimmedGenJets"),
-                                            cut = cms.string("pt > 10.0")
+                                            cut = cms.string("pt > 20.0")
                                             )
 genJetsAK4ParticleTable = genJetsAK8ParticleTable.clone(
                                                     src = cms.InputTag("genJetsAK4Constituents", "constituents"),

@@ -4,11 +4,14 @@ from PhysicsTools.NanoAODJMAR.recluster_cff import *
 #from PhysicsTools.NanoAOD.custom_jme_cff import *
 
 
-nanoSequence += finalJetsAK8Constituents + finalJetsAK8ConstituentsTable + finalJetsAK4Constituents + finalJetsAK4ConstituentsTable
+nanoSequenceAK4 = finalJetsAK4Constituents + finalJetsAK4ConstituentsTable
+nanoSequenceAK8 = finalJetsAK8Constituents + finalJetsAK8ConstituentsTable
 
-nanoSequenceMC += finalJetsAK8Constituents + genJetsAK8Constituents + finalJetsAK8ConstituentsTable + genJetsAK8ParticleTable+ finalJetsAK4Constituents + finalJetsAK4ConstituentsTable + genJetsAK4Constituents+ genJetsAK4ParticleTable
+nanoSequenceGenAK4 = genJetsAK4Constituents + genJetsAK4ParticleTable
+nanoSequenceGenAK8 = genJetsAK8Constituents + genJetsAK8ParticleTable
 
-
+nanoSequence += nanoSequenceAK4 + nanoSequenceAK8
+nanoSequenceMC += nanoSequenceGenAK4 + nanoSequenceGenAK8 + nanoSequenceAK4 + nanoSequenceAK8
 
 def nanoAOD_customizeData_JMAR(process):
     #process = PrepJMECustomNanoAOD(process, runOnMC=True)
