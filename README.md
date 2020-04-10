@@ -5,13 +5,13 @@ This is a [NanoAOD](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoA
 
 **THIS IS A DEVELOPMENT BRANCH dev_106x**
 
-For 2016, 2017 and 2018 data and MC:
+For **UL** 2016, 2017 and 2018 data and MC **NanoAODv6** according to the [XPOG recommendations](https://gitlab.cern.ch/cms-nanoAOD/nanoaod-doc/-/wikis/Releases/NanoAODv6):
 
 ```
-cmsrel  CMSSW_10_6_10
-cd  CMSSW_10_6_10/src
+cmsrel  CMSSW_10_6_5
+cd  CMSSW_10_6_5/src
 cmsenv
-git clone https://github.com/cms-jet/NanoAODJMAR.git PhysicsTools/NanoAODJMAR  -b dev_106x
+git clone git@github.com:cms-jet/NanoAODJMAR.git -b dev_106x PhysicsTools/NanoAODJMAR
 scram b -j 10
 cd PhysicsTools/NanoAODJMAR/test
 ```
@@ -21,17 +21,17 @@ Note: This configuration has been tested for this combination of CMSSW release, 
 
 2016
 ```
-cmsRun nano102x_on_mini94x_2016_mc_NANO.py
+cmsRun nano106X_on_mini106X_2016_mc_NANO.py
 ```
 
 2017
 ```
-cmsRun nano102x_on_mini94x_2017_mc_NANO.py
+cmsRun nano106X_on_mini106X_2017_mc_NANO.py
 ```
 
 2018
 ```
-cmsRun nano102x_on_mini94x_2018_mc_NANO.py
+cmsRun nano106X_on_mini106X_2018_mc_NANO.py
 ```
 
 ## Local Data usage:
