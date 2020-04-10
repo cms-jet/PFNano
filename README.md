@@ -1,5 +1,8 @@
 # NanoAODJMAR
-This is a [NanoAOD](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD) framework for testing jet algorithms. It takes the AK8 `pat::Jets` and `reco::GenJets` from `MINIAOD`, unpacks their constituents correctly, and writes a NANOAOD flat table of their four vector, pdgid, and charge. This is intended for advanced development using [fastjet](http://fastjet.fr) directly.
+
+This is a [NanoAOD](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD) framework for advance developments of jet algorithms. 
+The current preliminary content of this development branch can be seen [here](http://algomez.web.cern.ch/algomez/testWeb/JMARNanoAODv6_106X_v00_size.html).
+This format can be used with [fastjet](http://fastjet.fr) directly.
 
 ## Recipe
 
@@ -17,39 +20,18 @@ cd PhysicsTools/NanoAODJMAR/test
 ```
 Note: This configuration has been tested for this combination of CMSSW release, global tag, era and dataset. When running over a new dataset you should check with [the nanoAOD workbook twiki](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD#Running_on_various_datasets_from) to see if the era modifiers in the CRAB configuration files are correct. The jet correction versions are taken from the global tag.
 
-## Local MC Usage:
+## Local Usage:
 
-2016
-```
-cmsRun nano106X_on_mini106X_2016_mc_NANO.py
-```
-
-2017
+2017 MC:
 ```
 cmsRun nano106X_on_mini106X_2017_mc_NANO.py
 ```
 
-2018
+2017 DATA:
 ```
-cmsRun nano106X_on_mini106X_2018_mc_NANO.py
-```
-
-## Local Data usage:
-
-2016
-```
-cmsRun nano102x_on_mini94x_2016_data_NANO.py
+cmsRun nano106X_on_mini106X_2017_data_NANO.py
 ```
 
-2017
-```
-cmsRun nano102x_on_mini94x_2017_data_NANO.py
-```
-
-2018
-```
-cmsRun nano102x_on_mini94x_2018_data_NANO.py
-```
 <!--
 ## Submission to CRAB
 
