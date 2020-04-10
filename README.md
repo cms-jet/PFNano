@@ -3,15 +3,16 @@ This is a [NanoAOD](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoA
 
 ## Recipe
 
-**THIS IS A DEVELOPMENT BRANCH dev_106x**
+**THIS IS A DEVELOPMENT BRANCH dev_102x**
 
-For 2016, 2017 and 2018 data and MC:
+For **NANOAODv6** 2016, 2017 and 2018 data and MC :
 
 ```
-cmsrel  CMSSW_10_6_10
-cd  CMSSW_10_6_10/src
+cmsrel  CMSSW_10_2_18
+cd  CMSSW_10_2_18/src
 cmsenv
-git clone https://github.com/cms-jet/NanoAODJMAR.git PhysicsTools/NanoAODJMAR  -b dev_106x
+git cms-addpkg PhysicsTools/NanoAOD
+git clone git@github.com:cms-jet/NanoAODJMAR.git -b dev_102x PhysicsTools/NanoAODJMAR
 scram b -j 10
 cd PhysicsTools/NanoAODJMAR/test
 ```
