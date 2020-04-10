@@ -1,12 +1,11 @@
 # NanoAODJMAR
 
 This is a [NanoAOD](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD) framework for advance developments of jet algorithms. 
-The current preliminary content of this development branch can be seen [here](http://algomez.web.cern.ch/algomez/testWeb/JMARNanoAODv6_106X_v00_size.html).
+The current content of this branch can be seen [here](http://algomez.web.cern.ch/algomez/testWeb/JMARNanoAODv6_106X_v00_size.html).
 This format can be used with [fastjet](http://fastjet.fr) directly.
 
 ## Recipe
 
-**THIS IS A DEVELOPMENT BRANCH dev_106x**
 
 For **UL** 2016, 2017 and 2018 data and MC **NanoAODv6** according to the [XPOG recommendations](https://gitlab.cern.ch/cms-nanoAOD/nanoaod-doc/-/wikis/Releases/NanoAODv6):
 
