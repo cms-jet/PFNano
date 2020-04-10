@@ -1,7 +1,3 @@
-//////////////////////////////////////////////////////////////
-// Based on 
-// https://github.com/hqucms/NanoHRT/blob/dev/pancakes/add_pf_features/plugins/JetConstituentTableProducer.cc
-//////////////////////////////////////////////////////////////
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/stream/EDProducer.h"
 
@@ -38,7 +34,6 @@ private:
 
   const std::string name_;
   const StringCutObjectSelector<pat::Jet> jetCut_;
-  bool isPUPPI_;
 
   edm::EDGetTokenT<edm::View<pat::Jet>> jet_token_;
   edm::EDGetTokenT<VertexCollection> vtx_token_;
@@ -55,7 +50,6 @@ private:
 JetConstituentTableProducer::JetConstituentTableProducer(const edm::ParameterSet &iConfig)
     : name_(iConfig.getParameter<std::string>("name")),
       jetCut_(iConfig.getParameter<std::string>("cut"), true),
-      isPUPPI_(iConfig.getParameter<bool>("isPUPPI")),
       jet_token_(consumes<edm::View<pat::Jet>>(iConfig.getParameter<edm::InputTag>("src"))),
       vtx_token_(consumes<VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"))),
       pfcand_token_(consumes<CandidateView>(iConfig.getParameter<edm::InputTag>("pf_candidates"))) {
@@ -89,8 +83,8 @@ void JetConstituentTableProducer::produce(edm::Event &iEvent, const edm::EventSe
       for (const auto &cand : jet.daughterPtrVector()) {
         const auto *packed_cand = dynamic_cast<const pat::PackedCandidate *>(&(*cand));
         assert(packed_cand != nullptr);
-        // remove particles w/ extremely low puppi weights (needed for 2017 MiniAOD)  ALE: Not all the Jets re PUPPI (for now)
-        if ((packed_cand->puppiWeight() < 0.01) and (isPUPPI_))
+        // remove particles w/ extremely low puppi weights (needed for 2017 MiniAOD)
+        if (packed_cand->puppiWeight() < 0.01)
           continue;
         // get the original reco/packed candidate not scaled by the puppi weight
         daughters.push_back(pfcands_->ptrAt(cand.key()));
@@ -141,7 +135,6 @@ void JetConstituentTableProducer::fillDescriptions(edm::ConfigurationDescription
   desc.add<edm::InputTag>("src", edm::InputTag("slimmedJetsAK8"));
   desc.add<std::string>("name", "AK8PFCands");
   desc.add<std::string>("cut", "pt()>170");
-  desc.add<bool>("isPUPPI", true );
   desc.add<edm::InputTag>("vertices", edm::InputTag("offlineSlimmedPrimaryVertices"));
   desc.add<edm::InputTag>("pf_candidates", edm::InputTag("packedPFCandidates"));
   descriptions.addWithDefaultLabel(desc);
