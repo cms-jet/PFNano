@@ -1,16 +1,16 @@
 # NanoAODJMAR
-<!--
 This is a [NanoAOD](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD) framework for testing jet algorithms. It takes the AK8 `pat::Jets` and `reco::GenJets` from `MINIAOD`, unpacks their constituents correctly, and writes a NANOAOD flat table of their four vector, pdgid, and charge. This is intended for advanced development using [fastjet](http://fastjet.fr) directly.
--->
 
+<!--
 This is a [NanoAOD](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD) framework for advance developments of jet algorithms.
 The current content of this branch can be seen [here](http://algomez.web.cern.ch/algomez/testWeb/JMARNanoAODv6_102X_v02_size.html).
 This format can be used with [fastjet](http://fastjet.fr) directly.
+-->
 
 ## Recipe
 
-<!-- 
-**THIS IS A DEVELOPMENT BRANCH dev_102x**-->
+<!-- -->
+**THIS IS A DEVELOPMENT BRANCH dev_102x**
 
 For 2016, 2017 and 2018 data and MC **NANOAODv6** according to the [XPOG recommendations](https://gitlab.cern.ch/cms-nanoAOD/nanoaod-doc/-/wikis/Releases/NanoAODv6):
 
