@@ -67,7 +67,8 @@ void JetConstituentTableProducer::produce(edm::Event &iEvent, const edm::EventSe
 
   iEvent.getByToken(vtx_token_, vtxs_);
   if (!vtxs_->empty()) {
-    auto jets = iEvent.getHandle(jet_token_);
+    edm::Handle<edm::View<pat::Jet> > jets;
+    iEvent.getByToken(jet_token_, jets);
     iEvent.getByToken(pfcand_token_, pfcands_);
     iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder", track_builder_);
 
