@@ -2,15 +2,9 @@
 <use name="FWCore/MessageLogger"/>
 <library file="*.cc" name="PhysicsToolsNanoAODJMARPlugins">
   <use name="DataFormats/PatCandidates"/>
-  <use name="DataFormats/VertexReco"/>
   <use name="DataFormats/NanoAOD"/>
   <use name="CommonTools/Utils"/>
   <use name="RecoBTag/FeatureTools"/>
-  <use name="RecoJets/JetAlgorithms"/>
-  <use name="PhysicsTools/Pancakes"/>
   <use name="TrackingTools/Records"/>
-  <use name="roottmva"/>
-  <use name="fastjet"/>
-  <use name="fastjet-contrib"/>
   <flags EDM_PLUGIN="1"/>
 </library>
