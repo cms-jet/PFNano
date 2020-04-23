@@ -28,7 +28,8 @@ process.maxEvents = cms.untracked.PSet(
 
 # Input source
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('/store/mc/RunIISummer19UL17MiniAOD/QCD_HT700to1000_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_mc2017_realistic_v6-v2/280000/958303DA-D6A9-5D47-8A71-4D8F39FFC221.root'),
+    #fileNames = cms.untracked.vstring('/store/mc/RunIISummer19UL17MiniAOD/QCD_HT700to1000_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_mc2017_realistic_v6-v2/280000/958303DA-D6A9-5D47-8A71-4D8F39FFC221.root'),
+    fileNames = cms.untracked.vstring('/store/mc/RunIIAutumn18MiniAOD/BulkGravTohhTohWWhbb_narrow_M-2800_TuneCP2_13TeV-madgraph_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/70000/DFABF044-2025-6E49-800A-C5BD664F8E55.root'),
     secondaryFileNames = cms.untracked.vstring()
 )
 
