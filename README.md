@@ -40,39 +40,42 @@ cd PhysicsTools/NanoAODJMAR/test
 
 ## How to run
 
+All the python files to run the framework are locate in [PhysicsTools/NanoAODJMAR/test/](PhysicsTools/NanoAODJMAR/test/). Then, use cmsRun to the files described below as:
+```
+cmsRun nano102x_on_mini94x_2016_mc_NANO.py
+```
+
 ### Local MC Usage:
 
 2016
-  * For JMARnano only: `cmsRun nano102x_on_mini94x_2016_mc_NANO.py`
-  * For JMECustomNano (only for nanoAODv7): `cmsRun JMECustomNano102x_on_mini94x_2016_mc_NANO.py`
-  * For JMECustomNano plus JMARnano (only for nanoAODv7): `cmsRun JMECustomplusJMARnano102x_on_mini94x_2016_mc_NANO.py`
+  * For JMARnano only (nanoAODv6): `nanov6102x_on_mini94x_2016_mc_NANO.py`
+  * For JMARnano only (nanoAODv7): `nano102x_on_mini94x_2016_mc_NANO.py`
+  * For JMECustomNano (only for nanoAODv7): `JMECustomNano102x_on_mini94x_2016_mc_NANO.py`
+  * For JMECustomNano plus JMARnano (only for nanoAODv7): `JMECustomplusJMARnano102x_on_mini94x_2016_mc_NANO.py`
 
 2017
-```
-cmsRun nano102x_on_mini94x_2017_mc_NANO.py
-```
+  * For JMARnano only (nanoAODv6): `nanov6102x_on_mini94x_2017_mc_NANO.py`
+  * For JMARnano only (nanoAODv7): `nano102x_on_mini94x_2017_mc_NANO.py`
 
 2018
-```
-cmsRun nano102x_on_mini94x_2018_mc_NANO.py
-```
+  * For JMARnano only (nanoAODv6): `nanov6102x_on_mini102x_2018_mc_NANO.py`
+  * For JMARnano only (nanoAODv7): `nano102x_on_mini102x_2018_mc_NANO.py`
 
 ### Local Data usage:
 
 2016
-  * For JMARnano only: `cmsRun nano102x_on_mini94x_2016_data_NANO.py`
-  * For JMECustomNano (only for nanoAODv7): `cmsRun JMECustomNano102x_on_mini94x_2016_data_NANO.py`
-  * For JMECustomNano plus JMARnano (only for nanoAODv7): `cmsRun JMECustomplusJMARnano102x_on_mini94x_2016_data_NANO.py`
+  * For JMARnano only (nanoAODv6): `nanov6102x_on_mini94x_2016_data_NANO.py`
+  * For JMARnano only (nanoAODv7): `nano102x_on_mini94x_2016_data_NANO.py`
+  * For JMECustomNano (only for nanoAODv7): `JMECustomNano102x_on_mini94x_2016_data_NANO.py`
+  * For JMECustomNano plus JMARnano (only for nanoAODv7): `JMECustomplusJMARnano102x_on_mini94x_2016_data_NANO.py`
 
 2017
-```
-cmsRun nano102x_on_mini94x_2017_data_NANO.py
-```
+  * For JMARnano only (nanoAODv6): `nanov6102x_on_mini94x_2017_data_NANO.py`
+  * For JMARnano only (nanoAODv7): `nano102x_on_mini94x_2017_data_NANO.py`
 
 2018
-```
-cmsRun nano102x_on_mini94x_2018_data_NANO.py
-```
+  * For JMARnano only (nanoAODv6): `nanov6102x_on_mini102x_2018_data_abc_NANO.py`, `nanov6102x_on_mini102x_2018_data_d_NANO.py`
+  * For JMARnano only (nanoAODv7): `nano102x_on_mini102x_2018_data_abc_NANO.py`, `nano102x_on_mini102x_2018_data_d_NANO.py`
 
 ### How to create python files using cmsDriver
 
