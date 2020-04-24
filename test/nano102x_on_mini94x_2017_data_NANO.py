@@ -2,7 +2,7 @@
 # using: 
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
-# with command line options: nano102x_on_mini94x_2017_data -s NANO --data --eventcontent NANOAODSIM --datatier NANOAODSIM --conditions 102X_dataRun2_v12 --era Run2_2017,run2_nanoAOD_94XMiniAODv2 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False))) --nThreads 2 --customise PhysicsTools/NanoAODJMAR/nano_jmar_cff.JMARnano_customizeData -n 100 --filein /store/data/Run2017E/JetHT/MINIAOD/31Mar2018-v1/60000/B660F593-2E38-E811-A77D-008CFAC91B58.root
+# with command line options: nano102x_on_mini94x_2017_data -s NANO --data --eventcontent NANOAODSIM --datatier NANOAODSIM --conditions 102X_dataRun2_v13 --era Run2_2017,run2_nanoAOD_94XMiniAODv2 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False))) --nThreads 2 --customise PhysicsTools/NanoAODJMAR/nano_jmar_cff.JMARnano_customizeData -n 100 --filein /store/data/Run2017E/JetHT/MINIAOD/31Mar2018-v1/60000/B660F593-2E38-E811-A77D-008CFAC91B58.root
 import FWCore.ParameterSet.Config as cms
 
 from Configuration.StandardSequences.Eras import eras
@@ -58,7 +58,7 @@ process.NANOAODSIMoutput = cms.OutputModule("NanoAODOutputModule",
 
 # Other statements
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, '102X_dataRun2_v12', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, '102X_dataRun2_v13', '')
 
 # Path and EndPath definitions
 process.nanoAOD_step = cms.Path(process.nanoSequence)
