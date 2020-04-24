@@ -2,7 +2,7 @@
 # using: 
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
-# with command line options: nano102x_on_mini94x_2017_mc -s NANO --mc --eventcontent NANOAODSIM --datatier NANOAODSIM --no_exec --conditions 94X_mc2017_realistic_v17 --era Run2_2017,run2_nanoAOD_94XMiniAODv2 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)))
+# with command line options: nano102x_on_mini94x_2017_mc -s NANO --mc --eventcontent NANOAODSIM --datatier NANOAODSIM --conditions 102X_mc2017_realistic_v8 --era Run2_2017,run2_nanoAOD_94XMiniAODv2 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False))) --nThreads 2 --customise PhysicsTools/NanoAODJMAR/nano_jmar_cff.JMARnano_customizeMC -n 100 --filein /store/mc/RunIIFall17MiniAODv2/QCD_HT1000to1500_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/20000/68438CED-D443-E811-83B7-0025905B85FC.root
 import FWCore.ParameterSet.Config as cms
 
 from Configuration.StandardSequences.Eras import eras
@@ -17,17 +17,17 @@ process.load('Configuration.EventContent.EventContent_cff')
 process.load('SimGeneral.MixingModule.mixNoPU_cfi')
 process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
-process.load('PhysicsTools.NanoAODJMAR.nano_jmar_cff')
+process.load('PhysicsTools.NanoAOD.nano_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1)
+    input = cms.untracked.int32(100)
 )
 
 # Input source
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('/store/mc/RunIIFall17MiniAODv2/QCD_Pt-15to7000_TuneCP5_Flat2017_13TeV_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/20000/D671369F-7343-E811-962A-008CFA1CB470.root'),
+    fileNames = cms.untracked.vstring('/store/mc/RunIIFall17MiniAODv2/QCD_HT1000to1500_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/20000/68438CED-D443-E811-83B7-0025905B85FC.root'),
     secondaryFileNames = cms.untracked.vstring()
 )
 
@@ -37,7 +37,7 @@ process.options = cms.untracked.PSet(
 
 # Production Info
 process.configurationMetadata = cms.untracked.PSet(
-    annotation = cms.untracked.string('nano102x_on_mini94x_2017_mc nevts:1'),
+    annotation = cms.untracked.string('nano102x_on_mini94x_2017_mc nevts:100'),
     name = cms.untracked.string('Applications'),
     version = cms.untracked.string('$Revision: 1.19 $')
 )
@@ -52,15 +52,14 @@ process.NANOAODSIMoutput = cms.OutputModule("NanoAODOutputModule",
         filterName = cms.untracked.string('')
     ),
     fileName = cms.untracked.string('nano102x_on_mini94x_2017_mc_NANO.root'),
-    outputCommands = process.NANOAODSIMEventContent.outputCommands,
-    fakeNameForCrab =cms.untracked.bool(True)
+    outputCommands = process.NANOAODSIMEventContent.outputCommands
 )
 
 # Additional output definition
 
 # Other statements
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, '94X_mc2017_realistic_v17', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, '102X_mc2017_realistic_v8', '')
 
 # Path and EndPath definitions
 process.nanoAOD_step = cms.Path(process.nanoSequenceMC)
@@ -72,13 +71,23 @@ process.schedule = cms.Schedule(process.nanoAOD_step,process.endjob_step,process
 from PhysicsTools.PatAlgos.tools.helpers import associatePatAlgosToolsTask
 associatePatAlgosToolsTask(process)
 
+#Setup FWK for multithreaded
+process.options.numberOfThreads=cms.untracked.uint32(2)
+process.options.numberOfStreams=cms.untracked.uint32(0)
+
 # customisation of the process.
 
-# addition of the customisation function from PhysicsTools.NanoAODJMAR.nano_cff
-from PhysicsTools.NanoAODJMAR.nano_jmar_cff import nanoAOD_customizeMC_JMAR
+# Automatic addition of the customisation function from PhysicsTools.NanoAOD.nano_cff
+from PhysicsTools.NanoAOD.nano_cff import nanoAOD_customizeMC 
 
 #call to customisation function nanoAOD_customizeMC imported from PhysicsTools.NanoAOD.nano_cff
-process = nanoAOD_customizeMC_JMAR(process)
+process = nanoAOD_customizeMC(process)
+
+# Automatic addition of the customisation function from PhysicsTools.NanoAODJMAR.nano_jmar_cff
+from PhysicsTools.NanoAODJMAR.nano_jmar_cff import JMARnano_customizeMC 
+
+#call to customisation function JMARnano_customizeMC imported from PhysicsTools.NanoAODJMAR.nano_jmar_cff
+process = JMARnano_customizeMC(process)
 
 # End of customisation functions
 
