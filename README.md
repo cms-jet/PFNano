@@ -1,6 +1,8 @@
 # NanoAODJMAR
 
-This is a [NanoAOD](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD) framework for testing jet algorithms. It takes the AK8 `pat::Jets` and `reco::GenJets` from `MINIAOD`, unpacks their constituents correctly, and writes a NANOAOD flat table of their four vector, pdgid, and charge. This is intended for advanced development using [fastjet](http://fastjet.fr) directly.
+This is a [NanoAOD](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD) framework for advance developments of jet algorithms.
+The current content of this branch can be seen [here](http://algomez.web.cern.ch/algomez/testWeb/JMARNanoAODv6_102X_v02_size.html).
+This format can be used with [fastjet](http://fastjet.fr) directly.
 
 ## Recipes
 
@@ -15,7 +17,7 @@ cmsrel  CMSSW_10_2_18
 cd  CMSSW_10_2_18/src
 cmsenv
 git cms-addpkg PhysicsTools/NanoAOD
-git clone git@github.com:cms-jet/NanoAODJMAR.git -b 102x_v2 PhysicsTools/NanoAODJMAR
+git clone git@github.com:cms-jet/NanoAODJMAR.git -b 102x PhysicsTools/NanoAODJMAR
 scram b -j 10
 cd PhysicsTools/NanoAODJMAR/test
 ```
@@ -32,7 +34,7 @@ cmsenv
 git cms-init
 git cms-addpkg PhysicsTools/NanoAOD
 git cms-merge-topic nurfikri89:nanojme_forNanov7_withDeepJetQG
-git clone git@github.com:cms-jet/NanoAODJMAR.git -b 102x_v2 PhysicsTools/NanoAODJMAR
+git clone git@github.com:cms-jet/NanoAODJMAR.git -b 102x PhysicsTools/NanoAODJMAR
 scram b -j 10
 cd PhysicsTools/NanoAODJMAR/test
 ```
