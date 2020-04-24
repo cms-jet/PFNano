@@ -1,9 +1,13 @@
 # NanoAODJMAR
 This is a [NanoAOD](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD) framework for testing jet algorithms. It takes the AK8 `pat::Jets` and `reco::GenJets` from `MINIAOD`, unpacks their constituents correctly, and writes a NANOAOD flat table of their four vector, pdgid, and charge. This is intended for advanced development using [fastjet](http://fastjet.fr) directly.
 
-## Recipe
+## Recipes
 
 **THIS IS A DEVELOPMENT BRANCH dev_102x**
+
+Note: These configurations have been tested for these combinations of CMSSW releases, global tag, era and dataset. When running over a new dataset you should check with [the nanoAOD workbook twiki](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD#Running_on_various_datasets_from) to see if the era modifiers in the CRAB configuration files are correct. The jet correction versions are taken from the global tag.
+
+### For NANOAODv6
 
 For 2016, 2017 and 2018 data and MC **NANOAODv6** according to the [XPOG recommendations](https://gitlab.cern.ch/cms-nanoAOD/nanoaod-doc/-/wikis/Releases/NanoAODv6):
 
@@ -16,14 +20,32 @@ git clone git@github.com:cms-jet/NanoAODJMAR.git -b dev_102x PhysicsTools/NanoAO
 scram b -j 10
 cd PhysicsTools/NanoAODJMAR/test
 ```
-Note: This configuration has been tested for this combination of CMSSW release, global tag, era and dataset. When running over a new dataset you should check with [the nanoAOD workbook twiki](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD#Running_on_various_datasets_from) to see if the era modifiers in the CRAB configuration files are correct. The jet correction versions are taken from the global tag.
 
-## Local MC Usage:
+### For NANOAODv7
+
+**This recipe includes the JMECustomNano collections.**
+For 2016, 2017 and 2018 data and MC **NANOAODv7** according to the [XPOG recommendations](https://gitlab.cern.ch/cms-nanoAOD/nanoaod-doc/-/wikis/Releases/NanoAODv7):
+
+```
+cmsrel  CMSSW_10_2_22
+cd  CMSSW_10_2_22/src
+cmsenv
+git cms-init
+git cms-addpkg PhysicsTools/NanoAOD
+git cms-merge-topic nurfikri89:nanojme_forNanov7_withDeepJetQG
+git clone git@github.com:cms-jet/NanoAODJMAR.git -b dev_102x PhysicsTools/NanoAODJMAR
+scram b -j 10
+cd PhysicsTools/NanoAODJMAR/test
+```
+
+## How to run
+
+### Local MC Usage:
 
 2016
-```
-cmsRun nano102x_on_mini94x_2016_mc_NANO.py
-```
+  * For JMARnano only: `cmsRun nano102x_on_mini94x_2016_mc_NANO.py`
+  * For JMECustomNano (only for nanoAODv7): `cmsRun JMECustomNano102x_on_mini94x_2016_mc_NANO.py`
+  * For JMECustomNano plus JMARnano (only for nanoAODv7): `cmsRun JMECustomplusJMARnano102x_on_mini94x_2016_mc_NANO.py`
 
 2017
 ```
@@ -35,12 +57,12 @@ cmsRun nano102x_on_mini94x_2017_mc_NANO.py
 cmsRun nano102x_on_mini94x_2018_mc_NANO.py
 ```
 
-## Local Data usage:
+### Local Data usage:
 
 2016
-```
-cmsRun nano102x_on_mini94x_2016_data_NANO.py
-```
+  * For JMARnano only: `cmsRun nano102x_on_mini94x_2016_data_NANO.py`
+  * For JMECustomNano (only for nanoAODv7): `cmsRun JMECustomNano102x_on_mini94x_2016_data_NANO.py`
+  * For JMECustomNano plus JMARnano (only for nanoAODv7): `cmsRun JMECustomplusJMARnano102x_on_mini94x_2016_data_NANO.py`
 
 2017
 ```
@@ -52,7 +74,17 @@ cmsRun nano102x_on_mini94x_2017_data_NANO.py
 cmsRun nano102x_on_mini94x_2018_data_NANO.py
 ```
 
-## Submission to CRAB
+### How to create python files using cmsDriver
+
+All the previous python config files were produced with `cmsDriver.py`. Two imporant parameters that one needs to verify in the central nanoAOD documentation are `--conditions` and `--era`. Then, an example of how to create those file, if needed, is shown below:
+
+```
+cmsDriver.py JMECustomNano_plusJMARnano102x_on_mini94x_2016_mc --mc --eventcontent NANOAODSIM --datatier NANOAODSIM --conditions 102X_mcRun2_asymptotic_v8 --step NANO --era Run2_2016,run2_nanoAOD_94X2016 --customise_commands="process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False))) \n from PhysicsTools.NanoAOD.custom_jme_cff import PrepJMECustomNanoAOD_MC; PrepJMECustomNanoAOD_MC(process)\n" -n 100 --filein /store/mc/RunIISummer16MiniAODv3/QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_94X_mcRun2_asymptotic_v3-v2/120000/086BBC76-7AEA-E811-AA5A-6CC2173D9FB0.root --nThreads 2  --customise PhysicsTools/NanoAODJMAR/nano_jmar_cff.JMARnano_customizeMC
+```
+This complete example includes the JMECustomNano and the JMARnano collections.
+
+
+### Submission to CRAB
 
 ```
 python submit_all.py -c nano102x_on_mini94x_2016_mc_NANO.py  -f datasets/2016mc_miniAODv3_DY.txt  -d NANO2016MC
@@ -72,6 +104,13 @@ python submit_all.py -c nano102x_on_mini102x_2018_data_d_NANO.py  -f datasets/da
 
 ```
 The lumimask for data is hardcoded in the `submit_all.py` script.
+
+## How to create website with nanoAOD content
+
+To create nice websites like [this one](http://algomez.web.cern.ch/algomez/testWeb/JMECustomNano102x_mc_v01.html#Jet) with the content of nanoAOD, use the `inspectNanoFile.py` file from the `PhysicsTools/nanoAOD` package as:
+```
+python PhysicsTools/NanoAOD/test/inspectNanoFile.py NANOAOD.root -s website_with_collectionsize.html -d website_with_collectiondescription.html
+```
 
 
 ## Running brilcalc
