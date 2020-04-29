@@ -7,7 +7,7 @@
   <use name="CommonTools/Utils"/>
   <use name="RecoBTag/FeatureTools"/>
   <use name="RecoJets/JetAlgorithms"/>
-  <use name="PhysicsTools/Pancakes"/>
+  <use name="PhysicsTools/NanoAODJMAR"/>
   <use name="TrackingTools/Records"/>
   <use name="roottmva"/>
   <use name="fastjet"/>
