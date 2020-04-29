@@ -71,27 +71,24 @@ def update_jets_AK8_subjet(process):
     updateJetCollection(
         process,
         labelName='SoftDropSubjetsPF',
-        jetSource=cms.InputTag("selectedPatJetsAK8PFPuppiSoftDropSubjets"),
+        jetSource=cms.InputTag("slimmedJetsAK8PFPuppiSoftDropPacked","SubJets"),
         jetCorrections=('AK4PFPuppi',
                         ['L2Relative', 'L3Absolute'], 'None'),
-        pfCandidates=cms.InputTag('puppi'),
-        pvSource=cms.InputTag('offlineSlimmedPrimaryVertices'),
-        svSource=cms.InputTag('slimmedSecondaryVertices'),
-        muSource=cms.InputTag('slimmedMuons'),
-        elSource=cms.InputTag('slimmedElectrons'),
-        btagInfos=bTagInfos,
+        #pvSource=cms.InputTag('offlineSlimmedPrimaryVertices'),
+        #svSource=cms.InputTag('slimmedSecondaryVertices'),
+        #muSource=cms.InputTag('slimmedMuons'),
+        #elSource=cms.InputTag('slimmedElectrons'),
+        #btagInfos=bTagInfos,
         btagDiscriminators=list(_btagDiscriminators),
         explicitJTA=True,  # needed for subjet b tagging
         svClustering=False,  # needed for subjet b tagging (IMPORTANT: Needs to be set to False to disable ghost-association which does not work with slimmed jets)
         fatJets=cms.InputTag('slimmedJetsAK8'),  # needed for subjet b tagging
         rParam=0.8,  # needed for subjet b tagging
-        #algo='SoftDropPuppi',  # has to be defined but is not used since svClustering=False
+        #algo='AK',  # has to be defined but is not used since svClustering=False
         postfix='AK8SubjetsWithDeepInfo')
 
-    # process.jetCorrFactorsAK8.src = "selectedUpdatedPatJetsAK8SubjetsWithDeepInfo"
-    # process.updatedJetsAK8.jetSource = "selectedUpdatedPatJetsAK8SubjetsWithDeepInfo"
-    process.jetCorrFactorsAK8.src = "selectedUpdatedPatJetsAK8WithDeepInfo"
-    process.updatedJetsAK8.jetSource = "selectedUpdatedPatJetsAK8WithDeepInfo"
+    process.subJetTable.src = 'updatedPatJetsTransientCorrectedSoftDropSubjetsPFAK8SubjetsWithDeepInfo'  ### VERY LONG NAME!!! :P
+
     return process
 
 
