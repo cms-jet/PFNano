@@ -1,7 +1,7 @@
 # Auto generated configuration file
-# using: 
-# Revision: 1.19 
-# Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
+# using:
+# Revision: 1.19
+# Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v
 # with command line options: JMECustomplustJMARNano102x_on_mini94x_2016_data --data --eventcontent NANOAODSIM --datatier NANOAODSIM --conditions 102X_dataRun2_v13 --step NANO --era Run2_2016,run2_nanoAOD_94X2016 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False))) \n from PhysicsTools.NanoAOD.custom_jme_cff import PrepJMECustomNanoAOD_Data; PrepJMECustomNanoAOD_Data(process)\n -n 100 --filein /store/data/Run2016C/JetHT/MINIAOD/17Jul2018-v1/20000/88F8898D-538E-E811-B51E-0090FAA57BE0.root --nThreads 2 --customise PhysicsTools/NanoAODJMAR/nano_jmar_cff.JMARnano_customizeData
 import FWCore.ParameterSet.Config as cms
 
@@ -77,13 +77,13 @@ process.options.numberOfStreams=cms.untracked.uint32(0)
 # customisation of the process.
 
 # Automatic addition of the customisation function from PhysicsTools.NanoAOD.nano_cff
-from PhysicsTools.NanoAOD.nano_cff import nanoAOD_customizeData 
+from PhysicsTools.NanoAOD.nano_cff import nanoAOD_customizeData
 
 #call to customisation function nanoAOD_customizeData imported from PhysicsTools.NanoAOD.nano_cff
 process = nanoAOD_customizeData(process)
 
 # Automatic addition of the customisation function from PhysicsTools.NanoAODJMAR.nano_jmar_cff
-from PhysicsTools.NanoAODJMAR.nano_jmar_cff import JMARnano_customizeData 
+from PhysicsTools.NanoAODJMAR.nano_jmar_cff import JMARnano_customizeData
 
 #call to customisation function JMARnano_customizeData imported from PhysicsTools.NanoAODJMAR.nano_jmar_cff
 process = JMARnano_customizeData(process)
@@ -92,8 +92,9 @@ process = JMARnano_customizeData(process)
 
 # Customisation from command line
 
-process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False))) 
-from PhysicsTools.NanoAOD.custom_jme_cff import PrepJMECustomNanoAOD_Data; PrepJMECustomNanoAOD_Data(process)
+process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)))
+from PhysicsTools.NanoAOD.custom_jme_cff import PrepJMECustomNanoAOD_Data
+process = PrepJMECustomNanoAOD_Data(process)
 
 # Add early deletion of temporary data products to reduce peak memory need
 from Configuration.StandardSequences.earlyDeleteSettings_cff import customiseEarlyDelete
