@@ -5,15 +5,6 @@ from PhysicsTools.NanoAOD.jets_cff import jetTable, fatJetTable, subJetTable
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 
 
-bTagInfos = [
-    'pfImpactParameterTagInfos', 'pfSecondaryVertexTagInfos',
-    'pfInclusiveSecondaryVertexFinderTagInfos', 'pfSecondaryVertexNegativeTagInfos',
-    'pfInclusiveSecondaryVertexFinderNegativeTagInfos', 'softPFMuonsTagInfos',
-    'softPFElectronsTagInfos', 'pfInclusiveSecondaryVertexFinderCvsLTagInfos',
-    'pfInclusiveSecondaryVertexFinderNegativeCvsLTagInfos', 'pfDeepFlavourTagInfos'
-]
-
-
 def update_jets_AK4(process):
     # Based on ``nanoAOD_addDeepInfo``
     # in https://github.com/cms-sw/cmssw/blob/master/PhysicsTools/NanoAOD/python/nano_cff.py
@@ -74,21 +65,14 @@ def update_jets_AK8_subjet(process):
         jetSource=cms.InputTag("slimmedJetsAK8PFPuppiSoftDropPacked","SubJets"),
         jetCorrections=('AK4PFPuppi',
                         ['L2Relative', 'L3Absolute'], 'None'),
-        #pvSource=cms.InputTag('offlineSlimmedPrimaryVertices'),
-        #svSource=cms.InputTag('slimmedSecondaryVertices'),
-        #muSource=cms.InputTag('slimmedMuons'),
-        #elSource=cms.InputTag('slimmedElectrons'),
-        #btagInfos=bTagInfos,
         btagDiscriminators=list(_btagDiscriminators),
         explicitJTA=True,  # needed for subjet b tagging
         svClustering=False,  # needed for subjet b tagging (IMPORTANT: Needs to be set to False to disable ghost-association which does not work with slimmed jets)
         fatJets=cms.InputTag('slimmedJetsAK8'),  # needed for subjet b tagging
         rParam=0.8,  # needed for subjet b tagging
-        #algo='AK',  # has to be defined but is not used since svClustering=False
         postfix='AK8SubjetsWithDeepInfo')
 
     process.subJetTable.src = 'updatedPatJetsTransientCorrectedSoftDropSubjetsPFAK8SubjetsWithDeepInfo'  ### VERY LONG NAME!!! :P
-
     return process
 
 
@@ -142,16 +126,6 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False):
         extension=cms.bool(True),  # this is the extension table for FatJets
         variables=cms.PSet(
             CommonVars,
-            # Proba=Var("bDiscriminator('pfJetProbabilityBJetTags')",
-            #           float,
-            #           doc="Jet Probability (Usage:BTV)",
-            #           precision=10),
-            # nBHadrons=Var("jetFlavourInfo().getbHadrons().size()",
-            #               int,
-            #               doc="number of b-hadrons"),
-            # nCHadrons=Var("jetFlavourInfo().getcHadrons().size()",
-            #               int,
-            #               doc="number of c-hadrons"),
         ))
 
     # Subjets
@@ -169,12 +143,6 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False):
             #           float,
             #           doc="Jet Probability (Usage:BTV)",
             #           precision=10),
-            # nBHadrons=Var("jetFlavourInfo().getbHadrons().size()",
-            #               int,
-            #               doc="number of b-hadrons"),
-            # nCHadrons=Var("jetFlavourInfo().getcHadrons().size()",
-            #               int,
-            #               doc="number of c-hadrons"),
         ))
 
     if addAK4:
