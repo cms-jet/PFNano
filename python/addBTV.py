@@ -62,7 +62,7 @@ def update_jets_AK8_subjet(process):
     updateJetCollection(
         process,
         labelName='SoftDropSubjetsPF',
-        jetSource=cms.InputTag("slimmedJetsAK8PFPuppiSoftDropPacked","SubJets"),
+        jetSource=cms.InputTag("slimmedJetsAK8PFPuppiSoftDropPacked", "SubJets"),
         jetCorrections=('AK4PFPuppi',
                         ['L2Relative', 'L3Absolute'], 'None'),
         btagDiscriminators=list(_btagDiscriminators),
