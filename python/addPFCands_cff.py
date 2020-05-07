@@ -6,9 +6,11 @@ def addPFCands(process, runOnMC=False, onlyAK4=False, onlyAK8=False):
     process.schedule.associate(process.customizedPFCandsTask)
 
     process.customAK8ConstituentsTable = cms.EDProducer("JetConstituentTableProducer",
-                                                        src = cms.InputTag("finalJetsAK8"),
-                                                        cut = cms.string("pt()>170"),
-                                                        name = cms.string("FatJetPFCands"))
+                                                        src=cms.InputTag("finalJetsAK8"),
+                                                        jet_radius=cms.double(0.8),
+                                                        cut=cms.string("pt()>170"),
+                                                        namePF=cms.string("FatJetPFCands"),
+                                                        nameSV=cms.string("FatJetSV"))
 
     process.customAK8ConstituentsExtTable = cms.EDProducer("SimpleCandidateFlatTableProducer",
                                        src = cms.InputTag("customAK8ConstituentsTable"),
@@ -32,8 +34,12 @@ def addPFCands(process, runOnMC=False, onlyAK4=False, onlyAK8=False):
                                                          )
                                     )
 
-    process.customAK4ConstituentsTable = process.customAK8ConstituentsTable.clone( src = 'finalJets', cut = 'pt()>20', name = 'JetPFCands'  )
-    process.customAK4ConstituentsExtTable = process.customAK8ConstituentsExtTable.clone( src = 'customAK4ConstituentsTable', name = 'JetPFCands', doc = 'interesting particles from AK4 jets'  )
+    process.customAK4ConstituentsTable = process.customAK8ConstituentsTable.clone(
+        src='finalJets', jet_radius=cms.double(0.4), cut='pt()>20', namePF='JetPFCands', nameSV="JetSV")
+    process.customAK4ConstituentsExtTable = process.customAK8ConstituentsExtTable.clone(
+        src='customAK4ConstituentsTable',
+        name='JetPFCands',
+        doc='interesting particles from AK4 jets')
 
     if not onlyAK4:
         process.customizedPFCandsTask.add(process.customAK8ConstituentsTable)
