@@ -50,12 +50,14 @@ def addPFCands(process, runOnMC=False, onlyAK4=False, onlyAK8=False):
                                                         candidates = cms.InputTag("finalJetsConstituents"),
                                                         #candidates = cms.InputTag("packedPFCandidates"),
                                                         jets = cms.InputTag("finalJetsAK8"),
-                                                        name = cms.string("JetPFCandsAK8"))
+                                                        name = cms.string("JetPFCandsAK8"),
+                                                        nameSV = cms.string("JetSVsAK8"))
     process.customAK4ConstituentsTable = cms.EDProducer("PatJetConstituentTableProducer",
                                                         #candidates = cms.InputTag("packedPFCandidates"),
                                                         candidates = cms.InputTag("finalJetsConstituents"),
                                                         jets = cms.InputTag("finalJets"),
-                                                        name = cms.string("JetPFCandsAK4"))
+                                                        name = cms.string("JetPFCandsAK4"),
+                                                        nameSV = cms.string("JetSVsAK4"))
 
     process.customizedPFCandsTask.add(process.finalJetsConstituents)
     process.customizedPFCandsTask.add(process.customConstituentsExtTable)
@@ -102,12 +104,14 @@ def addPFCands(process, runOnMC=False, onlyAK4=False, onlyAK8=False):
                                                          #candidates = cms.InputTag("packedGenParticles"),
                                                          jets = cms.InputTag("slimmedGenJetsAK8"),
                                                          name = cms.string("GenJetCandsAK8"),
+                                                         nameSV = cms.string("GenJetSVsAK8"),
                                                          readBtag = cms.bool(False))
         process.genAK4ConstituentsTable = cms.EDProducer("GenJetConstituentTableProducer",
                                                          candidates = cms.InputTag("genJetsConstituents"),
                                                          #candidates = cms.InputTag("packedGenParticles"),
                                                          jets = cms.InputTag("slimmedGenJets"),
                                                          name = cms.string("GenJetCandsAK4"),
+                                                         nameSV = cms.string("GenJetSVsAK4"),
                                                          readBtag = cms.bool(False))
         process.customizedPFCandsTask.add(process.genJetsConstituents)
         process.customizedPFCandsTask.add(process.genJetsParticleTable)
