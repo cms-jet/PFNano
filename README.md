@@ -1,12 +1,12 @@
 # NanoAODJMAR
 
 This is a [NanoAOD](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD) framework for advance developments of jet algorithms. 
-The current preliminary content of this development branch can be seen [here](http://algomez.web.cern.ch/algomez/testWeb/JMARNanoAODv6_106X_v00_size.html).
+The current preliminary content of this development branch can be seen [here](http://algomez.web.cern.ch/algomez/testWeb/JMARnanoplusBTag_content_v01.html) and the size [here](http://algomez.web.cern.ch/algomez/testWeb/JMARnanoplusBTag_size_v01.html).
 This format can be used with [fastjet](http://fastjet.fr) directly.
 
 ## Recipe
 
-**THIS IS A DEVELOPMENT BRANCH dev_106x**
+**THIS IS A DEVELOPMENT BRANCH**
 
 For **UL** 2016, 2017 and 2018 data and MC **NanoAODv6** according to the [XPOG recommendations](https://gitlab.cern.ch/cms-nanoAOD/nanoaod-doc/-/wikis/Releases/NanoAODv6):
 
@@ -32,6 +32,21 @@ cmsRun nano106X_on_mini106X_2017_mc_NANO.py
 2017 DATA:
 ```
 cmsRun nano106X_on_mini106X_2017_data_NANO.py
+```
+
+### How to create python files using cmsDriver
+
+All the previous python config files were produced with `cmsDriver.py`. Two imporant parameters that one needs to verify in the central nanoAOD documentation are `--conditions` and `--era`. Then, an example of how to create those file, if needed, is shown below:
+
+```
+cmsDriver.py nano102x_on_mini94x_2016_mc --mc --eventcontent NANOAODSIM --datatier NANOAODSIM --conditions 102X_mcRun2_asymptotic_v8 --step NANO --era Run2_2016,run2_nanoAOD_94X2016 --customise_commands="process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)))\n" -n 100 --filein /store/mc/RunIISummer16MiniAODv3/QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_94X_mcRun2_asymptotic_v3-v2/120000/086BBC76-7AEA-E811-AA5A-6CC2173D9FB0.root --nThreads 2  --customise PhysicsTools/NanoAODJMAR/nano_jmar_cff.JMARnano_customizeMC
+```
+
+## How to create website with nanoAOD content
+
+To create nice websites like [this one](http://algomez.web.cern.ch/algomez/testWeb/JMECustomNano102x_mc_v01.html#Jet) with the content of nanoAOD, use the `inspectNanoFile.py` file from the `PhysicsTools/nanoAOD` package as:
+```
+python PhysicsTools/NanoAOD/test/inspectNanoFile.py NANOAOD.root -s website_with_collectionsize.html -d website_with_collectiondescription.html
 ```
 
 <!--
@@ -60,6 +75,7 @@ python submit_all.py -c nano102x_on_mini102x_2018_data_d_NANO.py  -f datasets_20
 ## Documenting the Extended NanoAOD Samples
 
 Please document the input and output datasets on the following twiki: https://twiki.cern.ch/twiki/bin/view/CMS/JetMET/JMARNanoAODv1. For the MC, the number of events can be found by looking up the output dataset in DAS. For the data, you will need to run brilcalc to get the total luminosity of the dataset. See the instructions below. 
+-->
 
 ## Running brilcalc
 These are condensed instructions from the lumi POG TWiki (https://twiki.cern.ch/twiki/bin/view/CMS/TWikiLUM). Also see the brilcalc quickstart guide: https://twiki.cern.ch/twiki/bin/viewauth/CMS/BrilcalcQuickStart.
@@ -91,4 +107,4 @@ The luminosity of interest will be listed under "totrecorded(/fb)." You can also
     
 Note: '-b "STABLE BEAMS"' is optional if you've already run over the golden json. 
         Using the normtag is NOT OPTIONAL, as it defines the final calibrations and detectors that are used for a given run.
--->
+
