@@ -50,12 +50,14 @@ def addPFCands(process, runOnMC=False, onlyAK4=False, onlyAK8=False):
                                                         candidates = cms.InputTag("finalJetsConstituents"),
                                                         #candidates = cms.InputTag("packedPFCandidates"),
                                                         jets = cms.InputTag("finalJetsAK8"),
+                                                        jet_radius = cms.double(0.8),
                                                         name = cms.string("JetPFCandsAK8"),
                                                         nameSV = cms.string("JetSVsAK8"))
     process.customAK4ConstituentsTable = cms.EDProducer("PatJetConstituentTableProducer",
                                                         #candidates = cms.InputTag("packedPFCandidates"),
                                                         candidates = cms.InputTag("finalJetsConstituents"),
                                                         jets = cms.InputTag("finalJets"),
+                                                        jet_radius = cms.double(0.4),
                                                         name = cms.string("JetPFCandsAK4"),
                                                         nameSV = cms.string("JetSVsAK4"))
 
