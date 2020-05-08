@@ -107,4 +107,3 @@ The luminosity of interest will be listed under "totrecorded(/fb)." You can also
     
 Note: '-b "STABLE BEAMS"' is optional if you've already run over the golden json. 
         Using the normtag is NOT OPTIONAL, as it defines the final calibrations and detectors that are used for a given run.
-
