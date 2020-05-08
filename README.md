@@ -14,6 +14,7 @@ For **UL** 2016, 2017 and 2018 data and MC **NanoAODv6** according to the [XPOG 
 cmsrel  CMSSW_10_6_5
 cd  CMSSW_10_6_5/src
 cmsenv
+git cms-addpkg PhysicsTools/NanoAOD
 git cms-merge-topic laurenhay:setmerger_10_6_5
 git clone git@github.com:cms-jet/NanoAODJMAR.git -b dev_106x PhysicsTools/NanoAODJMAR
 scram b -j 10
