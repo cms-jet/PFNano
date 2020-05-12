@@ -7,11 +7,11 @@ def addPFCands(process, runOnMC=False, allPF = False, onlyAK4=False, onlyAK8=Fal
 
     process.finalJetsAK8Constituents = cms.EDProducer("PatJetConstituentPtrSelector",
                                             src = cms.InputTag("finalJetsAK8"),
-                                            cut = cms.string("pt > 170.0")
+                                            cut = cms.string("")
                                             )
     process.finalJetsAK4Constituents = cms.EDProducer("PatJetConstituentPtrSelector",
                                             src = cms.InputTag("finalJets"),
-                                            cut = cms.string("pt > 30.0")
+                                            cut = cms.string("")
                                             )
     if allPF:
         candInput = cms.InputTag("packedPFCandidates")
@@ -75,13 +75,13 @@ def addPFCands(process, runOnMC=False, allPF = False, onlyAK4=False, onlyAK8=Fal
 
         process.genJetsAK8Constituents = cms.EDProducer("GenJetPackedConstituentPtrSelector",
                                                     src = cms.InputTag("slimmedGenJetsAK8"),
-                                                    cut = cms.string("pt > 100.0")
+                                                    cut = cms.string("")
                                                     )
 
       
         process.genJetsAK4Constituents = process.genJetsAK8Constituents.clone(
                                                     src = cms.InputTag("slimmedGenJets"),
-                                                    cut = cms.string("pt > 20.0")
+                                                    cut = cms.string("")
                                                     )
         if allPF:
             genCandInput = cms.InputTag("packedGenParticles")
