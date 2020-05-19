@@ -52,7 +52,7 @@ def addPFCands(process, runOnMC=False, allPF = False, onlyAK4=False, onlyAK8=Fal
                                                             trkQuality = Var("?hasTrackDetails()?pseudoTrack().qualityMask():0", int, doc="track quality mask"),
                                                          )
                                     )
-    process.customAK8ConstituentsTable = cms.EDProducer("JetConstituentTableProducer",
+    process.customAK8ConstituentsTable = cms.EDProducer("PatJetConstituentTableProducer",
                                                         candidates = candInput,
                                                         jets = cms.InputTag("finalJetsAK8"),
                                                         jet_radius = cms.double(0.8),
