@@ -60,7 +60,7 @@ def addPFCands(process, runOnMC=False, allPF = False, onlyAK4=False, onlyAK8=Fal
                                                         nameSV = cms.string("JetSVsAK8"))
     process.customAK4ConstituentsTable = cms.EDProducer("PatJetConstituentTableProducer",
                                                         #candidates = cms.InputTag("packedPFCandidates"),
-                                                        candidates = cms.InputTag("finalJetsConstituents"),
+                                                        candidates = candInput,
                                                         jets = cms.InputTag("finalJets"),
                                                         jet_radius = cms.double(0.4),
                                                         name = cms.string("JetPFCandsAK4"),
@@ -69,19 +69,19 @@ def addPFCands(process, runOnMC=False, allPF = False, onlyAK4=False, onlyAK8=Fal
         process.customizedPFCandsTask.add(process.finalJetsConstituents)
     process.customizedPFCandsTask.add(process.customConstituentsExtTable)
     process.customizedPFCandsTask.add(process.customAK8ConstituentsTable)
-#    process.customizedPFCandsTask.add(process.customAK4ConstituentsTable)
+    process.customizedPFCandsTask.add(process.customAK4ConstituentsTable)
     
     if runOnMC:
 
         process.genJetsAK8Constituents = cms.EDProducer("GenJetPackedConstituentPtrSelector",
                                                     src = cms.InputTag("slimmedGenJetsAK8"),
-                                                    cut = cms.string("")
+                                                    cut = cms.string("pt > 100")
                                                     )
 
       
         process.genJetsAK4Constituents = process.genJetsAK8Constituents.clone(
                                                     src = cms.InputTag("slimmedGenJets"),
-                                                    cut = cms.string("")
+                                                    cut = cms.string("pt > 20")
                                                     )
         if allPF:
             genCandInput = cms.InputTag("packedGenParticles")
@@ -112,16 +112,14 @@ def addPFCands(process, runOnMC=False, allPF = False, onlyAK4=False, onlyAK8=Fal
                                                                           )
                                                      )
         process.genAK8ConstituentsTable = cms.EDProducer("GenJetConstituentTableProducer",
-                                                         candidates = cms.InputTag("genJetsConstituents"),
-                                                         #candidates = cms.InputTag("packedGenParticles"),
-                                                         jets = cms.InputTag("slimmedGenJetsAK8"),
+                                                         candidates = genCandInput,
+                                                         jets = cms.InputTag("genJetsAK8Constituents"), # Note: The name has "Constituents" in it, but these are the jets
                                                          name = cms.string("GenJetCandsAK8"),
                                                          nameSV = cms.string("GenJetSVsAK8"),
                                                          readBtag = cms.bool(False))
         process.genAK4ConstituentsTable = cms.EDProducer("GenJetConstituentTableProducer",
-                                                         candidates = cms.InputTag("genJetsConstituents"),
-                                                         #candidates = cms.InputTag("packedGenParticles"),
-                                                         jets = cms.InputTag("slimmedGenJets"),
+                                                         candidates = genCandInput,
+                                                         jets = cms.InputTag("genJetsAK4Constituents"), # Note: The name has "Constituents" in it, but these are the jets
                                                          name = cms.string("GenJetCandsAK4"),
                                                          nameSV = cms.string("GenJetSVsAK4"),
                                                          readBtag = cms.bool(False))
