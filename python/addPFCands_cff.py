@@ -87,18 +87,14 @@ def addPFCands(process, runOnMC=False, allPF = False, onlyAK4=False, onlyAK8=Fal
             genCandInput = cms.InputTag("packedGenParticles")
         elif onlyAK4:
             genCandList = cms.VInputTag(cms.InputTag("genJetsAK4Constituents", "constituents"))
-            process.customizedPFCandsTask.add(process.genJetsAK4Constituents)
             genCandInput =  cms.InputTag("genJetsConstituents")
             process.genJetsConstituents = cms.EDProducer("PackedGenParticlePtrMerger", src = genCandList)
         elif onlyAK8:
             genCandList = cms.VInputTag(cms.InputTag("genJetsAK8Constituents", "constituents"))
-            process.customizedPFCandsTask.add(process.genJetsAK8Constituents)
             genCandInput =  cms.InputTag("genJetsConstituents")
             process.genJetsConstituents = cms.EDProducer("PackedGenParticlePtrMerger", src = genCandList)
         else:
             genCandList = cms.VInputTag(cms.InputTag("genJetsAK4Constituents", "constituents"), cms.InputTag("genJetsAK8Constituents", "constituents"))
-            process.customizedPFCandsTask.add(process.genJetsAK4Constituents)
-            process.customizedPFCandsTask.add(process.genJetsAK8Constituents)
             genCandInput =  cms.InputTag("genJetsConstituents")
             process.genJetsConstituents = cms.EDProducer("PackedGenParticlePtrMerger", src = genCandList)
         process.genJetsParticleTable = cms.EDProducer("SimpleCandidateFlatTableProducer",
@@ -123,10 +119,12 @@ def addPFCands(process, runOnMC=False, allPF = False, onlyAK4=False, onlyAK8=Fal
                                                          name = cms.string("GenJetCandsAK4"),
                                                          nameSV = cms.string("GenJetSVsAK4"),
                                                          readBtag = cms.bool(False))
+        process.customizedPFCandsTask.add(process.genJetsAK4Constituents) #Note: For gen need to add jets to the process to keep pt cuts.
+        process.customizedPFCandsTask.add(process.genJetsAK8Constituents)
         if not allPF:
             process.customizedPFCandsTask.add(process.genJetsConstituents)
         process.customizedPFCandsTask.add(process.genJetsParticleTable)
         process.customizedPFCandsTask.add(process.genAK8ConstituentsTable)
         process.customizedPFCandsTask.add(process.genAK4ConstituentsTable)
-      
+        
     return process

@@ -160,7 +160,7 @@ void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::Even
       auto candPtrs = cands_->ptrs();
       auto candInNewList = std::find( candPtrs.begin(), candPtrs.end(), cand );
       if ( candInNewList == candPtrs.end() ) {
-        std::cout << "Cannot find candidate : " << cand.id() << ", " << cand.key() << ", pt = " << cand->pt() << std::endl;
+        //std::cout << "Cannot find candidate : " << cand.id() << ", " << cand.key() << ", pt = " << cand->pt() << std::endl;
         continue;
       }
       outCands->push_back(cand);
