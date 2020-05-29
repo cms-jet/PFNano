@@ -115,7 +115,6 @@ def update_jets_AK8_subjet(process):
 def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False):
     addAK4 = not onlyAK8
     addAK8 = not onlyAK4
-    addMC = runOnMC
 
     if addAK4:
         process = update_jets_AK4(process)
@@ -226,7 +225,7 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False):
     if addAK8:
         process.customizeJetTask.add(process.customFatJetExtTable)
         process.customizeJetTask.add(process.customSubJetExtTable)
-    if addMC and addAK8:
+    if runOnMC and addAK8:
 	process.customizeJetTask.add(process.customSubJetMCExtTable) 
 
     return process
