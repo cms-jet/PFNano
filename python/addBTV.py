@@ -140,15 +140,15 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False):
 	btagDeepB_b=Var("bDiscriminator('pfDeepCSVJetTags:probb')",
 			float,
 			doc="DeepCSV b tag discriminator",
-			precision=22),
+			precision=10),
 	btagDeepB_bb=Var("bDiscriminator('pfDeepCSVJetTags:probbb')",
 			float,
 			doc="DeepCSV bb tag discriminator",
-			precision=22),
+			precision=10),
  	btagDeepL = Var("bDiscriminator('pfDeepCSVJetTags:probudsg')",
 			float,
 			doc="DeepCSV light btag discriminator",
-			precision=22),
+			precision=10),
 	#RENAME THEM! If you can 
    )
 
@@ -179,7 +179,7 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False):
 		 btagDeepC = Var("bDiscriminator('pfDeepCSVJetTags:probc')",
                         float,
                         doc="DeepCSV charm btag discriminator",
-                        precision=22),
+                        precision=10),
 		
         ))
 
@@ -201,7 +201,7 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False):
              btagDeepC = Var("bDiscriminator('pfDeepCSVJetTags:probc')",
                         float,
                         doc="DeepCSV charm btag discriminator",
-                        precision=22),
+                        precision=10),
 
 	))
 
