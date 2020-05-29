@@ -221,9 +221,9 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False):
 	singleton = cms.bool(False),
    	extension = cms.bool(True),
     	variables = cms.PSet(
-        	genJetAK8Idx = Var("?genJetFwdRef().backRef().isNonnull()?genJetFwdRef().backRef().key():-1", 
+        	subGenJetAK8Idx = Var("?genJetFwdRef().backRef().isNonnull()?genJetFwdRef().backRef().key():-1", 
 		int, 
-		doc="index of matched gen AK8 jet"),
+		doc="index of matched gen Sub jet"),
    	)
     )
 
