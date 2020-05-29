@@ -144,11 +144,11 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False):
                       int,
                       doc="number of c-hadrons"),
 	#RENAME THEM!
-	btagDeepB_sin=Var("bDiscriminator('pfDeepCSVJetTags:probb')",
+	btagDeepB_b=Var("bDiscriminator('pfDeepCSVJetTags:probb')",
 			float,
 			doc="DeepCSV b tag discriminator",
 			precision=22),
-	btagDeepB_dob=Var("bDiscriminator('pfDeepCSVJetTags:probbb')",
+	btagDeepB_bb=Var("bDiscriminator('pfDeepCSVJetTags:probbb')",
 			float,
 			doc="DeepCSV bb tag discriminator",
 			precision=22),
