@@ -57,6 +57,9 @@ def update_jets_AK8(process):
         printWarning=False)
     process.jetCorrFactorsAK8.src = "selectedUpdatedPatJetsAK8WithDeepInfo"
     process.updatedJetsAK8.jetSource = "selectedUpdatedPatJetsAK8WithDeepInfo"
+    # add DeepDoubleX taginfos
+    process.updatedPatJetsTransientCorrectedAK8WithDeepInfo.tagInfoSources.append(cms.InputTag("pfDeepDoubleXTagInfosAK8WithDeepInfo"))
+    process.updatedPatJetsTransientCorrectedAK8WithDeepInfo.addTagInfos = cms.bool(True)
     return process
 
 
@@ -157,6 +160,7 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False):
                         doc="DeepCSV charm btag discriminator",
                         precision=10),
 		
+            DDX_jetNTracks = Var("tagInfo(\'pfDeepDoubleX\').features().tag_info_features.jetNTracks", float, doc="something useful", precision=10),
         ))
 
     # Subjets
