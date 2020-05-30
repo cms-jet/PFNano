@@ -54,6 +54,8 @@ def update_jets_AK8(process):
                         ]), 'None'),
         btagDiscriminators=_btagDiscriminators,
         postfix='AK8WithDeepInfo',
+        # this should work but doesn't seem to enable the tag info with addTagInfos
+        # btagInfos=['pfDeepDoubleXTagInfos'],
         printWarning=False)
     process.jetCorrFactorsAK8.src = "selectedUpdatedPatJetsAK8WithDeepInfo"
     process.updatedJetsAK8.jetSource = "selectedUpdatedPatJetsAK8WithDeepInfo"
