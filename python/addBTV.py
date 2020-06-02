@@ -9,7 +9,11 @@ def update_jets_AK4(process):
     # Based on ``nanoAOD_addDeepInfo``
     # in https://github.com/cms-sw/cmssw/blob/master/PhysicsTools/NanoAOD/python/nano_cff.py
     _btagDiscriminators = [
-        'pfJetProbabilityBJetTags'
+        'pfJetProbabilityBJetTags',
+	'pfDeepCSVJetTags:probb',
+        'pfDeepCSVJetTags:probc',
+	'pfDeepCSVJetTags:probbb',
+	'pfDeepCSVJetTags:probudsg',
     ]
     updateJetCollection(
         process,
@@ -31,7 +35,11 @@ def update_jets_AK8(process):
     # Based on ``nanoAOD_addDeepInfoAK8``
     # in https://github.com/cms-sw/cmssw/blob/master/PhysicsTools/NanoAOD/python/nano_cff.py
     _btagDiscriminators = [
-        'pfJetProbabilityBJetTags'
+        'pfJetProbabilityBJetTags',
+	'pfDeepCSVJetTags:probb',
+        'pfDeepCSVJetTags:probc',
+        'pfDeepCSVJetTags:probbb',
+        'pfDeepCSVJetTags:probudsg',
         ]
     updateJetCollection(
         process,
@@ -57,7 +65,11 @@ def update_jets_AK8_subjet(process):
     # in https://github.com/cms-sw/cmssw/blob/master/PhysicsTools/NanoAOD/python/nano_cff.py
     # and https://github.com/alefisico/RecoBTag-PerformanceMeasurements/blob/10_2_X_boostedCommissioning/test/runBTagAnalyzer_cfg.py
     _btagDiscriminators = [
-        'pfJetProbabilityBJetTags'
+        'pfJetProbabilityBJetTags',
+	'pfDeepCSVJetTags:probb',
+        'pfDeepCSVJetTags:probc',
+        'pfDeepCSVJetTags:probbb',
+        'pfDeepCSVJetTags:probudsg',
         ]
     updateJetCollection(
         process,
@@ -100,7 +112,21 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False):
         nCHadrons=Var("jetFlavourInfo().getcHadrons().size()",
                       int,
                       doc="number of c-hadrons"),
-    )
+	#RENAME THEM!
+	btagDeepB_b=Var("bDiscriminator('pfDeepCSVJetTags:probb')",
+			float,
+			doc="DeepCSV b tag discriminator",
+			precision=10),
+	btagDeepB_bb=Var("bDiscriminator('pfDeepCSVJetTags:probbb')",
+			float,
+			doc="DeepCSV bb tag discriminator",
+			precision=10),
+ 	btagDeepL = Var("bDiscriminator('pfDeepCSVJetTags:probudsg')",
+			float,
+			doc="DeepCSV light btag discriminator",
+			precision=10),
+	#RENAME THEM! If you can 
+   )
 
     # AK4
     process.customJetExtTable = cms.EDProducer(
@@ -112,7 +138,7 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False):
         singleton=cms.bool(False),  # the number of entries is variable
         extension=cms.bool(True),  # this is the extension table for Jets
         variables=cms.PSet(
-            CommonVars,
+	        CommonVars,
         ))
 
     # AK8
@@ -125,7 +151,12 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False):
         singleton=cms.bool(False),  # the number of entries is variable
         extension=cms.bool(True),  # this is the extension table for FatJets
         variables=cms.PSet(
-            CommonVars,
+        CommonVars,
+		 btagDeepC = Var("bDiscriminator('pfDeepCSVJetTags:probc')",
+                        float,
+                        doc="DeepCSV charm btag discriminator",
+                        precision=10),
+		
         ))
 
     # Subjets
@@ -143,12 +174,35 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False):
             #           float,
             #           doc="Jet Probability (Usage:BTV)",
             #           precision=10),
-        ))
+             btagDeepC = Var("bDiscriminator('pfDeepCSVJetTags:probc')",
+                        float,
+                        doc="DeepCSV charm btag discriminator",
+                        precision=10),
+
+	))
+
+    process.customSubJetMCExtTable = cms.EDProducer(
+	"SimpleCandidateFlatTableProducer",
+	src = subJetTable.src,
+	cut = subJetTable.cut,
+    	name = subJetTable.name,
+    	doc=subJetTable.doc,
+	singleton = cms.bool(False),
+   	extension = cms.bool(True),
+    	variables = cms.PSet(
+        	subGenJetAK8Idx = Var("?genJetFwdRef().backRef().isNonnull()?genJetFwdRef().backRef().key():-1", 
+		int, 
+		doc="index of matched gen Sub jet"),
+   	)
+    )
 
     if addAK4:
         process.customizeJetTask.add(process.customJetExtTable)
     if addAK8:
         process.customizeJetTask.add(process.customFatJetExtTable)
         process.customizeJetTask.add(process.customSubJetExtTable)
+    if runOnMC and addAK8:
+	process.customizeJetTask.add(process.customSubJetMCExtTable) 
 
     return process
+
