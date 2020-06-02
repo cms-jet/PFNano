@@ -192,10 +192,10 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False):
         extension=cms.bool(True),  # this is the extension table for FatJets
         variables=cms.PSet(
             CommonVars,
-            btagDeepC = Var("bDiscriminator('pfDeepCSVJetTags:probc')",
-                            float,
-                            doc="DeepCSV charm btag discriminator",
-                            precision=10),
+            cms.PSet(btagDeepC = Var("bDiscriminator('pfDeepCSVJetTags:probc')",
+                                     float,
+                                     doc="DeepCSV charm btag discriminator",
+                                     precision=10)),
             get_DDX_vars(),
         ))
 
