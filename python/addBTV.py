@@ -11,17 +11,9 @@ def update_jets_AK4(process):
     _btagDiscriminators = [
         'pfJetProbabilityBJetTags',
 	'pfDeepCSVJetTags:probb',
-        #'pfNegativeDeepCSVJetTags:probb',
-        #'pfPositiveDeepCSVJetTags:probb',
         'pfDeepCSVJetTags:probc',
-        #'pfNegativeDeepCSVJetTags:probc',
-        #'pfPositiveDeepCSVJetTags:probc',
 	'pfDeepCSVJetTags:probbb',
-        #'pfNegativeDeepCSVJetTags:probbb',
-        #'pfPositiveDeepCSVJetTags:probbb',
 	'pfDeepCSVJetTags:probudsg',
-	#'pfNegativeDeepCSVJetTags:probudsg',
-        #'pfPositiveDeepCSVJetTags:probudsg',
     ]
     updateJetCollection(
         process,
@@ -45,17 +37,9 @@ def update_jets_AK8(process):
     _btagDiscriminators = [
         'pfJetProbabilityBJetTags',
 	'pfDeepCSVJetTags:probb',
-        #'pfNegativeDeepCSVJetTags:probb',
-        #'pfPositiveDeepCSVJetTags:probb',
         'pfDeepCSVJetTags:probc',
-        #'pfNegativeDeepCSVJetTags:probc',
-        #'pfPositiveDeepCSVJetTags:probc',
         'pfDeepCSVJetTags:probbb',
-        #'pfNegativeDeepCSVJetTags:probbb',
-        #'pfPositiveDeepCSVJetTags:probbb',
         'pfDeepCSVJetTags:probudsg',
-        #'pfNegativeDeepCSVJetTags:probudsg',
-	#'pfPositiveDeepCSVJetTags:probudsg',
         ]
     updateJetCollection(
         process,
@@ -83,17 +67,9 @@ def update_jets_AK8_subjet(process):
     _btagDiscriminators = [
         'pfJetProbabilityBJetTags',
 	'pfDeepCSVJetTags:probb',
-        #'pfNegativeDeepCSVJetTags:probb',
-        #'pfPositiveDeepCSVJetTags:probb',
         'pfDeepCSVJetTags:probc',
-        #'pfNegativeDeepCSVJetTags:probc',
-        #'pfPositiveDeepCSVJetTags:probc',
         'pfDeepCSVJetTags:probbb',
-        #'pfNegativeDeepCSVJetTags:probbb',
-        #'pfPositiveDeepCSVJetTags:probbb',
         'pfDeepCSVJetTags:probudsg',
-	#'pfNegativeDeepCSVJetTags:probudsg',
-        #'pfPositiveDeepCSVJetTags:probudsg',
         ]
     updateJetCollection(
         process,
