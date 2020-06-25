@@ -15,7 +15,7 @@ cmsrel  CMSSW_10_6_5
 cd  CMSSW_10_6_5/src
 cmsenv
 git cms-addpkg PhysicsTools/NanoAOD
-git cms-merge-topic rappoccio:setmerger_10_6_5
+git cms-merge-topic laurenhay:uniquemerger_10_6_5
 git clone https://github.com/cms-jet/NanoAODJMAR.git PhysicsTools/NanoAODJMAR
 scram b -j 10
 cd PhysicsTools/NanoAODJMAR/test
