@@ -18,18 +18,18 @@ def addPFCands(process, runOnMC=False, allPF = False, onlyAK4=False, onlyAK8=Fal
     elif onlyAK4:
         candList = cms.VInputTag(cms.InputTag("finalJetsAK4Constituents", "constituents"))
         process.customizedPFCandsTask.add(process.finalJetsAK4Constituents)
-        process.finalJetsConstituents = cms.EDProducer("PackedCandidatePtrMerger", src = candList)
+        process.finalJetsConstituents = cms.EDProducer("PackedCandidatePtrMerger", src = candList, skipNulls = cms.bool(True), warnOnSkip = cms.bool(True))
         candInput = cms.InputTag("finalJetsConstituents")
     elif onlyAK8:
         candList = cms.VInputTag(cms.InputTag("finalJetsAK8Constituents", "constituents"))
         process.customizedPFCandsTask.add(process.finalJetsAK8Constituents)
-        process.finalJetsConstituents = cms.EDProducer("PackedCandidatePtrMerger", src = candList)
+        process.finalJetsConstituents = cms.EDProducer("PackedCandidatePtrMerger", src = candList, skipNulls = cms.bool(True), warnOnSkip = cms.bool(True))
         candInput = cms.InputTag("finalJetsConstituents")
     else:
         candList = cms.VInputTag(cms.InputTag("finalJetsAK4Constituents", "constituents"), cms.InputTag("finalJetsAK8Constituents", "constituents"))
         process.customizedPFCandsTask.add(process.finalJetsAK4Constituents)
         process.customizedPFCandsTask.add(process.finalJetsAK8Constituents)
-        process.finalJetsConstituents = cms.EDProducer("PackedCandidatePtrMerger", src = candList)
+        process.finalJetsConstituents = cms.EDProducer("PackedCandidatePtrMerger", src = candList, skipNulls = cms.bool(True), warnOnSkip = cms.bool(True))
         candInput = cms.InputTag("finalJetsConstituents")
     process.customConstituentsExtTable = cms.EDProducer("SimpleCandidateFlatTableProducer",
                                                         src = candInput,
@@ -75,7 +75,7 @@ def addPFCands(process, runOnMC=False, allPF = False, onlyAK4=False, onlyAK8=Fal
 
         process.genJetsAK8Constituents = cms.EDProducer("GenJetPackedConstituentPtrSelector",
                                                     src = cms.InputTag("slimmedGenJetsAK8"),
-                                                    cut = cms.string("pt > 100")
+                                                    cut = cms.string("pt > 80")
                                                     )
 
       
@@ -88,15 +88,15 @@ def addPFCands(process, runOnMC=False, allPF = False, onlyAK4=False, onlyAK8=Fal
         elif onlyAK4:
             genCandList = cms.VInputTag(cms.InputTag("genJetsAK4Constituents", "constituents"))
             genCandInput =  cms.InputTag("genJetsConstituents")
-            process.genJetsConstituents = cms.EDProducer("PackedGenParticlePtrMerger", src = genCandList)
+            process.genJetsConstituents = cms.EDProducer("PackedGenParticlePtrMerger", src = genCandList, skipNulls = cms.bool(True), warnOnSkip = cms.bool(True))
         elif onlyAK8:
             genCandList = cms.VInputTag(cms.InputTag("genJetsAK8Constituents", "constituents"))
             genCandInput =  cms.InputTag("genJetsConstituents")
-            process.genJetsConstituents = cms.EDProducer("PackedGenParticlePtrMerger", src = genCandList)
+            process.genJetsConstituents = cms.EDProducer("PackedGenParticlePtrMerger", src = genCandList, skipNulls = cms.bool(True), warnOnSkip = cms.bool(True))
         else:
             genCandList = cms.VInputTag(cms.InputTag("genJetsAK4Constituents", "constituents"), cms.InputTag("genJetsAK8Constituents", "constituents"))
             genCandInput =  cms.InputTag("genJetsConstituents")
-            process.genJetsConstituents = cms.EDProducer("PackedGenParticlePtrMerger", src = genCandList)
+            process.genJetsConstituents = cms.EDProducer("PackedGenParticlePtrMerger", src = genCandList, skipNulls = cms.bool(True), warnOnSkip = cms.bool(True))
         process.genJetsParticleTable = cms.EDProducer("SimpleCandidateFlatTableProducer",
                                                          src = genCandInput,
                                                          cut = cms.string(""), #we should not filter after pruning
