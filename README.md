@@ -8,14 +8,13 @@ This format can be used with [fastjet](http://fastjet.fr) directly.
 
 **THIS IS A DEVELOPMENT BRANCH**
 
-For **UL** 2016, 2017 and 2018 data and MC **NanoAODv6** according to the [XPOG recommendations](https://gitlab.cern.ch/cms-nanoAOD/nanoaod-doc/-/wikis/Releases/NanoAODv6):
+For **UL** 2016, 2017 and 2018 data and MC **NanoAODv6** according to the [XPOG](https://gitlab.cern.ch/cms-nanoAOD/nanoaod-doc/-/wikis/Releases/NanoAODv6) and [PPD](https://twiki.cern.ch/twiki/bin/view/CMS/PdmVLegacy2017Analysis) recommendations:
 
 ```
-cmsrel  CMSSW_10_6_5
-cd  CMSSW_10_6_5/src
+cmsrel  CMSSW_10_6_14
+cd  CMSSW_10_6_14/src
 cmsenv
 git cms-addpkg PhysicsTools/NanoAOD
-git cms-merge-topic laurenhay:uniquemerger_10_6_5
 git clone https://github.com/cms-jet/NanoAODJMAR.git PhysicsTools/NanoAODJMAR
 scram b -j 10
 cd PhysicsTools/NanoAODJMAR/test
