@@ -5,9 +5,10 @@
   <use name="DataFormats/VertexReco"/>
   <use name="DataFormats/NanoAOD"/>
   <use name="CommonTools/Utils"/>
+  <use name="CommonTools/UtilAlgos"/>
+  <use name="CommonTools/CandAlgos"/>
   <use name="RecoBTag/FeatureTools"/>
   <use name="RecoJets/JetAlgorithms"/>
-  <use name="PhysicsTools/Pancakes"/>
   <use name="TrackingTools/Records"/>
   <use name="roottmva"/>
   <use name="fastjet"/>
