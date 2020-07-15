@@ -115,11 +115,10 @@ def main():
             if 'ext' in cond and not 'ext' in requestname:
                 requestname = requestname + '_' + cond.split('_')[-1]
         print 'requestname = ', requestname
-        config.General.requestName = requestname.split('AOD')[0]+'AOD_PFNano'
+        config.General.requestName = requestname
         config.Data.inputDataset = job
-        config.Data.outputDatasetTag = 'RunII'+requestname.split('RunII')[1]+'_PFNano'
-        #config.Data.outLFNDirBase    = '/store/group/lpctlbsm/NanoAODJMAR_2019_V1/Production/CRAB/'
-        config.Data.outLFNDirBase = '/store/user/'+os.environ['USER']+'/PFNano/'
+        config.Data.outputDatasetTag = cond.replace('MiniAOD','PFNanoAOD') if cond.startswith('RunII') else cond+'_PFNanoAOD'
+        config.Data.outLFNDirBase = '/store/user/'+os.environ['USER']+'/PFNano/106x_v01/'
         if datatier == 'MINIAODSIM':
           config.Data.splitting = 'FileBased'
           config.Data.unitsPerJob = 10
