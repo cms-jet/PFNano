@@ -34,7 +34,7 @@ def addPFCands(process, runOnMC=False, allPF = False, onlyAK4=False, onlyAK8=Fal
     process.customConstituentsExtTable = cms.EDProducer("SimpleCandidateFlatTableProducer",
                                                         src = candInput,
                                                         cut = cms.string(""), #we should not filter after pruning
-                                                        name = cms.string("JetPFCands"),
+                                                        name = cms.string("PFCands"),
                                                         doc = cms.string("interesting particles from AK4 and AK8 jets"),
                                                         singleton = cms.bool(False), # the number of entries is variable
                                                         extension = cms.bool(False), # this is the extension table for the AK8 constituents
@@ -56,15 +56,15 @@ def addPFCands(process, runOnMC=False, allPF = False, onlyAK4=False, onlyAK8=Fal
                                                         candidates = candInput,
                                                         jets = cms.InputTag("finalJetsAK8"),
                                                         jet_radius = cms.double(0.8),
-                                                        name = cms.string("JetPFCandsAK8"),
-                                                        nameSV = cms.string("JetSVsAK8"))
+                                                        name = cms.string("FatJetPFCands"),
+                                                        nameSV = cms.string("FatJetSVs"))
     process.customAK4ConstituentsTable = cms.EDProducer("PatJetConstituentTableProducer",
                                                         #candidates = cms.InputTag("packedPFCandidates"),
                                                         candidates = candInput,
                                                         jets = cms.InputTag("finalJets"),
                                                         jet_radius = cms.double(0.4),
-                                                        name = cms.string("JetPFCandsAK4"),
-                                                        nameSV = cms.string("JetSVsAK4"))
+                                                        name = cms.string("JetPFCands"),
+                                                        nameSV = cms.string("JetSVs"))
     if not allPF:
         process.customizedPFCandsTask.add(process.finalJetsConstituents)
     process.customizedPFCandsTask.add(process.customConstituentsExtTable)
