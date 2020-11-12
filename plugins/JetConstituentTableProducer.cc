@@ -8,6 +8,10 @@
 #include "FWCore/Utilities/interface/StreamID.h"
 
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
+#include "RecoVertex/VertexTools/interface/VertexDistance3D.h"
+#include "RecoVertex/VertexTools/interface/VertexDistanceXY.h"
+#include "RecoVertex/VertexPrimitives/interface/ConvertToFromReco.h"
+#include "RecoVertex/VertexPrimitives/interface/VertexState.h"
 
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/PackedCandidate.h"
@@ -44,6 +48,8 @@ private:
   //const std::string name_;
   const std::string name_;
   const std::string nameSV_;
+  const std::string idx_name_;
+  const std::string idx_nameSV_;
   const bool readBtag_;
   const double jet_radius_;
 
@@ -66,9 +72,10 @@ private:
 //
 template< typename T>
 JetConstituentTableProducer<T>::JetConstituentTableProducer(const edm::ParameterSet &iConfig)
-    : //name_(iConfig.getParameter<std::string>("name")),
-      name_(iConfig.getParameter<std::string>("name")),
+    : name_(iConfig.getParameter<std::string>("name")),
       nameSV_(iConfig.getParameter<std::string>("nameSV")),
+      idx_name_(iConfig.getParameter<std::string>("idx_name")),
+      idx_nameSV_(iConfig.getParameter<std::string>("idx_nameSV")),
       readBtag_(iConfig.getParameter<bool>("readBtag")),
       jet_radius_(iConfig.getParameter<double>("jet_radius")),
       jet_token_(consumes<edm::View<T>>(iConfig.getParameter<edm::InputTag>("jets"))),
@@ -89,10 +96,9 @@ void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::Even
   // elements in all these collections must have the same order!
   auto outCands = std::make_unique<std::vector<reco::CandidatePtr>>();
   auto outSVs = std::make_unique<std::vector<const reco::VertexCompositePtrCandidate *>> ();
-  std::vector<int> jetIdx_pf, jetIdx_sv, candIdx;
-  //std::vector<int> jetIdx, candIdx;
+  std::vector<int> jetIdx_pf, jetIdx_sv, pfcandIdx, svIdx;
   // PF Cands
-  std::vector<float> btagEtaRel, btagPtRatio, btagPParRatio, btagSip3dVal, btagSip3dSig, btagJetDistVal;
+  std::vector<float> btagEtaRel, btagPtRatio, btagPParRatio, btagSip3dVal, btagSip3dSig, btagJetDistVal, cand_pt;
   // Secondary vertices
   std::vector<float> sv_mass, sv_pt, sv_ntracks, sv_chi2, sv_normchi2, sv_dxy, sv_dxysig, sv_d3d, sv_d3dsig, sv_costhetasvpv;
   std::vector<float> sv_ptrel, sv_phirel, sv_deltaR, sv_enratio;
@@ -110,12 +116,20 @@ void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::Even
     const auto &jet = jets->at(i_jet);
     math::XYZVector jet_dir = jet.momentum().Unit();
     GlobalVector jet_ref_track_dir(jet.px(), jet.py(), jet.pz());
+    VertexDistance3D vdist;
 
     pv_ = &vtxs_->at(0);
+    
     //////////////////////
     // Secondary Vertices
     std::vector<const reco::VertexCompositePtrCandidate *> jetSVs;
+    std::vector<const reco::VertexCompositePtrCandidate *> allSVs;  
     for (const auto &sv : *svs_) {
+      // Factor in cuts in NanoAOD for indexing
+      Measurement1D dl= vdist.distance(vtxs_->front(), VertexState(RecoVertex::convertPos(sv.position()),RecoVertex::convertError(sv.error())));
+      if(dl.significance() > 3){
+        allSVs.push_back(&sv);
+      }
       if (reco::deltaR2(sv, jet) < jet_radius_ * jet_radius_) {
         jetSVs.push_back(&sv);
       }
@@ -128,6 +142,14 @@ void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::Even
               });
 
     for (const auto &sv : jetSVs) {
+      // auto svPtrs = svs_->ptrs();
+      auto svInNewList = std::find(allSVs.begin(), allSVs.end(), sv );
+      if (svInNewList == allSVs.end()) {
+        // continue;
+        svIdx.push_back(-1);
+      } else{
+        svIdx.push_back(svInNewList - allSVs.begin());
+      }
       outSVs->push_back(sv);
       jetIdx_sv.push_back(i_jet);
       if (readBtag_ && !vtxs_->empty()) {
@@ -165,7 +187,8 @@ void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::Even
       }
       outCands->push_back(cand);
       jetIdx_pf.push_back(i_jet);
-      candIdx.push_back( candInNewList - candPtrs.begin() );
+      pfcandIdx.push_back(candInNewList - candPtrs.begin());
+      cand_pt.push_back(cand->pt());
       if (readBtag_ && !vtxs_->empty()) {
         if ( cand.isNull() ) continue;
         auto const *packedCand = dynamic_cast <pat::PackedCandidate const *>(cand.get());
@@ -193,9 +216,10 @@ void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::Even
 
   auto candTable = std::make_unique<nanoaod::FlatTable>(outCands->size(), name_, false);
   // We fill from here only stuff that cannot be created with the SimpleFlatTableProducer
-  candTable->addColumn<int>("candIdx", candIdx, "Index in the candidate list", nanoaod::FlatTable::IntColumn);
+  candTable->addColumn<int>(idx_name_, pfcandIdx, "Index in the candidate list", nanoaod::FlatTable::IntColumn);
   candTable->addColumn<int>("jetIdx", jetIdx_pf, "Index of the parent jet", nanoaod::FlatTable::IntColumn);
   if (readBtag_) {
+    candTable->addColumn<float>("pt", cand_pt, "pt", nanoaod::FlatTable::FloatColumn, 10);  // to check matchind down the line
     candTable->addColumn<float>("btagEtaRel", btagEtaRel, "btagEtaRel", nanoaod::FlatTable::FloatColumn, 10);
     candTable->addColumn<float>("btagPtRatio", btagPtRatio, "btagPtRatio", nanoaod::FlatTable::FloatColumn, 10);
     candTable->addColumn<float>("btagPParRatio", btagPParRatio, "btagPParRatio", nanoaod::FlatTable::FloatColumn, 10);
@@ -209,6 +233,7 @@ void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::Even
   auto svTable = std::make_unique<nanoaod::FlatTable>(outSVs->size(), nameSV_, false);
   // We fill from here only stuff that cannot be created with the SimpleFlatTnameableProducer
   svTable->addColumn<int>("jetIdx", jetIdx_sv, "Index of the parent jet", nanoaod::FlatTable::IntColumn);
+  svTable->addColumn<int>(idx_nameSV_, svIdx, "Index in the SV list", nanoaod::FlatTable::IntColumn);
   if (readBtag_) {
     svTable->addColumn<float>("mass", sv_mass, "SV mass", nanoaod::FlatTable::FloatColumn, 10);
     svTable->addColumn<float>("pt", sv_pt, "SV pt", nanoaod::FlatTable::FloatColumn, 10);
@@ -236,6 +261,8 @@ void JetConstituentTableProducer<T>::fillDescriptions(edm::ConfigurationDescript
   edm::ParameterSetDescription desc;
   desc.add<std::string>("name", "JetPFCands");
   desc.add<std::string>("nameSV", "JetSV");
+  desc.add<std::string>("idx_name", "candIdx");
+  desc.add<std::string>("idx_nameSV", "svIdx");
   desc.add<double>("jet_radius", true);
   desc.add<bool>("readBtag", true);
   desc.add<edm::InputTag>("jets", edm::InputTag("slimmedJetsAK8"));
