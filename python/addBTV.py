@@ -3,6 +3,7 @@ import FWCore.ParameterSet.Config as cms
 from PhysicsTools.NanoAOD.common_cff import Var
 from PhysicsTools.NanoAOD.jets_cff import jetTable, fatJetTable, subJetTable
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+from PhysicsTools.PatAlgos.tools.helpers import addToProcessAndTask, getPatAlgosToolsTask
 
 
 def update_jets_AK4(process):
@@ -99,9 +100,22 @@ def update_jets_AK8_subjet(process):
         rParam=0.8,  # needed for subjet b tagging
         postfix='AK8SubjetsWithDeepInfo')
 
+    #process.updatedPatJetsTransientCorrectedSoftDropSubjetsPFAK8SubjetsWithDeepInfo.sort = cms.bool(False)
     process.subJetTable.src = 'updatedPatJetsTransientCorrectedSoftDropSubjetsPFAK8SubjetsWithDeepInfo'  ### VERY LONG NAME!!! :P
-    return process
+    #return process
 
+    # task = getPatAlgosToolsTask(process)
+    # process.dump=cms.EDAnalyzer('EventContentAnalyzer')
+    # addToProcessAndTask("unscrambledPatJetsTransientCorrectedSoftDropSubjetsPFAK8SubjetsWithDeepInfo",
+    #                     cms.EDProducer("BoostedJetMerger",
+    #                            jetSrc=cms.InputTag("updatedPatJetsTransientCorrectedWithDeepInfo"),
+    #                            subjetSrc=cms.InputTag("updatedPatJetsTransientCorrectedSoftDropSubjetsPFAK8SubjetsWithDeepInfo")
+    #                                    ),
+    #                     process, task )
+
+    #process.subJetTable.src = 'unscrambledPatJetsTransientCorrectedSoftDropSubjetsPFAK8SubjetsWithDeepInfo'  ### VERY LONG NAME!!! :P
+     
+    return process
 
 def get_DDX_vars():
     # retreive 27 jet-level features used in double-b and deep double-x taggers
@@ -292,10 +306,6 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False):
         extension=cms.bool(True),  # this is the extension table for FatJets
         variables=cms.PSet(
             CommonVars,
-            # Proba=Var("bDiscriminator('pfJetProbabilityBJetTags')",
-            #           float,
-            #           doc="Jet Probability (Usage:BTV)",
-            #           precision=10),
              btagDeepC = Var("bDiscriminator('pfDeepCSVJetTags:probc')",
                         float,
                         doc="DeepCSV charm btag discriminator",
