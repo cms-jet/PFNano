@@ -17,6 +17,7 @@ cmsenv
 git cms-addpkg PhysicsTools/NanoAOD
 git cms-addpkg RecoBTag/Combined
 git cms-merge-topic andrzejnovak:DDXV2_106
+git cms-merge-topic andrzejnovak:614nosort
 git clone https://github.com/cms-data/RecoBTag-Combined.git RecoBTag/Combined/data
 git clone https://github.com/cms-jet/NanoAODJMAR.git PhysicsTools/NanoAODJMAR
 scram b -j 10

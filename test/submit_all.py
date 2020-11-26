@@ -80,9 +80,6 @@ def main():
     #config.Site.whitelist = ['T2_US_UCSD','T2_DE_DESY', 'T1_US_FNAL','T2_UK_SGrid_RALPP','T2_PL_Swierk','T2_TW_NCHC','T2_BR_SPRACE']
     config.Site.storageSite = options.storageSite
 
-    config.section_("User")
-    config.User.voGroup = "dcms"
-
     print 'Using config ' + options.cfg
     print 'Writing to directory ' + options.dir
 
@@ -121,7 +118,7 @@ def main():
         config.General.requestName = requestname
         config.Data.inputDataset = job
         config.Data.outputDatasetTag = cond.replace('MiniAOD','PFNanoAOD') if cond.startswith('RunII') else cond+'_PFNanoAOD'
-        config.Data.outLFNDirBase = '/store/user/anovak/PFNano/106X_vA01/'
+        config.Data.outLFNDirBase = '/store/user/'+os.environ['USER']+'/PFNano/106X_v1/'
         if datatier == 'MINIAODSIM':
           config.Data.splitting = 'FileBased'
           config.Data.unitsPerJob = 10

@@ -22,16 +22,12 @@ process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(500)
+    input = cms.untracked.int32(100)
 )
 
 # Input source
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring(
-        #'/store/mc/RunIISummer19UL17MiniAOD/QCD_Pt-15to7000_TuneCP5_Flat_13TeV_pythia8/MINIAODSIM/106X_mc2017_realistic_v6_ext2-v2/40000/DC8FEA2E-191B-834F-96C3-53FCF0291ADB.root'
-        #'file:DC8FEA2E-191B-834F-96C3-53FCF0291ADB.root'
-        'file:40CCB30A-0CF7-E911-A277-001CC4A68B8A.root'
-        ),
+    fileNames = cms.untracked.vstring('/store/mc/RunIISummer19UL17MiniAOD/QCD_Pt-15to7000_TuneCP5_Flat_13TeV_pythia8/MINIAODSIM/106X_mc2017_realistic_v6_ext2-v2/40000/DC8FEA2E-191B-834F-96C3-53FCF0291ADB.root'),
     secondaryFileNames = cms.untracked.vstring()
 )
 
