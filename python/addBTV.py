@@ -98,23 +98,12 @@ def update_jets_AK8_subjet(process):
         svClustering=False,  # needed for subjet b tagging (IMPORTANT: Needs to be set to False to disable ghost-association which does not work with slimmed jets)
         fatJets=cms.InputTag('slimmedJetsAK8'),  # needed for subjet b tagging
         rParam=0.8,  # needed for subjet b tagging
+        sortByPt=False, # Don't change order (would mess with subJetIdx for FatJets)
         postfix='AK8SubjetsWithDeepInfo')
 
-    #process.updatedPatJetsTransientCorrectedSoftDropSubjetsPFAK8SubjetsWithDeepInfo.sort = cms.bool(False)
-    process.subJetTable.src = 'updatedPatJetsTransientCorrectedSoftDropSubjetsPFAK8SubjetsWithDeepInfo'  ### VERY LONG NAME!!! :P
-    #return process
+    process.subJetTable.src = 'selectedUpdatedPatJetsSoftDropSubjetsPFAK8SubjetsWithDeepInfo' 
+    
 
-    # task = getPatAlgosToolsTask(process)
-    # process.dump=cms.EDAnalyzer('EventContentAnalyzer')
-    # addToProcessAndTask("unscrambledPatJetsTransientCorrectedSoftDropSubjetsPFAK8SubjetsWithDeepInfo",
-    #                     cms.EDProducer("BoostedJetMerger",
-    #                            jetSrc=cms.InputTag("updatedPatJetsTransientCorrectedWithDeepInfo"),
-    #                            subjetSrc=cms.InputTag("updatedPatJetsTransientCorrectedSoftDropSubjetsPFAK8SubjetsWithDeepInfo")
-    #                                    ),
-    #                     process, task )
-
-    #process.subJetTable.src = 'unscrambledPatJetsTransientCorrectedSoftDropSubjetsPFAK8SubjetsWithDeepInfo'  ### VERY LONG NAME!!! :P
-     
     return process
 
 def get_DDX_vars():
