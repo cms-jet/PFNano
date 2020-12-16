@@ -3,7 +3,9 @@
 This is a small script that submits a config over many datasets
 """
 import os
-from optparse import OptionParser
+import sys
+#from optparse import OptionParser
+import argparse
 
 def make_list(option, opt, value, parser):
     setattr(parser.values, option.dest, value.split(','))
@@ -14,28 +16,46 @@ def getOptions() :
     """
     usage = ('usage: python submit_all.py -c CONFIG -d DIR -f DATASETS_FILE')
 
-    parser = OptionParser(usage=usage)
-    parser.add_option("-c", "--config", dest="cfg", default="test94X_NANO.py",
+    #parser = OptionParser(usage=usage)
+    parser = argparse.ArgumentParser(usage=usage)
+    parser.add_argument("-c", "--config", dest="cfg", default="test94X_NANO.py",
         help=("The crab script you want to submit "),
         metavar="CONFIG")
-    parser.add_option("-d", "--dir", dest="dir", default="NANO",
-        help=("The crab directory you want to use "),
+    parser.add_argument("-o", "--output", dest="out", default="/store/user/${USER}/PFNano",
+        help=("T2/T2 storage path"),
         metavar="DIR")
-    parser.add_option("-f", "--datasets", dest="datasets",
-        help=("File listing datasets to run over"),
-        metavar="FILE")
-    parser.add_option("-s", "--storageSite", dest="storageSite", default="T3_US_FNALLPC",
-        help=("Site"),
+    parser.add_argument("-d", "--dir", dest="dir", default="NANO",
+        help=("The crab directory you want to use"),
+        metavar="DIR")
+    parser.add_argument("-f", "--datasets", dest="datasets",
+        help=("File listing datasets to run over"))
+    parser.add_argument("-s", "--storageSite", dest="storageSite", default="T3_US_FNALLPC",
+        help=("Storage site"),
         metavar="SITE")
-    parser.add_option("-l", "--lumiMask", dest="lumiMask",
+    parser.add_argument("--dcms", dest="dcms", action='store_true',
+        help=("Running with dcms proxy"))
+    parser.add_argument("--remote", dest="remote", action='store_true',
+        help=("Run with ignore locality (add whitelist manually)")) 
+    parser.add_argument("--whitelist", dest="whitelist", default="",
+        help=("Whitelist to use with --remote, passed as 'T2_DE_RWTH,T2_DESY'")),
+    parser.add_argument("-l", "--lumiMask", dest="lumiMask",
         help=("Lumi Mask JSON file"),
         metavar="LUMIMASK")
 
-    (options, args) = parser.parse_args()
+    options = parser.parse_args()
 
     if options.cfg == None or options.dir == None or options.datasets == None or options.storageSite == None:
         parser.error(usage)
 
+    if options.out == parser.get_default('out'):
+        print("Output directory not specified, files will be stored in {}".format(options.out))
+        if raw_input("Are you sure? (y/n)") != "y":
+            exit()
+    
+    if options.lumiMask is None:
+        if raw_input("No lumi mask specified. (OK for MC) Continue? (y/n)") != "y":
+            exit()
+        
     return options
 
 
@@ -61,7 +81,7 @@ def main():
     config.JobType.psetName = options.cfg
     config.JobType.maxMemoryMB = 5000 # Default is 2500 : Max I have used is 13000
     config.JobType.maxJobRuntimeMin = 2750 #Default is 1315; 2750 minutes guaranteed to be available; Max I have used is 9000
-    config.JobType.numCores = 8
+    config.JobType.numCores = 4
     config.JobType.allowUndistributedCMSSW = True
 
     config.section_("Debug")
@@ -71,14 +91,20 @@ def main():
     config.Data.inputDataset = None
     config.Data.splitting = ''
     #config.Data.unitsPerJob = 1
-    config.Data.ignoreLocality = False
+    config.Data.ignoreLocality = options.remote
     config.Data.publication = True
     config.Data.publishDBS = 'phys03'
 
     config.section_("Site")
     #config.Site.blacklist = ['T2_IN_TIFR','T2_US_Caltech']
     #config.Site.whitelist = ['T2_US_UCSD','T2_DE_DESY', 'T1_US_FNAL','T2_UK_SGrid_RALPP','T2_PL_Swierk','T2_TW_NCHC','T2_BR_SPRACE']
+    if options.remote:
+        config.Site.whitelist = options.whitelist.split(',')
     config.Site.storageSite = options.storageSite
+
+    if options.dcms:
+        config.section_("User")
+        config.User.voGroup = "dcms"
 
     print 'Using config ' + options.cfg
     print 'Writing to directory ' + options.dir
@@ -118,7 +144,7 @@ def main():
         config.General.requestName = requestname
         config.Data.inputDataset = job
         config.Data.outputDatasetTag = cond.replace('MiniAOD','PFNanoAOD') if cond.startswith('RunII') else cond+'_PFNanoAOD'
-        config.Data.outLFNDirBase = '/store/user/'+os.environ['USER']+'/PFNano/106X_v1/'
+        config.Data.outLFNDirBase = options.out #'/store/user/anovak/PFNano/106X_vA02/'
         if datatier == 'MINIAODSIM':
           config.Data.splitting = 'FileBased'
           config.Data.unitsPerJob = 10

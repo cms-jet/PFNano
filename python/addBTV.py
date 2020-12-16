@@ -39,6 +39,7 @@ def update_jets_AK4(process):
 def update_jets_AK8(process):
     # Based on ``nanoAOD_addDeepInfoAK8``
     # in https://github.com/cms-sw/cmssw/blob/master/PhysicsTools/NanoAOD/python/nano_cff.py
+    # Care needs to be taken to make sure no discriminators from stock Nano are excluded -> would results in unfilled vars
     _btagDiscriminators = [
         'pfJetProbabilityBJetTags',
         'pfDeepCSVJetTags:probb',
@@ -52,6 +53,8 @@ def update_jets_AK8(process):
         'pfMassIndependentDeepDoubleCvLV2JetTags:probHcc',
         'pfMassIndependentDeepDoubleCvBV2JetTags:probHcc',
         ]
+    from RecoBTag.ONNXRuntime.pfParticleNet_cff import _pfParticleNetJetTagsAll as pfParticleNetJetTagsAll
+    _btagDiscriminators += pfParticleNetJetTagsAll
     updateJetCollection(
         process,
         jetSource=cms.InputTag('slimmedJetsAK8'),
@@ -213,7 +216,7 @@ def get_DeepCSV_vars():
     )
     return DeepCSVVars
 
-def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False):
+def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=True):
     addAK4 = not onlyAK8
     addAK8 = not onlyAK4
 
@@ -262,7 +265,7 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False):
         extension=cms.bool(True),  # this is the extension table for Jets
         variables=cms.PSet(
             CommonVars,
-            get_DeepCSV_vars(),
+            get_DeepCSV_vars() if keepInputs else cms.PSet(),
         ))
 
     # AK8
@@ -281,7 +284,7 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False):
                 btagDDCvLV2 = Var("bDiscriminator('pfMassIndependentDeepDoubleCvLV2JetTags:probHcc')",float,doc="DeepDoubleX V2 discriminator for H(Z)->cc vs QCD",precision=10),
                 btagDDCvBV2 = Var("bDiscriminator('pfMassIndependentDeepDoubleCvBV2JetTags:probHcc')",float,doc="DeepDoubleX V2 discriminator for H(Z)->cc vs H(Z)->bb",precision=10),
             ),
-            get_DDX_vars(),
+            get_DDX_vars() if keepInputs else cms.PSet(),
         ))
 
     # Subjets

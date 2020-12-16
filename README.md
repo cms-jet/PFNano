@@ -38,7 +38,32 @@ cmsRun nano106X_on_mini106X_2017_data_NANO.py
 
 ### How to create python files using cmsDriver
 
-All the previous python config files were produced with `cmsDriver.py`. Two imporant parameters that one needs to verify in the central nanoAOD documentation are `--conditions` and `--era`. Then, an example of how to create those file, if needed, is shown below:
+All the previous python config files were produced with `cmsDriver.py`. Two imporant parameters that one needs to verify in the central nanoAOD documentation are `--conditions` and `--era`. 
+
+`--era` options from https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD are below
+```
+--era Run2_2016,run2_miniAOD_80XLegacy: for 2016 80X data (07Aug17) and RunIISummer16MiniAODv2 MC
+--era Run2_2016,run2_nanoAOD_94X2016: for 2016 94X data (17Jul2018) and RunIISummer16MiniAODv3 MC
+--era Run2_2017,run2_nanoAOD_94XMiniAODv1: for 2017 94X MiniAODv1 samples
+--era Run2_2017,run2_nanoAOD_94XMiniAODv2: for 2017 94X MiniAODv2 samples (including 31Mar2018 data)
+--era Run2_2018,run2_nanoAOD_102Xv1: for all 2018 10XY samples
+```
+`--conditions` can be found here https://twiki.cern.ch/twiki/bin/view/CMS/PdmV
+```
+# Legacy 2016
+--conditions 106X_dataRun2_v28 
+--conditions 106X_mcRun2_asymptotic_preVFP_v8 
+# Legacy 2017 
+--conditions 106X_dataRun2_v28 
+--conditions 106X_mc2017_realistic_v7 
+# Legacy 2018
+--conditions 106X_dataRun2_v28 
+--conditions 106X_upgrade2018_realistic_v11_L1v1 
+
+
+```
+
+Then, an example of how to create those file, if needed, is shown below:
 
 ```
 cmsDriver.py nano102x_on_mini94x_2016_mc --mc --eventcontent NANOAODSIM --datatier NANOAODSIM --conditions 102X_mcRun2_asymptotic_v8 --step NANO --era Run2_2016,run2_nanoAOD_94X2016 --customise_commands="process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)))\n" -n 100 --filein /store/mc/RunIISummer16MiniAODv3/QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_94X_mcRun2_asymptotic_v3-v2/120000/086BBC76-7AEA-E811-AA5A-6CC2173D9FB0.root --nThreads 2  --customise PhysicsTools/NanoAODJMAR/nano_jmar_cff.JMARnano_customizeMC
