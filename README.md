@@ -36,11 +36,8 @@ cmsRun nano106X_on_mini106X_2017_data_NANO.py
 ### How to create python files using cmsDriver
 
 All the previous python config files were produced with `cmsDriver.py`. Two imporant parameters that one needs to verify in the central nanoAOD documentation are `--conditions` and `--era`. 
-
-`--era` options from https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD
-`--conditions` can be found here https://twiki.cern.ch/twiki/bin/view/CMS/PdmV
-
-```
+- `--era` options from https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD
+- `--conditions` can be found here https://twiki.cern.ch/twiki/bin/view/CMS/PdmV
 
 A set of `cmsDriver.py` commands to create configs cane be found in `make_configs_preUL.sh`
 
@@ -56,7 +53,6 @@ To create nice websites like [this one](http://algomez.web.cern.ch/algomez/testW
 python PhysicsTools/NanoAOD/test/inspectNanoFile.py NANOAOD.root -s website_with_collectionsize.html -d website_with_collectiondescription.html
 ```
 
-<!--
 ## Submission to CRAB
 
 Samples can be submitted to crab using the `submit_all.py` script. Run with `-h` option to see usage.
@@ -68,7 +64,7 @@ Samples can be submitted to crab using the `submit_all.py` script. Run with `-h`
 ## Documenting the Extended NanoAOD Samples
 
 Please document the input and output datasets on the following twiki: https://twiki.cern.ch/twiki/bin/view/CMS/JetMET/JMARNanoAODv1. For the MC, the number of events can be found by looking up the output dataset in DAS. For the data, you will need to run brilcalc to get the total luminosity of the dataset. See the instructions below. 
--->
+
 
 ## Running brilcalc
 These are condensed instructions from the lumi POG TWiki (https://twiki.cern.ch/twiki/bin/view/CMS/TWikiLUM). Also see the brilcalc quickstart guide: https://twiki.cern.ch/twiki/bin/viewauth/CMS/BrilcalcQuickStart.
