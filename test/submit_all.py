@@ -2,6 +2,7 @@
 """
 This is a small script that submits a config over many datasets
 """
+from __future__ import print_function
 import os
 import sys
 #from optparse import OptionParser
@@ -14,36 +15,42 @@ def getOptions() :
     """
     Parse and return the arguments provided by the user.
     """
-    usage = ('usage: python submit_all.py -c CONFIG -d DIR -f DATASETS_FILE')
+    usage = ('To see usage run: python submit_all.py -h')
 
-    #parser = OptionParser(usage=usage)
     parser = argparse.ArgumentParser(usage=usage)
-    parser.add_argument("-c", "--config", dest="cfg", default="test94X_NANO.py",
-        help=("The crab script you want to submit "),
-        metavar="CONFIG")
-    parser.add_argument("-o", "--output", dest="out", default="/store/user/${USER}/PFNano",
-        help=("T2/T2 storage path"),
-        metavar="DIR")
-    parser.add_argument("-d", "--dir", dest="dir", default="NANO",
-        help=("The crab directory you want to use"),
-        metavar="DIR")
+    parser.add_argument("-c", "--config", dest="cfg", required=True,
+        help=("The crab script you want to submit "))
+    parser.add_argument("-d", "--dir", dest="dir", 
+        default="crab_dir",
+        help=("The crab directory you want to use"))
     parser.add_argument("-f", "--datasets", dest="datasets",
         help=("File listing datasets to run over"))
-    parser.add_argument("-s", "--storageSite", dest="storageSite", default="T3_US_FNALLPC",
-        help=("Storage site"),
-        metavar="SITE")
-    parser.add_argument("--dcms", dest="dcms", action='store_true',
-        help=("Running with dcms proxy"))
+    parser.add_argument("-o", "--output", dest="out", 
+        default="/store/user/${USER}/PFNano",
+        help=("T2/T2 storage path"))    
+    parser.add_argument("-s", "--storageSite", dest="storageSite", required=True,
+        help=('Storage site, example `T3_US_FNALLPC`'))
+    parser.add_argument("-l", "--lumiMask", dest="lumiMask",
+        help=("Lumi Mask JSON file"))
+    parser.add_argument("--ext", '--extension' dest="extension",
+        help=("Extension string to include in publication name"))
+
+    parser.add_argument("--test-only", dest="test_only", action='store_true',
+        help=("Submit only a few files to test process. Disable publication"))
+
+    # For debugging
     parser.add_argument("--remote", dest="remote", action='store_true',
         help=("Run with ignore locality (add whitelist manually)")) 
     parser.add_argument("--whitelist", dest="whitelist", default="",
-        help=("Whitelist to use with --remote, passed as 'T2_DE_RWTH,T2_DESY'")),
-    parser.add_argument("-l", "--lumiMask", dest="lumiMask",
-        help=("Lumi Mask JSON file"),
-        metavar="LUMIMASK")
+        help=("Whitelist to use with --remote, passed as 'T2_DE_RWTH,T2_DE_DESY'")),
+
+    # For Germans
+    parser.add_argument("--dcms", dest="dcms", action='store_true',
+        help=("Running with dcms proxy"))
 
     options = parser.parse_args()
 
+    # Check choices and emit warnings
     if options.cfg == None or options.dir == None or options.datasets == None or options.storageSite == None:
         parser.error(usage)
 
@@ -55,18 +62,23 @@ def getOptions() :
     if options.lumiMask is None:
         if raw_input("No lumi mask specified. (OK for MC) Continue? (y/n)") != "y":
             exit()
-        
+
+    if option.test_only is False:
+        if raw_input("`--test` is set to False. About to run a full production. Continue? (y/n)") != "y":
+            exit()
+
+    if option.extension is None:
+        if raw_input('`--extension` is not specified. "PFNano" will be appended by default. Continue? (y/n)') != "y":
+            exit()
+    sys.exit()
     return options
 
 
 def main():
-
     options = getOptions()
-
     from CRABAPI.RawCommand import crabCommand
     from WMCore.Configuration import Configuration
     config = Configuration()
-
     from httplib import HTTPException
 
 
@@ -90,14 +102,13 @@ def main():
     config.section_("Data")
     config.Data.inputDataset = None
     config.Data.splitting = ''
-    #config.Data.unitsPerJob = 1
     config.Data.ignoreLocality = options.remote
-    config.Data.publication = True
+    config.Data.publication = True if not options.test_only else False
+    if options.test_only:
+        config.Data.totalUnits = 1
     config.Data.publishDBS = 'phys03'
 
     config.section_("Site")
-    #config.Site.blacklist = ['T2_IN_TIFR','T2_US_Caltech']
-    #config.Site.whitelist = ['T2_US_UCSD','T2_DE_DESY', 'T1_US_FNAL','T2_UK_SGrid_RALPP','T2_PL_Swierk','T2_TW_NCHC','T2_BR_SPRACE']
     if options.remote:
         config.Site.whitelist = options.whitelist.split(',')
     config.Site.storageSite = options.storageSite
@@ -106,15 +117,15 @@ def main():
         config.section_("User")
         config.User.voGroup = "dcms"
 
-    print 'Using config ' + options.cfg
-    print 'Writing to directory ' + options.dir
+    print('Using config ' + options.cfg)
+    print('Writing to directory ' + options.dir)
 
     def submit(config):
         try:
             crabCommand('submit', config = config)
-        except HTTPException, hte:
-            print 'Cannot execute commend'
-            print hte.headers
+        except HTTPException as hte:
+            print('Cannot execute commend')
+            print(hte.headers)
 
     #############################################################################################
     ## From now on that's what users should modify: this is the a-la-CRAB2 configuration part. ##
@@ -128,7 +139,7 @@ def main():
         if (len(s)==0 or s[0][0]=='#'): continue
         s = ijob.rstrip()
         jobs.append( s )
-        print '  --> added ' + s
+        print('  --> added ' + s)
 
     for ijob, job in enumerate(jobs) :
 
@@ -140,11 +151,11 @@ def main():
             requestname = ''.join((requestname[:93-len(requestname)]).split('_')[:-1])
             if 'ext' in cond and not 'ext' in requestname:
                 requestname = requestname + '_' + cond.split('_')[-1]
-        print 'requestname = ', requestname
+        print('requestname = ', requestname)
         config.General.requestName = requestname
         config.Data.inputDataset = job
         config.Data.outputDatasetTag = cond.replace('MiniAOD','PFNanoAOD') if cond.startswith('RunII') else cond+'_PFNanoAOD'
-        config.Data.outLFNDirBase = options.out #'/store/user/anovak/PFNano/106X_vA02/'
+        config.Data.outLFNDirBase = options.out 
         if datatier == 'MINIAODSIM':
           config.Data.splitting = 'FileBased'
           config.Data.unitsPerJob = 10
@@ -152,9 +163,9 @@ def main():
           config.Data.splitting = 'LumiBased'
           config.Data.lumiMask = options.lumiMask
           config.Data.unitsPerJob = 50 #10 # 200
-        print 'Submitting ' + config.General.requestName + ', dataset = ' + job
-        print 'Configuration :'
-        print config
+        print('Submitting ' + config.General.requestName + ', dataset = ' + job)
+        print('Configuration :')
+        print(config)
         try :
             from multiprocessing import Process
 
@@ -163,7 +174,7 @@ def main():
             p.join()
             #submit(config)
         except :
-            print 'Not submitted.'
+            print('Not submitted.')
 
 
 

@@ -11,18 +11,15 @@ This format can be used with [fastjet](http://fastjet.fr) directly.
 For **UL** 2016, 2017 and 2018 data and MC **NanoAODv6** according to the [XPOG](https://gitlab.cern.ch/cms-nanoAOD/nanoaod-doc/-/wikis/Releases/NanoAODv6) and [PPD](https://twiki.cern.ch/twiki/bin/view/CMS/PdmVLegacy2017Analysis) recommendations:
 
 ```
-cmsrel  CMSSW_10_6_19
+cmsrel  CMSSW_10_6_20 # in principle not a constraint
 cd  CMSSW_10_6_19/src
 cmsenv
-git cms-addpkg PhysicsTools/NanoAOD
-git cms-addpkg RecoBTag/Combined
 git cms-merge-topic andrzejnovak:614nosort
-git clone https://github.com/cms-data/RecoBTag-Combined.git RecoBTag/Combined/data
-git clone https://github.com/cms-jet/NanoAODJMAR.git PhysicsTools/NanoAODJMAR
+git clone https://github.com/cms-jet/PFNano.git PhysicsTools/PFNano
 scram b -j 10
-cd PhysicsTools/NanoAODJMAR/test
+cd PhysicsTools/PFNano/test
 ```
-Note: This configuration has been tested for this combination of CMSSW release, global tag, era and dataset. When running over a new dataset you should check with [the nanoAOD workbook twiki](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD#Running_on_various_datasets_from) to see if the era modifiers in the CRAB configuration files are correct. The jet correction versions are taken from the global tag.
+Note: When running over a new dataset you should check with [the nanoAOD workbook twiki](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD#Running_on_various_datasets_from) to see if the era modifiers in the CRAB configuration files are correct. The jet correction versions are taken from the global tag.
 
 ## Local Usage:
 
@@ -40,33 +37,16 @@ cmsRun nano106X_on_mini106X_2017_data_NANO.py
 
 All the previous python config files were produced with `cmsDriver.py`. Two imporant parameters that one needs to verify in the central nanoAOD documentation are `--conditions` and `--era`. 
 
-`--era` options from https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD are below
-```
---era Run2_2016,run2_miniAOD_80XLegacy: for 2016 80X data (07Aug17) and RunIISummer16MiniAODv2 MC
---era Run2_2016,run2_nanoAOD_94X2016: for 2016 94X data (17Jul2018) and RunIISummer16MiniAODv3 MC
---era Run2_2017,run2_nanoAOD_94XMiniAODv1: for 2017 94X MiniAODv1 samples
---era Run2_2017,run2_nanoAOD_94XMiniAODv2: for 2017 94X MiniAODv2 samples (including 31Mar2018 data)
---era Run2_2018,run2_nanoAOD_102Xv1: for all 2018 10XY samples
-```
+`--era` options from https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD
 `--conditions` can be found here https://twiki.cern.ch/twiki/bin/view/CMS/PdmV
-```
-# Legacy 2016
---conditions 106X_dataRun2_v28 
---conditions 106X_mcRun2_asymptotic_preVFP_v8 
-# Legacy 2017 
---conditions 106X_dataRun2_v28 
---conditions 106X_mc2017_realistic_v7 
-# Legacy 2018
---conditions 106X_dataRun2_v28 
---conditions 106X_upgrade2018_realistic_v11_L1v1 
-
 
 ```
 
-Then, an example of how to create those file, if needed, is shown below:
+A set of `cmsDriver.py` commands to create configs cane be found in `make_configs_preUL.sh`
 
 ```
-cmsDriver.py nano102x_on_mini94x_2016_mc --mc --eventcontent NANOAODSIM --datatier NANOAODSIM --conditions 102X_mcRun2_asymptotic_v8 --step NANO --era Run2_2016,run2_nanoAOD_94X2016 --customise_commands="process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)))\n" -n 100 --filein /store/mc/RunIISummer16MiniAODv3/QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_94X_mcRun2_asymptotic_v3-v2/120000/086BBC76-7AEA-E811-AA5A-6CC2173D9FB0.root --nThreads 2  --customise PhysicsTools/NanoAODJMAR/nano_jmar_cff.JMARnano_customizeMC
+bash make_configs_preUL.sh  # run to produce configs
+bash make_configs_preUL.sh  -e # run to actually execute configs on 1000 events
 ```
 
 ## How to create website with nanoAOD content
@@ -79,23 +59,9 @@ python PhysicsTools/NanoAOD/test/inspectNanoFile.py NANOAOD.root -s website_with
 <!--
 ## Submission to CRAB
 
+Samples can be submitted to crab using the `submit_all.py` script. Run with `-h` option to see usage.
+
 ```
-python submit_all.py -c nano102x_on_mini94x_2016_mc_NANO.py  -f 2016mc_miniAODv3_DY.txt  -d NANO2016MC
-
-python submit_all.py -c nano102x_on_mini94x_2017_mc_NANO.py -f 2017mc_miniAODv2_DY.txt  -d NANO2017MC
-
-python submit_all.py -c nano102x_on_mini102x_2018_mc_NANO.py -f 2018mc_DY.txt  -d NANO2018MC
-
-
-python submit_all.py -c nano102x_on_mini94x_2016_data_NANO.py -f 2016data_17Jul2018.txt -d NANO2016 -l Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt
-
-python submit_all.py -c nano102x_on_mini94x_2017_data_NANO.py  -f 2017data_31Mar2018.txt  -d NANO2017 -l Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt
-
-
-
-python submit_all.py -c nano102x_on_mini102x_2018_data_abc_NANO.py  -f  2018data_17Sep2018.txt  -d NANO2018 -l Cert_314472-325175_13TeV_PromptReco_Collisions18_JSON.txt
-
-python submit_all.py -c nano102x_on_mini102x_2018_data_d_NANO.py  -f datasets_2018D.txt -d NANO2018 -l Cert_314472-325175_13TeV_PromptReco_Collisions18_JSON.txt
 
 ```
 
