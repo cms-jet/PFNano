@@ -23,7 +23,7 @@ def getOptions() :
     parser.add_argument("-d", "--dir", dest="dir", 
         default="crab_dir",
         help=("The crab directory you want to use"))
-    parser.add_argument("-f", "--datasets", dest="datasets",
+    parser.add_argument("-f", "--datasets", dest="datasets", required=True,
         help=("File listing datasets to run over"))
     parser.add_argument("-o", "--output", dest="out", 
         default="/store/user/${USER}/PFNano",
@@ -32,7 +32,7 @@ def getOptions() :
         help=('Storage site, example `T3_US_FNALLPC`'))
     parser.add_argument("-l", "--lumiMask", dest="lumiMask",
         help=("Lumi Mask JSON file"))
-    parser.add_argument("--ext", '--extension' dest="extension",
+    parser.add_argument("--ext", '--extension', dest="extension",
         help=("Extension string to include in publication name"))
 
     parser.add_argument("--test-only", dest="test_only", action='store_true',
@@ -63,14 +63,13 @@ def getOptions() :
         if raw_input("No lumi mask specified. (OK for MC) Continue? (y/n)") != "y":
             exit()
 
-    if option.test_only is False:
+    if options.test_only is False:
         if raw_input("`--test` is set to False. About to run a full production. Continue? (y/n)") != "y":
             exit()
 
-    if option.extension is None:
+    if options.extension is None:
         if raw_input('`--extension` is not specified. "PFNano" will be appended by default. Continue? (y/n)') != "y":
             exit()
-    sys.exit()
     return options
 
 
@@ -93,7 +92,7 @@ def main():
     config.JobType.psetName = options.cfg
     config.JobType.maxMemoryMB = 5000 # Default is 2500 : Max I have used is 13000
     config.JobType.maxJobRuntimeMin = 2750 #Default is 1315; 2750 minutes guaranteed to be available; Max I have used is 9000
-    config.JobType.numCores = 4
+    config.JobType.numCores = 1
     config.JobType.allowUndistributedCMSSW = True
 
     config.section_("Debug")
@@ -154,7 +153,8 @@ def main():
         print('requestname = ', requestname)
         config.General.requestName = requestname
         config.Data.inputDataset = job
-        config.Data.outputDatasetTag = cond.replace('MiniAOD','PFNanoAOD') if cond.startswith('RunII') else cond+'_PFNanoAOD'
+        config.Data.outputDatasetTag = cond.replace('MiniAOD','PFNanoAOD')+options.extension if cond.startswith('RunII') else cond+'_PFNanoAOD'+options.extension
+        print(config.Data.outputDatasetTag)
         config.Data.outLFNDirBase = options.out 
         if datatier == 'MINIAODSIM':
           config.Data.splitting = 'FileBased'
