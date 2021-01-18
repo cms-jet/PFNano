@@ -12,7 +12,7 @@ For **UL** 2016, 2017 and 2018 data and MC **NanoAODv6** according to the [XPOG]
 
 ```
 cmsrel  CMSSW_10_6_20 # in principle not a constraint
-cd  CMSSW_10_6_19/src
+cd  CMSSW_10_6_20/src
 cmsenv
 git cms-merge-topic andrzejnovak:614nosort
 git clone https://github.com/cms-jet/PFNano.git PhysicsTools/PFNano
@@ -23,23 +23,15 @@ Note: When running over a new dataset you should check with [the nanoAOD workboo
 
 ## Local Usage:
 
-2017 MC:
-```
-cmsRun nano106X_on_mini106X_2017_mc_NANO.py
-```
-
-2017 DATA:
-```
-cmsRun nano106X_on_mini106X_2017_data_NANO.py
-```
+All  python config files were produced with `cmsDriver.py`. 
 
 ### How to create python files using cmsDriver
 
-All the previous python config files were produced with `cmsDriver.py`. Two imporant parameters that one needs to verify in the central nanoAOD documentation are `--conditions` and `--era`. 
+Two imporant parameters that one needs to verify in the central nanoAOD documentation are `--conditions` and `--era`. 
 - `--era` options from https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD
 - `--conditions` can be found here https://twiki.cern.ch/twiki/bin/view/CMS/PdmV
 
-A set of `cmsDriver.py` commands to create configs cane be found in `make_configs_preUL.sh`
+A an example set of `cmsDriver.py` commands to create configs can be found in `make_configs_preUL.sh`
 
 ```
 bash make_configs_preUL.sh  # run to produce configs
@@ -55,11 +47,27 @@ python PhysicsTools/NanoAOD/test/inspectNanoFile.py NANOAOD.root -s website_with
 
 ## Submission to CRAB
 
-Samples can be submitted to crab using the `submit_all.py` script. Run with `-h` option to see usage.
+Samples can be submitted to crab using the `submit_all.py` script. Run with `-h` option to see usage. Example can look like this:
 
 ```
+python submit_all.py -c nano_config.py -s T2_DE_RWTH -f datasets/text_list.txt  -o /store/user/$USER/PFNano/  --ext test --test -d crab_noinpts
 
 ```
+## Processing data
+
+When processing data, a lumi mask should be applied. The so called golden JSON should be applicable in most cases. Should also be checked here https://twiki.cern.ch/twiki/bin/view/CMS/PdmV
+
+Golden JSON, pre-UL
+```
+# 2016
+jsons/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt
+# 2017 
+jsons/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt
+# 2018
+jsons/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt
+```
+
+Include in crab submission as `--lumiMask jsons/...txt`
 
 ## Documenting the Extended NanoAOD Samples
 

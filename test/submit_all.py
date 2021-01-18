@@ -70,6 +70,7 @@ def getOptions() :
     if options.extension is None:
         if raw_input('`--extension` is not specified. "PFNano" will be appended by default. Continue? (y/n)') != "y":
             exit()
+        options.extension == 'PFNanoAOD'
     return options
 
 
@@ -91,7 +92,8 @@ def main():
     config.JobType.pluginName = 'Analysis'
     config.JobType.psetName = options.cfg
     config.JobType.maxMemoryMB = 5000 # Default is 2500 : Max I have used is 13000
-    config.JobType.maxJobRuntimeMin = 2750 #Default is 1315; 2750 minutes guaranteed to be available; Max I have used is 9000
+    # minutes tied to not automatic splitting
+    # config.JobType.maxJobRuntimeMin = 2750 #Default is 1315; 2750 minutes guaranteed to be available; Max I have used is 9000 
     config.JobType.numCores = 1
     config.JobType.allowUndistributedCMSSW = True
 
@@ -153,16 +155,18 @@ def main():
         print('requestname = ', requestname)
         config.General.requestName = requestname
         config.Data.inputDataset = job
-        config.Data.outputDatasetTag = cond.replace('MiniAOD','PFNanoAOD')+options.extension if cond.startswith('RunII') else cond+'_PFNanoAOD'+options.extension
+        config.Data.outputDatasetTag = re.sub(r'MiniAOD[v]?[0-9]?', options.extension, cond) if cond.startswith('RunII') else cond+'_'+options.extension
         print(config.Data.outputDatasetTag)
         config.Data.outLFNDirBase = options.out 
         if datatier == 'MINIAODSIM':
-          config.Data.splitting = 'FileBased'
-          config.Data.unitsPerJob = 10
+        #   config.Data.splitting = 'FileBased'
+        #   config.Data.unitsPerJob = 10
+            config.Data.splitting = 'Automatic'
         elif datatier == 'MINIAOD':
           config.Data.splitting = 'LumiBased'
           config.Data.lumiMask = options.lumiMask
-          config.Data.unitsPerJob = 50 #10 # 200
+          config.Data.unitsPerJob = 50 #10  - at 100, some jobs will run out of time
+          config.JobType.maxJobRuntimeMin = 2750 #Default is 1315; 2750 minutes guaranteed to be available; Max I have used is 9000
         print('Submitting ' + config.General.requestName + ', dataset = ' + job)
         print('Configuration :')
         print(config)
