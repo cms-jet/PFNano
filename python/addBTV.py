@@ -3,6 +3,7 @@ import FWCore.ParameterSet.Config as cms
 from PhysicsTools.NanoAOD.common_cff import Var
 from PhysicsTools.NanoAOD.jets_cff import jetTable, fatJetTable, subJetTable
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+from PhysicsTools.PatAlgos.tools.helpers import addToProcessAndTask, getPatAlgosToolsTask
 
 
 def update_jets_AK4(process):
@@ -38,6 +39,7 @@ def update_jets_AK4(process):
 def update_jets_AK8(process):
     # Based on ``nanoAOD_addDeepInfoAK8``
     # in https://github.com/cms-sw/cmssw/blob/master/PhysicsTools/NanoAOD/python/nano_cff.py
+    # Care needs to be taken to make sure no discriminators from stock Nano are excluded -> would results in unfilled vars
     _btagDiscriminators = [
         'pfJetProbabilityBJetTags',
         'pfDeepCSVJetTags:probb',
@@ -51,6 +53,8 @@ def update_jets_AK8(process):
         'pfMassIndependentDeepDoubleCvLV2JetTags:probHcc',
         'pfMassIndependentDeepDoubleCvBV2JetTags:probHcc',
         ]
+    from RecoBTag.ONNXRuntime.pfParticleNet_cff import _pfParticleNetJetTagsAll as pfParticleNetJetTagsAll
+    _btagDiscriminators += pfParticleNetJetTagsAll
     updateJetCollection(
         process,
         jetSource=cms.InputTag('slimmedJetsAK8'),
@@ -97,11 +101,13 @@ def update_jets_AK8_subjet(process):
         svClustering=False,  # needed for subjet b tagging (IMPORTANT: Needs to be set to False to disable ghost-association which does not work with slimmed jets)
         fatJets=cms.InputTag('slimmedJetsAK8'),  # needed for subjet b tagging
         rParam=0.8,  # needed for subjet b tagging
+        sortByPt=False, # Don't change order (would mess with subJetIdx for FatJets)
         postfix='AK8SubjetsWithDeepInfo')
 
-    process.subJetTable.src = 'updatedPatJetsTransientCorrectedSoftDropSubjetsPFAK8SubjetsWithDeepInfo'  ### VERY LONG NAME!!! :P
-    return process
+    process.subJetTable.src = 'selectedUpdatedPatJetsSoftDropSubjetsPFAK8SubjetsWithDeepInfo' 
+    
 
+    return process
 
 def get_DDX_vars():
     # retreive 27 jet-level features used in double-b and deep double-x taggers
@@ -210,7 +216,7 @@ def get_DeepCSV_vars():
     )
     return DeepCSVVars
 
-def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False):
+def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=True):
     addAK4 = not onlyAK8
     addAK8 = not onlyAK4
 
@@ -259,7 +265,7 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False):
         extension=cms.bool(True),  # this is the extension table for Jets
         variables=cms.PSet(
             CommonVars,
-            get_DeepCSV_vars(),
+            get_DeepCSV_vars() if keepInputs else cms.PSet(),
         ))
 
     # AK8
@@ -278,7 +284,7 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False):
                 btagDDCvLV2 = Var("bDiscriminator('pfMassIndependentDeepDoubleCvLV2JetTags:probHcc')",float,doc="DeepDoubleX V2 discriminator for H(Z)->cc vs QCD",precision=10),
                 btagDDCvBV2 = Var("bDiscriminator('pfMassIndependentDeepDoubleCvBV2JetTags:probHcc')",float,doc="DeepDoubleX V2 discriminator for H(Z)->cc vs H(Z)->bb",precision=10),
             ),
-            get_DDX_vars(),
+            get_DDX_vars() if keepInputs else cms.PSet(),
         ))
 
     # Subjets
@@ -292,10 +298,6 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False):
         extension=cms.bool(True),  # this is the extension table for FatJets
         variables=cms.PSet(
             CommonVars,
-            # Proba=Var("bDiscriminator('pfJetProbabilityBJetTags')",
-            #           float,
-            #           doc="Jet Probability (Usage:BTV)",
-            #           precision=10),
              btagDeepC = Var("bDiscriminator('pfDeepCSVJetTags:probc')",
                         float,
                         doc="DeepCSV charm btag discriminator",

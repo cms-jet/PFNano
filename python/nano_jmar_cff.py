@@ -29,6 +29,11 @@ def JMARnano_customizeMC_AK8JetsOnly(process):
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process
 
+def JMARnano_customizeMC_noInputs(process):
+    add_BTV(process, True, keepInputs=False)
+    process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
+    return process
+
 #### DATA customization
 def JMARnano_customizeData(process):
     addPFCands(process, False)
@@ -51,5 +56,10 @@ def JMARnano_customizeData_AK4JetsOnly(process):
 def JMARnano_customizeData_AK8JetsOnly(process):
     addPFCands(process, False, False, False, True)
     add_BTV(process, False, False, True)
+    process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
+    return process
+
+def JMARnano_customizeData_noInputs(process):
+    add_BTV(process, False, keepInputs=False)
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process
