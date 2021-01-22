@@ -1,20 +1,21 @@
 # NanoAODJMAR
 
 This is a [NanoAOD](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD) framework for advance developments of jet algorithms. 
-The current preliminary content of this development branch can be seen [here](http://algomez.web.cern.ch/algomez/testWeb/JMARnanoplusBTag_content_v01.html) and the size [here](http://algomez.web.cern.ch/algomez/testWeb/JMARnanoplusBTag_size_v01.html).
+The current full content of this development branch can be seen [here](http://algomez.web.cern.ch/algomez/testWeb/PFnano_content_v02.html) and the size [here](http://algomez.web.cern.ch/algomez/testWeb/PFnano_size_v02.html).
+In this version, PFcandidates can be saved for AK4 only, AK8 only, or all the PF candidates. More below.
 This format can be used with [fastjet](http://fastjet.fr) directly.
 
 ## Recipe
 
 **THIS IS A DEVELOPMENT BRANCH**
 
-For **UL** 2016, 2017 and 2018 data and MC **NanoAODv6** according to the [XPOG](https://gitlab.cern.ch/cms-nanoAOD/nanoaod-doc/-/wikis/Releases/NanoAODv6) and [PPD](https://twiki.cern.ch/twiki/bin/view/CMS/PdmVLegacy2017Analysis) recommendations:
+For **UL** 2016, 2017 and 2018 data and MC **NanoAODv8** according to the [XPOG](https://gitlab.cern.ch/cms-nanoAOD/nanoaod-doc/-/wikis/Releases/NanoAODv8) and [PPD](https://twiki.cern.ch/twiki/bin/view/CMS/PdmVRun2LegacyAnalysisSummaryTable) recommendations:
 
 ```
 cmsrel  CMSSW_10_6_20 # in principle not a constraint
 cd  CMSSW_10_6_20/src
 cmsenv
-git cms-merge-topic andrzejnovak:614nosort
+git cms-rebase-topic andrzejnovak:614nosort
 git clone https://github.com/cms-jet/PFNano.git PhysicsTools/PFNano
 scram b -j 10
 cd PhysicsTools/PFNano/test
@@ -23,13 +24,25 @@ Note: When running over a new dataset you should check with [the nanoAOD workboo
 
 ## Local Usage:
 
-All  python config files were produced with `cmsDriver.py`. 
+There are python config files ready to run in `PhysicsTools/PFNano/test/` for the UL campaign of nanoAODv8, named `nano106Xv8_on_mini106X_201*_data_NANO.py`. Notice that the current version can create 4 types of files depending on the PF candidates content. 
+In this files, for simplicity, the 4 options are included but only one is commented out for use. For instance:
+```
+process = PFnano_customizeMC(process)
+#process = PFnano_customizeMC_allPF(process)            ##### PFcands will content ALL the PF Cands
+#process = PFnano_customizeMC_AK4JetsOnly(process)      ##### PFcands will content only the AK4 jets PF cands
+#process = PFnano_customizeMC_AK8JetsOnly(process)      ##### PFcands will content only the AK8 jets PF cands
+#process = PFnano_customizeMC_noInputs(process)         ##### No PFcands but all the other content is available.
+```
+
+
 
 ### How to create python files using cmsDriver
 
+All  python config files were produced with `cmsDriver.py`.
+
 Two imporant parameters that one needs to verify in the central nanoAOD documentation are `--conditions` and `--era`. 
-- `--era` options from https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD
-- `--conditions` can be found here https://twiki.cern.ch/twiki/bin/view/CMS/PdmV
+- `--era` options from [WorkBookNanoAOD](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD) or [XPOG](https://gitlab.cern.ch/cms-nanoAOD/nanoaod-doc/-/wikis/Releases/NanoAODv8)
+- `--conditions` can be found here [PdMV](https://twiki.cern.ch/twiki/bin/view/CMS/PdmV)
 
 A an example set of `cmsDriver.py` commands to create configs can be found in `make_configs_preUL.sh`
 
@@ -53,11 +66,38 @@ Samples can be submitted to crab using the `submit_all.py` script. Run with `-h`
 python submit_all.py -c nano_config.py -s T2_DE_RWTH -f datasets/text_list.txt  -o /store/user/$USER/PFNano/  --ext test --test -d crab_noinpts
 
 ```
+
+For the UL datasets:
+```
+##python submit_all.py -c nano102x_on_mini94x_2016_mc_NANO.py  -f 2016mc_miniAODv3_DY.txt  -d NANO2016MC
+
+python submit_all.py -c nano106Xv8_on_mini106X_2017_mc_NANO.py -f 2017mc_miniAODv2_DY.txt  -d NANO2017MC
+
+python submit_all.py -c nano106Xv8_on_mini106X_2018_mc_NANO.py -f 2018mc_DY.txt  -d NANO2018MC
+
+
+##python submit_all.py -c nano102x_on_mini94x_2016_data_NANO.py -f 2016data_17Jul2018.txt -d NANO2016 -l Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt
+
+python submit_all.py -c nano106Xv8_on_mini106X_2017_data_NANO.py -f 2017data_31Mar2018.txt  -d NANO2017 -l /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/Legacy_2017/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt 
+
+python submit_all.py -c nano106Xv8_on_mini106X_2018_data_NANO.py -f datasets_2018D.txt -d NANO2018 -l /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/13TeV/Legacy_2018/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt 
+
+```
+
+
+
 ## Processing data
 
 When processing data, a lumi mask should be applied. The so called golden JSON should be applicable in most cases. Should also be checked here https://twiki.cern.ch/twiki/bin/view/CMS/PdmV
 
-Golden JSON, pre-UL
+ * Golden JSON, UL
+```
+# 2017: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/Legacy_2017/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt
+# 2018: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/13TeV/Legacy_2018/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt
+#
+```
+
+ * Golden JSON, pre-UL
 ```
 # 2016
 jsons/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt
