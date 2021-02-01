@@ -5,6 +5,7 @@ This is a small script that submits a config over many datasets
 from __future__ import print_function
 import os
 import sys
+import re
 #from optparse import OptionParser
 import argparse
 
