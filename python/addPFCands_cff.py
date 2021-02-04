@@ -57,9 +57,9 @@ def addPFCands(process, runOnMC=False, allPF = False, onlyAK4=False, onlyAK8=Fal
                                                         jets = cms.InputTag("finalJetsAK8"),
                                                         jet_radius = cms.double(0.8),
                                                         name = cms.string("FatJetPFCands"),
-                                                        idx_name = cms.string("PFCandsIdx"),
+                                                        idx_name = cms.string("pFCandsIdx"),
                                                         nameSV = cms.string("FatJetSVs"),
-                                                        idx_nameSV = cms.string("SVIdx"),
+                                                        idx_nameSV = cms.string("sVIdx"),
                                                         )
     process.customAK4ConstituentsTable = cms.EDProducer("PatJetConstituentTableProducer",
                                                         #candidates = cms.InputTag("packedPFCandidates"),
@@ -67,9 +67,9 @@ def addPFCands(process, runOnMC=False, allPF = False, onlyAK4=False, onlyAK8=Fal
                                                         jets = cms.InputTag("finalJets"),
                                                         jet_radius = cms.double(0.4),
                                                         name = cms.string("JetPFCands"),
-                                                        idx_name = cms.string("PFCandsIdx"),
+                                                        idx_name = cms.string("pFCandsIdx"),
                                                         nameSV = cms.string("JetSVs"),
-                                                        idx_nameSV = cms.string("SVIdx"),
+                                                        idx_nameSV = cms.string("sVIdx"),
                                                         )
     if not allPF:
         process.customizedPFCandsTask.add(process.finalJetsConstituents)
@@ -118,16 +118,16 @@ def addPFCands(process, runOnMC=False, allPF = False, onlyAK4=False, onlyAK8=Fal
                                                          jets = cms.InputTag("genJetsAK8Constituents"), # Note: The name has "Constituents" in it, but these are the jets
                                                          name = cms.string("GenFatJetCands"),
                                                          nameSV = cms.string("GenFatJetSVs"),
-                                                         idx_name = cms.string("PFCandsIdx"),
-                                                         idx_nameSV = cms.string("SVIdx"),
+                                                         idx_name = cms.string("pFCandsIdx"),
+                                                         idx_nameSV = cms.string("sVIdx"),
                                                          readBtag = cms.bool(False))
         process.genAK4ConstituentsTable = cms.EDProducer("GenJetConstituentTableProducer",
                                                          candidates = genCandInput,
                                                          jets = cms.InputTag("genJetsAK4Constituents"), # Note: The name has "Constituents" in it, but these are the jets
                                                          name = cms.string("GenJetCands"),
                                                          nameSV = cms.string("GenJetSVs"),
-                                                         idx_name = cms.string("PFCandsIdx"),
-                                                         idx_nameSV = cms.string("SVIdx"),
+                                                         idx_name = cms.string("pFCandsIdx"),
+                                                         idx_nameSV = cms.string("sVIdx"),
                                                          readBtag = cms.bool(False))
         process.customizedPFCandsTask.add(process.genJetsAK4Constituents) #Note: For gen need to add jets to the process to keep pt cuts.
         process.customizedPFCandsTask.add(process.genJetsAK8Constituents)
