@@ -154,7 +154,6 @@ def main():
         print('requestname = ', requestname)
         config.General.requestName = requestname
         config.Data.inputDataset = job
-        print("XXXXX",  options.extension)
         config.Data.outputDatasetTag = re.sub(r'MiniAOD[v]?[0-9]?', options.extension, cond) if cond.startswith('RunII') else cond+'_'+options.extension
         print(config.Data.outputDatasetTag)
         config.Data.outLFNDirBase = options.out 
