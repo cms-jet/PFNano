@@ -1,0 +1,5 @@
+
+/JetHT/Run2018D-PromptReco-v2/MINIAOD
+
+/SingleMuon/Run2018D-22Jan2019-v2/MINIAOD
+
