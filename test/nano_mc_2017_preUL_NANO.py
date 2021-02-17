@@ -2,7 +2,7 @@
 # using: 
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
-# with command line options: nano_mc_2017_preUL --mc --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO --conditions 102X_mc2017_realistic_v8 --era Run2_2017,run2_nanoAOD_94XMiniAODv2 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False))) --nThreads 4 -n 1000 --filein /store/mc/RunIIFall17MiniAODv2/TTToHadronic_TuneCP5_PSweights_13TeV-powheg-pythia8/MINIAODSIM/PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/270000/B4131826-50C9-E811-852D-001E675811CC.root --fileout file:nano_mc2017.root --customise PhysicsTools/NanoAODJMAR/nano_jmar_cff.JMARnano_customizeMC_noInputs --no_exec
+# with command line options: nano_mc_2017_preUL --mc --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO --conditions 102X_mc2017_realistic_v8 --era Run2_2017,run2_nanoAOD_94XMiniAODv2 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False))) --nThreads 4 -n 1000 --filein /store/mc/RunIIFall17MiniAODv2/TTToHadronic_TuneCP5_PSweights_13TeV-powheg-pythia8/MINIAODSIM/PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/270000/B4131826-50C9-E811-852D-001E675811CC.root --fileout file:nano_mc2017.root --customise PhysicsTools/PFNano/pfnano_cff.PFnano_customizeMC
 import FWCore.ParameterSet.Config as cms
 
 from Configuration.Eras.Era_Run2_2017_cff import Run2_2017
@@ -80,16 +80,16 @@ process.options.numberOfConcurrentLuminosityBlocks=cms.untracked.uint32(1)
 # customisation of the process.
 
 # Automatic addition of the customisation function from PhysicsTools.NanoAOD.nano_cff
-from PhysicsTools.NanoAOD.nano_cff import nanoAOD_customizeMC
+from PhysicsTools.NanoAOD.nano_cff import nanoAOD_customizeMC 
 
 #call to customisation function nanoAOD_customizeMC imported from PhysicsTools.NanoAOD.nano_cff
 process = nanoAOD_customizeMC(process)
 
-# Automatic addition of the customisation function from PhysicsTools.PFNano.nano_jmar_cff
-from PhysicsTools.PFNano.pfnano_cff import PFnano_customizeMC_noInputs
+# Automatic addition of the customisation function from PhysicsTools.PFNano.pfnano_cff
+from PhysicsTools.PFNano.pfnano_cff import PFnano_customizeMC 
 
-#call to customisation function PFnano_customizeMC_noInputs imported from PhysicsTools.PFNano.nano_jmar_cff
-process = PFnano_customizeMC_noInputs(process)
+#call to customisation function PFnano_customizeMC imported from PhysicsTools.PFNano.pfnano_cff
+process = PFnano_customizeMC(process)
 
 # End of customisation functions
 
