@@ -52,7 +52,7 @@ cmsDriver.py nano_mc_2016_ULPreVFP --mc --eventcontent NANOAODSIM --datatier NAN
 
 # MC (2016, postVFP):
 cmsDriver.py nano_mc_2016_ULPostVFP --mc --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO \
---conditions 106X_mcRun2_asymptotic_v15  --era Run2_2016,run2_nanoAOD_94X2016 \
+--conditions 106X_mcRun2_asymptotic_v15  --era Run2_2016,run2_nanoAOD_106Xv1 \
 --customise_commands="process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)))" --nThreads 4 \
 -n 100 --filein /store/mc/RunIISummer19UL16MiniAOD/QCD_Pt_2400to3200_TuneCP5_13TeV_pythia8/MINIAODSIM/106X_mcRun2_asymptotic_v13-v2/100000/EF482706-F402-E648-AB6A-D5B2700C8023.root --fileout file:nano_mc2016post.root \
 --customise PhysicsTools/NanoAODJMAR/nano_jmar_cff.JMARnano_customizeMC$NOINPUTS  $NO_EXEC $PARALLEL
