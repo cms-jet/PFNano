@@ -5,61 +5,61 @@ from PhysicsTools.NanoAOD.common_cff import Var
 
 
 def PFnano_customizeMC(process):
-    addPFCands(process, True)
-    add_BTV(process, True)
+    addPFCands(process, runOnMC=True, saveAK4=True, saveAK8=True)
+    add_BTV(process, runOnMC=True)
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process
 
 def PFnano_customizeMC_allPF(process):
-    addPFCands(process, True, True)
-    add_BTV(process, True)
+    addPFCands(process, runOnMC=True, saveAll=True)
+    add_BTV(process, runOnMC=True)
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process
 
 
 def PFnano_customizeMC_AK4JetsOnly(process):
-    addPFCands(process, True, False, True)
-    add_BTV(process, True, True)
+    addPFCands(process, runOnMC=True, saveAK4=True)
+    add_BTV(process, runOnMC=True, addAK4=True, addAK8=False)
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process
 
 def PFnano_customizeMC_AK8JetsOnly(process):
-    addPFCands(process, True, False, False, True)
-    add_BTV(process, True, False, True)
+    addPFCands(process, runOnMC=True, saveAK8=True)
+    add_BTV(process, runOnMC=True, addAK4=False, addAK8=True)
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process
 
 def PFnano_customizeMC_noInputs(process):
-    add_BTV(process, True, keepInputs=False)
+    add_BTV(process, runOnMC=True, keepInputs=False)
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process
 
 #### DATA customization
 def PFnano_customizeData(process):
-    addPFCands(process, False)
-    add_BTV(process, False)
+    addPFCands(process, runOnMC=False, saveAK4=True, saveAK8=True)
+    add_BTV(process, runOnMC=False)
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process
 
 def PFnano_customizeData_allPF(process):
-    addPFCands(process, False, True)
-    add_BTV(process, False)
+    addPFCands(process, runOnMC=False, saveAll=True)
+    add_BTV(process, runOnMC=False)
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process
 
 def PFnano_customizeData_AK4JetsOnly(process):
-    addPFCands(process, False, False, True)
-    add_BTV(process, False, True)
+    addPFCands(process, runOnMC=False, saveAK4=True)
+    add_BTV(process, runOnMC=False, addAK4=True, addAK8=False)
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process
 
 def PFnano_customizeData_AK8JetsOnly(process):
-    addPFCands(process, False, False, False, True)
-    add_BTV(process, False, False, True)
+    addPFCands(process, runOnMC=False, saveAK4=True)
+    add_BTV(process, runOnMC=False, addAK4=False, addAK8=True)
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process
 
 def PFnano_customizeData_noInputs(process):
-    add_BTV(process, False, keepInputs=False)
+    add_BTV(process, runOnMC=False, keepInputs=False)
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process
