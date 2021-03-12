@@ -216,10 +216,7 @@ def get_DeepCSV_vars():
     )
     return DeepCSVVars
 
-def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=True):
-    addAK4 = not onlyAK8
-    addAK8 = not onlyAK4
-
+def add_BTV(process, runOnMC=False, addAK4=True, addAK8=True, addAK15=False, keepInputs=True):
     if addAK4:
         process = update_jets_AK4(process)
     if addAK8:
