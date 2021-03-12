@@ -1,11 +1,11 @@
 import FWCore.ParameterSet.Config as cms
 from  PhysicsTools.NanoAOD.common_cff import *
 
-def addPFCands(process, runOnMC=False, saveAll=False, saveAK4=False, saveAK8=False, saveAK15=False):
-    if saveAll and (saveAK4 or saveAK8 or saveAK15):
-        raise ValueError("In call to addPFCands(), argument saveAll is incompatible with other save options (saveAll={}, saveAK4={} ,saveAK8={}, saveAK15={}".format(saveAll, saveAK4, saveAK8, saveAK15))
+def addPFCands(process, runOnMC=False, saveAll=False, saveAK4=False, saveAK8=False):
+    if saveAll and (saveAK4 or saveAK8):
+        raise ValueError("In call to addPFCands(), argument saveAll is incompatible with other save options (saveAll={}, saveAK4={} ,saveAK8={}".format(saveAll, saveAK4, saveAK8))
 
-    if not (saveAll or saveAK4 or saveAK8 or saveAK15):
+    if not (saveAll or saveAK4 or saveAK8):
         raise ValueError("In call to addPFCands(), specify at least one save option.")
 
     process.customizedPFCandsTask = cms.Task( )
@@ -30,15 +30,6 @@ def addPFCands(process, runOnMC=False, saveAll=False, saveAK4=False, saveAK8=Fal
                                                     )
             candList.append(cms.InputTag("finalJetsAK8Constituents", "constituents"))
             process.customizedPFCandsTask.add(process.finalJetsAK8Constituents)
-        '''
-        if saveAK15:
-            process.finalJetsAK15Constituents = cms.EDProducer("PatJetConstituentPtrSelector",
-                                                    src = cms.InputTag("finalJetsAK15"),
-                                                    cut = cms.string("")
-                                                    )
-            candList.append(cms.InputTag("finalJetsAK15Constituents", "constituents"))
-            process.customizedPFCandsTask.add(process.finalJetsAK15Constituents)
-        '''
         process.finalJetsConstituents = cms.EDProducer("PackedCandidatePtrMerger", 
                                                         src = candList, 
                                                         skipNulls = cms.bool(True), 
@@ -86,14 +77,6 @@ def addPFCands(process, runOnMC=False, saveAll=False, saveAK4=False, saveAK8=Fal
                                                         nameSV = cms.string("FatJetSVs"),
                                                         idx_nameSV = cms.string("sVIdx"),
                                                         )
-    '''
-    process.customAK15ConstituentsTable = cms.EDProducer("PatJetConstituentTableProducer",
-                                                        candidates = candInput,
-                                                        jets       = cms.InputTag("finalJetsAK15"),
-                                                        jet_radius = cms.double(1.5),
-                                                        name       = cms.string("JetPFCandsAK15"),
-                                                        nameSV     = cms.string("JetSVsAK15"))
-    '''
 
     if not saveAll:
         process.customizedPFCandsTask.add(process.finalJetsConstituents)
@@ -101,7 +84,6 @@ def addPFCands(process, runOnMC=False, saveAll=False, saveAK4=False, saveAK8=Fal
     process.customizedPFCandsTask.add(process.customConstituentsExtTable)
     process.customizedPFCandsTask.add(process.customAK4ConstituentsTable)
     process.customizedPFCandsTask.add(process.customAK8ConstituentsTable)
-    #process.customizedPFCandsTask.add(process.customAK15ConstituentsTable)
     
     if runOnMC:
         process.genJetsAK8Constituents = cms.EDProducer("GenJetPackedConstituentPtrSelector",
@@ -113,12 +95,6 @@ def addPFCands(process, runOnMC=False, saveAll=False, saveAK4=False, saveAK8=Fal
                                                     src = cms.InputTag("slimmedGenJets"),
                                                     cut = cms.string("pt > 20")
                                                     )
-        '''
-        process.genJetsAK15Constituents = process.genJetsAK8Constituents.clone(
-                                                    src = cms.InputTag("AK15GenJetsNoNu"), # "slimmedGenJetsAK15"
-                                                    cut = cms.string("pt > 100")
-                                                    )
-        '''
 
         if saveAll:
             genCandInput = cms.InputTag("packedGenParticles")
@@ -129,10 +105,6 @@ def addPFCands(process, runOnMC=False, saveAll=False, saveAK4=False, saveAK8=Fal
                 genCandList.append(cms.InputTag("genJetsAK4Constituents", "constituents"))
             if saveAK8:
                 genCandList.append(cms.InputTag("genJetsAK8Constituents", "constituents"))
-            '''
-            if saveAK15:
-                genCandList.append(cms.InputTag("genJetsAK15Constituents", "constituents"))
-            '''
             process.genJetsConstituents = cms.EDProducer("PackedGenParticlePtrMerger", 
                                                             src        = genCandList, 
                                                             skipNulls  = cms.bool(True), 
@@ -163,25 +135,13 @@ def addPFCands(process, runOnMC=False, saveAll=False, saveAK4=False, saveAK8=Fal
                                                          idx_name = cms.string("pFCandsIdx"),
                                                          idx_nameSV = cms.string("sVIdx"),
                                                          readBtag = cms.bool(False))
-        '''
-        process.genAK15ConstituentsTable = cms.EDProducer("GenJetConstituentTableProducer",
-                                                         candidates = cms.InputTag("genJetsConstituents"),
-                                                         jets = cms.InputTag("genJetsAK15Constituents"), # Note: The name has "Constituents" in it, but these are the jets
-                                                         name = cms.string("GenJetCandsAK15"),
-                                                         nameSV = cms.string("GenJetSVsAK15"),
-                                                         idx_name = cms.string("pFCandsIdx"),
-                                                         idx_nameSV = cms.string("sVIdx"),
-                                                         readBtag = cms.bool(False))
-        '''
         process.customizedPFCandsTask.add(process.genJetsAK4Constituents) #Note: For gen need to add jets to the process to keep pt cuts.
         process.customizedPFCandsTask.add(process.genJetsAK8Constituents)
-        #process.customizedPFCandsTask.add(process.genJetsAK15Constituents)
         if not saveAll:
             process.customizedPFCandsTask.add(process.genJetsConstituents)
 
         process.customizedPFCandsTask.add(process.genJetsParticleTable)
         process.customizedPFCandsTask.add(process.genAK8ConstituentsTable)
         process.customizedPFCandsTask.add(process.genAK4ConstituentsTable)
-        #process.customizedPFCandsTask.add(process.genAK15ConstituentsTable)
 
     return process
