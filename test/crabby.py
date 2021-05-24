@@ -5,6 +5,23 @@ import pprint
 import re
 import copy
 
+from CRABAPI.RawCommand import crabCommand
+from httplib import HTTPException
+import string
+import random
+random.seed(10)
+
+def submit(config):
+    try:
+        crabCommand('submit', config = config)
+    except HTTPException as hte:
+        print('Cannot execute commend')
+        print(hte.headers)
+    
+def rnd_str(N):
+    letters = string.ascii_letters
+    return ''.join(random.choice(letters) for _ in range(N))
+
 def str2bool(v):
     if isinstance(v, bool):
         return v
@@ -20,7 +37,7 @@ parser.add_argument('-c', '--card', '--yaml', dest='card', default='card_example
 parser.add_argument('--make', action='store_true', help="Make crab configs according to the spec.")
 parser.add_argument('--submit', action='store_true', help="Submit configs created by ``--make``.")
 parser.add_argument('--status', action='store_true', help="")
-parser.add_argument("--test", type=str2bool, default='True', choices={True, False}, help="Test submit - only 1 file, don't publish.")
+parser.add_argument("--test", type=str2bool, default='False', choices={True, False}, help="Test submit - only 1 file, don't publish.")
 args = parser.parse_args()
 
 with open(args.card, 'r') as f:
@@ -47,9 +64,9 @@ else:
     datasets = [d for d in card['campaign']['datasets'].split("\n") if len(d) > 10 and not d.startswith("#")]
 
 if args.make:
-    print("Making configs:")
+    print("Making configs in {}:".format(card['campaign']['workArea']))
     for dataset in datasets:
-        print("   ==> "+dataset)
+        print("   ==> "+ dataset)
         crab_config = copy.deepcopy(base_crab_config)
         dataset_name = dataset.lstrip("/").replace("/", "_")
 
@@ -61,9 +78,14 @@ if args.make:
         else:
             raise ValueError("Either ``campaign: tag_mod`` or ``campaign: tag_extension`` need to be specified")
 
+        if len(dataset_name) < 95:
+            request_name = dataset_name
+        else:
+            request_name = dataset_name[:90] + rnd_str(8)
+
         verbatim_lines = []
         card_info = {
-            '_requestName_': dataset_name,
+            '_requestName_': request_name,
             '_workArea_': card['campaign']['workArea'],
             '_psetName_': card['campaign']['config'],
             '_inputDataset_': dataset,
@@ -100,13 +122,18 @@ if args.make:
 
 if args.submit:
     from multiprocessing import Process
-    import importlib
+    import imp
     print("Submitting configs:")
     for dataset in datasets:
         print("   ==> "+dataset)
         dataset_name = dataset.lstrip("/").replace("/", "_")
         cfg_filename = os.path.join(card['campaign']['workArea'] , 'submit_{}.py'.format(dataset_name))
-        config_base = importlib.import_module(cfg_filename)
-        p = Process(target=submit, args=(config_base.config,))
+        # config_base = importlib.import_module(cfg_filename)
+        config_file = imp.load_source('config', cfg_filename)
+        p = Process(target=submit, args=(config_file.config,))
         p.start()
         p.join()
+
+if args.status:
+    for dataset in datasets:
+        dataset_name = dataset.lstrip("/").replace("/", "_")

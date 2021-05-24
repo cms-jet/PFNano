@@ -11,7 +11,6 @@ config.JobType.psetName = '_psetName_'
 config.JobType.maxMemoryMB = 5000 
 config.JobType.numCores = 4
 config.JobType.allowUndistributedCMSSW = True
-config.JobType.maxJobRuntimeMin = 275
 
 config.Debug.extraJDL = ['+CMS_ALLOW_OVERFLOW=False']
 
