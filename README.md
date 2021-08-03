@@ -1,4 +1,18 @@
 # PFNano
+This is a fork of PFNano, used by DAZSLE for signal ntuples. 
+
+Setup instructions:
+```
+export PFNANOTAG=vTEST
+scram project -n "CMSSW_10_6_27_PFNanoProd" CMSSW_10_6_27
+cd CMSSW_10_6_27_PFNanoProd/src
+cmsenv
+git clone -b $PFNANOTAG git@github.com:DAZSLE/PFNano PhysicsTools/PFNano
+git clone git@github.com:DAZSLE/AK15Nano PhysicsTools/AK15Nano
+```
+
+
+# Central branch README is below
 
 This is a [NanoAOD](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD) framework for advance developments of jet algorithms. 
 The current full content of this development branch can be seen [here](http://algomez.web.cern.ch/algomez/testWeb/PFnano_content_v02.html) and the size [here](http://algomez.web.cern.ch/algomez/testWeb/PFnano_size_v02.html).

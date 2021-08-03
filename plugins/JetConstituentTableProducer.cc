@@ -177,13 +177,26 @@ void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::Even
 
     // PF Cands    
     std::vector<reco::CandidatePtr> const & daughters = jet.daughterPtrVector();
+    if (name_ == "FatJetAK15PFCands") {
+      std::cout << "Jet nDaughters = " << daughters.size() << std::endl;
+    }
 
     for (const auto &cand : daughters) {
       auto candPtrs = cands_->ptrs();
       auto candInNewList = std::find( candPtrs.begin(), candPtrs.end(), cand );
       if ( candInNewList == candPtrs.end() ) {
-        //std::cout << "Cannot find candidate : " << cand.id() << ", " << cand.key() << ", pt = " << cand->pt() << std::endl;
-        continue;
+        // Hack: try to patch with momentum matching
+        for (auto candInNewList2 : candPtrs) {
+          if ((candInNewList2->pt() - cand->pt() < 1.e-3) && (candInNewList2->eta() - cand->eta() < 1.e-3) && (candInNewList2->phi() - cand->phi() < 1.e-3)) {
+            candInNewList = std::find(candPtrs.begin(), candPtrs.end(), candInNewList2);
+          }
+        }
+        if (candInNewList == candPtrs.end()) {
+          if (name_ == "FatJetAK15PFCands") {
+            std::cout << "Cannot find candidate : " << cand.id() << ", " << cand.key() << ", pt = " << cand->pt() << std::endl;
+          }
+          continue;
+        }
       }
       outCands->push_back(cand);
       jetIdx_pf.push_back(i_jet);
