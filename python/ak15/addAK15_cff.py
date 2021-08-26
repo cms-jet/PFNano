@@ -91,8 +91,8 @@ def setupAK15(process, runOnMC=False, path=None, runParticleNet=False, runPartic
         process.pfParticleNetTagInfosAK15.jet_radius = 1.5
         from PhysicsTools.PFNano.ak15.pfParticleNetPreprocessParamsAK15_cfi import pfParticleNetPreprocessParamsAK15
         process.pfParticleNetJetTagsAK15ParticleNet.preprocessParams = pfParticleNetPreprocessParamsAK15
-        process.pfParticleNetJetTagsAK15ParticleNet.model_path = 'PhysicsTools/PFNanoAK15/data/ParticleNet/ak15/ParticleNet-symbol.json'
-        process.pfParticleNetJetTagsAK15ParticleNet.param_path = 'PhysicsTools/PFNanoAK15/data/ParticleNet/ak15/ParticleNet-0000.params'
+        process.pfParticleNetJetTagsAK15ParticleNet.model_path = 'PhysicsTools/PFNano/data/ParticleNet/ak15/ParticleNet-symbol.json'
+        process.pfParticleNetJetTagsAK15ParticleNet.param_path = 'PhysicsTools/PFNano/data/ParticleNet/ak15/ParticleNet-0000.params'
 
     if runParticleNetMD:
         process.pfParticleNetTagInfosAK15.jet_radius = 1.5
@@ -102,7 +102,7 @@ def setupAK15(process, runOnMC=False, path=None, runParticleNet=False, runPartic
             src = process.pfMassDecorrelatedParticleNetJetTagsAK15.src,
             flav_names = ak15_flav_names,
             preprocessParams = pfMassDecorrelatedParticleNetPreprocessParamsAK15,
-            model_path = 'PhysicsTools/PFNanoAK15/data/ParticleNet-MD/ak15/ParticleNetMD.onnx',
+            model_path = 'PhysicsTools/PFNano/data/ParticleNet-MD/ak15/ParticleNetMD.onnx',
 #             debugMode=True
             )
 

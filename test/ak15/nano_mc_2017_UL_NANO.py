@@ -2,7 +2,7 @@
 # using: 
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
-# with command line options: nano_mc_2017_UL --mc --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO --conditions 106X_mc2017_realistic_v8 --era Run2_2017,run2_nanoAOD_106Xv1 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False))) --nThreads 4 -n 100 --filein /store/mc/RunIISummer19UL17MiniAOD/QCD_Pt_1400to1800_TuneCP5_13TeV_pythia8/MINIAODSIM/106X_mc2017_realistic_v6-v2/100000/BFAAC85A-F5C5-8843-8D2A-76A9E873E24B.root --fileout file:nano_mc2017.root --customise PhysicsTools/PFNanoAK15/addAK15_cff.setupPFNanoAK15_mc --no_exec
+# with command line options: nano_mc_2017_UL --mc --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO --conditions 106X_mc2017_realistic_v8 --era Run2_2017,run2_nanoAOD_106Xv1 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False))) --nThreads 4 -n 100 --filein /store/mc/RunIISummer19UL17MiniAOD/QCD_Pt_1400to1800_TuneCP5_13TeV_pythia8/MINIAODSIM/106X_mc2017_realistic_v6-v2/100000/BFAAC85A-F5C5-8843-8D2A-76A9E873E24B.root --fileout file:nano_mc2017.root --customise PhysicsTools/PFNano/ak15/addAK15_cff.setupPFNanoAK15_mc --no_exec
 import FWCore.ParameterSet.Config as cms
 
 from Configuration.Eras.Era_Run2_2017_cff import Run2_2017
@@ -79,31 +79,16 @@ process.options.numberOfConcurrentLuminosityBlocks=cms.untracked.uint32(1)
 
 # customisation of the process.
 
-print("\nFlag A")
-for aatt in dir(process):
-    if "ak4" in aatt.lower():
-        print(aatt)
-
 # Automatic addition of the customisation function from PhysicsTools.NanoAOD.nano_cff
 from PhysicsTools.NanoAOD.nano_cff import nanoAOD_customizeMC 
-
-print("\nFlag B")
-for aatt in dir(process):
-    if "ak4" in aatt.lower():
-        print(aatt)
 
 #call to customisation function nanoAOD_customizeMC imported from PhysicsTools.NanoAOD.nano_cff
 process = nanoAOD_customizeMC(process)
 
-print("\nFlag C")
-for aatt in dir(process):
-    if "ak4" in aatt.lower():
-        print(aatt)
+# Automatic addition of the customisation function from PhysicsTools.PFNano.ak15.addAK15_cff
+from PhysicsTools.PFNano.ak15.addAK15_cff import setupPFNanoAK15_mc 
 
-# Automatic addition of the customisation function from PhysicsTools.PFNanoAK15.addAK15_cff
-from PhysicsTools.PFNanoAK15.addAK15_cff import setupPFNanoAK15_mc 
-
-#call to customisation function setupPFNanoAK15_mc imported from PhysicsTools.PFNanoAK15.addAK15_cff
+#call to customisation function setupPFNanoAK15_mc imported from PhysicsTools.PFNano.ak15.addAK15_cff
 process = setupPFNanoAK15_mc(process)
 
 # End of customisation functions
