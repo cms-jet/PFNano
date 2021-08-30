@@ -121,7 +121,7 @@ jsons/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt
 jsons/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt
 ```
 
-Include in crab submission as `--lumiMask jsons/...txt`
+Include in `card.yml` for `crabby.py` submission. (In deprecated interactive submissiong add `--lumiMask jsons/...txt`)
 
 
 ## How to create website with nanoAOD content
