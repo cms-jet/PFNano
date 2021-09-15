@@ -1,8 +1,9 @@
 defaults:
   isMC: False
-  splitting: FileBased
-  totalUnits: 20
-  unitsPerJob: 4
+  splitting: Automatic
+  # Automatic unitsPerJob=max job target runtime, totalUnits = events
+  totalUnits: 5000
+  unitsPerJob: 180
   reco_version: UL
   globaltag: 106X_dataRun2_v32
 
