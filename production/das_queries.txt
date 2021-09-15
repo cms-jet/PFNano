@@ -1,0 +1,42 @@
+UL MiniAODv1
+Campaign strings:
+*Summer20UL16MiniAOD-*
+*Summer20UL16MiniAODAPV-*
+*Summer20UL17MiniAOD-*
+*Summer20UL18MiniAOD-*
+
+dasgoclient --query="dataset dataset=/QCD_HT*/*Summer20UL16MiniAOD-*/MINIAODSIM status=*" | grep -v "BGenFilter"
+dasgoclient --query="dataset dataset=/TT*/*Summer20UL16MiniAOD-*/MINIAODSIM status=*" | grep -v "Njet\|CP5down\|CP5up\|hdamp\|TTbb\|TTZ\|TTW\|TTH\|TTG\|mtop\|width\|CP5CR\|erd\|Mtt\|TT4b\|TTTT\|FCNC"
+dasgoclient --query="dataset dataset=/ST_*/*Summer20UL16MiniAOD-*/MINIAODSIM status=*" | grep -v "mtop\|wtop\|anomw\|CP5CR\|erd\|comphep\|hdamp\|CP5up\|CP5down"
+dasgoclient --query="dataset dataset=/WJetsToQQ_HT*/*Summer20UL16MiniAOD-*/MINIAODSIM status=*"
+dasgoclient --query="dataset dataset=/ZJetsToQQ_HT*/*Summer20UL16MiniAOD-*/MINIAODSIM status=*"
+dasgoclient --query="dataset dataset=/WJetsToLNu_HT*/*Summer20UL16MiniAOD-*/MINIAODSIM status=*"
+dasgoclient --query="dataset dataset=/DYJetsToLL_M-50_HT*/*Summer20UL16MiniAOD-*/MINIAODSIM status=*"
+
+dasgoclient --query="dataset dataset=/QCD_HT*/*Summer20UL16MiniAODAPV-*/MINIAODSIM status=*" | grep -v "BGenFilter"
+dasgoclient --query="dataset dataset=/TT*/*Summer20UL16MiniAODAPV-*/MINIAODSIM status=*" | grep -v "Njet\|CP5down\|CP5up\|hdamp\|TTbb\|TTZ\|TTW\|TTH\|TTG\|mtop\|width\|CP5CR\|erd\|Mtt\|TT4b\|TTTT\|FCNC"
+dasgoclient --query="dataset dataset=/ST_*/*Summer20UL16MiniAODAPV-*/MINIAODSIM status=*" | grep -v "mtop\|wtop\|anomw\|CP5CR\|erd\|comphep\|hdamp\|CP5up\|CP5down"
+dasgoclient --query="dataset dataset=/WJetsToQQ_HT*/*Summer20UL16MiniAODAPV-*/MINIAODSIM status=*"
+dasgoclient --query="dataset dataset=/ZJetsToQQ_HT*/*Summer20UL16MiniAODAPV-*/MINIAODSIM status=*"
+dasgoclient --query="dataset dataset=/WJetsToLNu_HT*/*Summer20UL16MiniAODAPV-*/MINIAODSIM status=*"
+dasgoclient --query="dataset dataset=/DYJetsToLL_M-50_HT*/*Summer20UL16MiniAODAPV-*/MINIAODSIM status=*"
+
+dasgoclient --query="dataset dataset=/QCD_HT*/*Summer20UL17MiniAOD-*/MINIAODSIM status=*" | grep -v "BGenFilter"
+dasgoclient --query="dataset dataset=/WJetsToQQ_HT*/*Summer20UL17MiniAOD-*/MINIAODSIM status=*"
+dasgoclient --query="dataset dataset=/ZJetsToQQ_HT*/*Summer20UL17MiniAOD-*/MINIAODSIM status=*"
+dasgoclient --query="dataset dataset=/TT*/*Summer20UL17MiniAOD-*/MINIAODSIM status=*" | grep -v "Njet\|CP5down\|CP5up\|hdamp\|TTbb\|TTZ\|TTW\|TTH\|TTG\|mtop\|width\|CP5CR\|erd\|Mtt\|TT4b\|TTTT\|FCNC"
+dasgoclient --query="dataset dataset=/ST_*/*Summer20UL17MiniAOD-*/MINIAODSIM status=*" | grep -v "mtop\|wtop\|anomw\|CP5CR\|erd\|comphep\|hdamp\|CP5up\|CP5down"
+dasgoclient --query="dataset dataset=/WJetsToLNu_HT*/*Summer20UL17MiniAOD-*/MINIAODSIM status=*"
+dasgoclient --query="dataset dataset=/DYJetsToLL_M-50_HT*/*Summer20UL17MiniAOD-*/MINIAODSIM status=*"
+
+dasgoclient --query="dataset dataset=/QCD_HT*/*Summer20UL18MiniAOD-*/MINIAODSIM status=*" | grep -v "BGenFilter"
+dasgoclient --query="dataset dataset=/WJetsToQQ_HT*/*Summer20UL18MiniAOD-*/MINIAODSIM status=*"
+dasgoclient --query="dataset dataset=/ZJetsToQQ_HT*/*Summer20UL18MiniAOD-*/MINIAODSIM status=*"
+dasgoclient --query="dataset dataset=/TT*/*Summer20UL18MiniAOD-*/MINIAODSIM status=*" | grep -v "Njet\|CP5down\|CP5up\|hdamp\|TTbb\|TTZ\|TTW\|TTH\|TTG\|mtop\|width\|CP5CR\|erd\|Mtt\|TT4b\|TTTT\|FCNC"
+dasgoclient --query="dataset dataset=/ST_*/*Summer20UL18MiniAOD-*/MINIAODSIM status=*" | grep -v "mtop\|wtop\|anomw\|CP5CR\|erd\|comphep\|hdamp\|CP5up\|CP5down"
+dasgoclient --query="dataset dataset=/WJetsToLNu_HT*/*Summer20UL18MiniAOD-*/MINIAODSIM status=*"
+dasgoclient --query="dataset dataset=/DYJetsToLL_M-50_HT*/*Summer20UL18MiniAOD-*/MINIAODSIM status=*"
+
+dasgoclient --query="dataset dataset=/VectorZPrime*/*16*/MINIAODSIM"
+dasgoclient --query="dataset dataset=/VectorZPrime*/*17*/MINIAODSIM"
+dasgoclient --query="dataset dataset=/VectorZPrime*/*18*/MINIAODSIM"
