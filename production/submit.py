@@ -7,6 +7,7 @@ from fnmatch import fnmatch
 from argparse import ArgumentParser
 from httplib import HTTPException
 from multiprocessing import Process
+import copy
 
 from CRABClient.UserUtilities import config, ClientException, getUsernameFromCRIC
 from CRABAPI.RawCommand import crabCommand
@@ -14,7 +15,7 @@ from CRABClient.ClientExceptions import ClientException
 
 #from .production_tag import production_tag # Get from a text file
 # Get from git tag (tbd)
-production_tag = "vTEST2" # Specify by hand
+production_tag = "vTEST3" # Specify by hand
 requestname_base = "pfnano"
 output_site = "T3_US_FNALLPC"
 output_lfn_base = "/store/group/lpcpfnano/{username}/{production_tag}".format(
@@ -41,13 +42,16 @@ if __name__ == '__main__':
         defaults = doc['defaults'] if 'defaults' in doc else {}
 
         for sample in sorted(doc["samples"].keys()):
-            info = doc["samples"][sample]
+            info = copy.deepcopy(defaults)
+            info.update(doc["samples"][sample])
+            # defaults.update(doc["samples"][sample])
             print("\n\n*** Sample {} ***".format(sample))
 
             for dataset_shortname, dataset in info['datasets'].iteritems():            
                 print("Submitting {}: {}".format(dataset_shortname, dataset))
 
-                isMC = info.get("isMC", defaults.get("isMC", None))
+                #isMC = info.get("isMC", defaults.get("isMC", None))
+                isMC = info.get("isMC", None)
                 if isMC == None:
                     raise ValueError("Please specify parameter isMC")
 
@@ -61,19 +65,16 @@ if __name__ == '__main__':
 
                 this_config.section_('JobType')
                 this_config.JobType.pluginName = 'Analysis'
-                this_config.JobType.psetName = os.path.expandvars(info.get("pset", defaults.get("pset", None)))
-                this_config.JobType.maxJobRuntimeMin = 3000
+                this_config.JobType.psetName = os.path.expandvars(info.get("pset", None))
+                #this_config.JobType.maxJobRuntimeMin = 3000
                 this_config.JobType.allowUndistributedCMSSW = True
                 this_config.JobType.numCores = 4
-                this_config.JobType.maxMemoryMB = 4000
+                this_config.JobType.maxMemoryMB = 8000
                 #this_config.JobType.outputFiles = ["_".join("nano", "mc" if isMC else "data")]
                 #this_config.JobType.outputFiles = ["nanoskim.root", "hists.root"]
                 #this_config.JobType.outputFiles = ['_'.join(['DijetSkim', 'mc' if isMC else 'data', production_tag])+'.root']
                 #this_config.JobType.sendPythonFolder  = True
-                globaltag = info.get(
-                        'globaltag',
-                        defaults.get('globaltag', None)
-                )
+                globaltag = info.get("globaltag", None)
                 this_config.JobType.pyCfgParams = [
                         'isMC={}'.format(isMC), 
                         'reportEvery=1000',
@@ -87,38 +88,32 @@ if __name__ == '__main__':
 
                 this_config.section_('Data')
                 this_config.Data.publication = False
-                this_config.Data.outLFNDirBase = "{}/{}".format(output_lfn_base, sample)
+                this_config.Data.outLFNDirBase = "{}/{}/{}".format(output_lfn_base, year, sample)
                 this_config.Data.outputDatasetTag = dataset_shortname
                 # Outputs land at outLFNDirBase/outputDatasetTag
                 this_config.Data.inputDBS = 'global'
                 this_config.Data.inputDataset = dataset
-                splitting_mode = info.get(
-                    "splitting", 
-                    defaults.get("splitting", "Automatic")
-                    )
+                splitting_mode = info.get("splitting", "Automatic")
                 if not splitting_mode in ["Automatic", "FileBased", "LumiBased"]:
                     raise ValueError("Unrecognized splitting mode: {}".format(splitting_mode))
                 this_config.Data.splitting = splitting_mode
 
                 if not isMC:
-                        this_config.Data.lumiMask = info.get(
-                                'lumimask', 
-                                defaults.get('lumimask', None)
-                        )
+                        this_config.Data.lumiMask = info.get('lumimask', None)
                 else:
                         this_config.Data.lumiMask = ''
 
-                unitsPerJob = info.get("unitsPerJob", defaults.get("unitsPerJob", None))
+                unitsPerJob = info.get("unitsPerJob", None)
                 if unitsPerJob is not None:
                     this_config.Data.unitsPerJob = unitsPerJob
 
-                totalUnits = info.get("totalUnits", defaults.get("totalUnits", None))
+                totalUnits = info.get("totalUnits", None)
                 if totalUnits is not None:
                     this_config.Data.totalUnits = totalUnits
 
                 allowInvalid = info.get("allowInvalid", False)
                 if allowInvalid:
-                  config.Data.allowNonValidInputDataset = True
+                    this_config.Data.allowNonValidInputDataset = True
                 
                 print this_config
                 p = Process(target=submit, args=(this_config,))
