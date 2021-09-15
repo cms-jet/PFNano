@@ -1,0 +1,43 @@
+defaults:
+  isMC: False
+  splitting: Automatic
+  reco_version: UL
+  globaltag: 106X_dataRun2_v32
+
+
+samples:
+  JetHT2016: 
+    year: 2016
+    globaltag: 106X_dataRun2_v32
+    lumimask: https://cms-service-dqmdc.web.cern.ch/CAF/certification/Collisions16/13TeV/Legacy_2016/Cert_271036-284044_13TeV_Legacy2016_Collisions16_JSON.txt
+    datasets: 
+    /JetHT/Run2016B-21Feb2020_ver1_UL2016_HIPM-v1/MINIAOD
+    /JetHT/Run2016B-21Feb2020_ver2_UL2016_HIPM-v1/MINIAOD
+    /JetHT/Run2016C-21Feb2020_UL2016_HIPM-v1/MINIAOD
+    /JetHT/Run2016D-21Feb2020_UL2016_HIPM-v1/MINIAOD
+    /JetHT/Run2016E-21Feb2020_UL2016_HIPM-v1/MINIAOD
+    /JetHT/Run2016F-21Feb2020_UL2016_HIPM-v1/MINIAOD
+    /JetHT/Run2016F-21Feb2020_UL2016-v1/MINIAOD
+    /JetHT/Run2016G-21Feb2020_UL2016-v1/MINIAOD
+    /JetHT/Run2016H-21Feb2020_UL2016-v1/MINIAOD
+
+  JetHT2017: 
+    year: 2017
+    globaltag: 106X_dataRun2_v32
+    lumimask: https://cms-service-dqmdc.web.cern.ch/CAF/certification/Collisions17/13TeV/Legacy_2017/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt
+    datasets: 
+      /JetHT/Run2017B-09Aug2019_UL2017-v1/MINIAOD
+      /JetHT/Run2017C-09Aug2019_UL2017-v1/MINIAOD
+      /JetHT/Run2017D-09Aug2019_UL2017-v1/MINIAOD
+      /JetHT/Run2017E-09Aug2019_UL2017-v1/MINIAOD
+      /JetHT/Run2017F-09Aug2019_UL2017-v1/MINIAOD
+
+  JetHT2018: 
+    year: 2018
+    globaltag: 106X_dataRun2_v32
+    lumimask : https://cms-service-dqmdc.web.cern.ch/CAF/certification/Collisions18/13TeV/Legacy_2018/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt
+    datasets: 
+      /JetHT/Run2018A-12Nov2019_UL2018-v2/MINIAOD
+      /JetHT/Run2018B-12Nov2019_UL2018-v2/MINIAOD
+      /JetHT/Run2018C-12Nov2019_UL2018_rsb-v1/MINIAOD
+      /JetHT/Run2018D-12Nov2019_UL2018_rsb-v1/MINIAOD
