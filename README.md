@@ -3,12 +3,23 @@ This is a fork of PFNano, used by DAZSLE for signal ntuples.
 
 Setup instructions:
 ```
-export PFNANOTAG=vTEST
-scram project -n "CMSSW_10_6_27_PFNanoProd" CMSSW_10_6_27
-cd CMSSW_10_6_27_PFNanoProd/src
+scram project -n "CMSSW_10_6_19_prod"  CMSSW_10_6_19 # 10_6_19 is the last version that works with PFcand merging...
+cd  CMSSW_10_6_19/src
 cmsenv
-git clone -b $PFNANOTAG git@github.com:DAZSLE/PFNano PhysicsTools/PFNano
-git clone git@github.com:DAZSLE/AK15Nano PhysicsTools/AK15Nano
+git cms-init
+git cms-rebase-topic andrzejnovak:614nosort
+git cms-rebase-topic DryRun:CMSSW_10_6_19_patch_pfnano
+git clone git@github.com:DAZSLE/PFNano PhysicsTools/PFNano
+cd PhysicsTools/PFNano
+git checkout tags/v1.0 -b v1.0
+```
+
+Launching production:
+```
+setupCrab
+voms-proxy-init -voms cms
+cd PhysicsTools/PFNano/production
+python submit.py -y samples_testdata.yaml
 ```
 
 

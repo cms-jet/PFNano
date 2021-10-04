@@ -13,9 +13,10 @@ from CRABClient.UserUtilities import config, ClientException, getUsernameFromCRI
 from CRABAPI.RawCommand import crabCommand
 from CRABClient.ClientExceptions import ClientException
 
-#from .production_tag import production_tag # Get from a text file
+sys.path.append(".")
+from production_tag import production_tag # Get from a text file
 # Get from git tag (tbd)
-production_tag = "vTEST3" # Specify by hand
+#production_tag = "vTEST3" # Specify by hand
 requestname_base = "pfnano"
 output_site = "T3_US_FNALLPC"
 output_lfn_base = "/store/group/lpcpfnano/{username}/{production_tag}".format(
@@ -25,6 +26,7 @@ output_lfn_base = "/store/group/lpcpfnano/{username}/{production_tag}".format(
 if __name__ == '__main__':
 
     def submit(config):
+        print("DEBUG : In submit()")
         try:
             crabCommand('submit', config=config)
         except HTTPException as hte:
@@ -48,7 +50,7 @@ if __name__ == '__main__':
             print("\n\n*** Sample {} ***".format(sample))
 
             for dataset_shortname, dataset in info['datasets'].iteritems():            
-                print("Submitting {}: {}".format(dataset_shortname, dataset))
+                print("\n*** Submitting {}: {}".format(dataset_shortname, dataset))
 
                 #isMC = info.get("isMC", defaults.get("isMC", None))
                 isMC = info.get("isMC", None)
@@ -88,7 +90,7 @@ if __name__ == '__main__':
 
                 this_config.section_('Data')
                 this_config.Data.publication = False
-                this_config.Data.outLFNDirBase = "{}/{}/{}".format(output_lfn_base, year, sample)
+                this_config.Data.outLFNDirBase = "{}/{}/{}".format(output_lfn_base, info["year"], sample)
                 this_config.Data.outputDatasetTag = dataset_shortname
                 # Outputs land at outLFNDirBase/outputDatasetTag
                 this_config.Data.inputDBS = 'global'

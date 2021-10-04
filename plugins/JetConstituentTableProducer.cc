@@ -93,6 +93,7 @@ JetConstituentTableProducer<T>::~JetConstituentTableProducer() {}
 
 template< typename T>
 void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::EventSetup &iSetup) {
+
   // elements in all these collections must have the same order!
   auto outCands = std::make_unique<std::vector<reco::CandidatePtr>>();
   auto outSVs = std::make_unique<std::vector<const reco::VertexCompositePtrCandidate *>> ();
@@ -175,7 +176,7 @@ void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::Even
       }
     }
 
-    // PF Cands    
+    // PF Cands   
     std::vector<reco::CandidatePtr> const & daughters = jet.daughterPtrVector();
     if (name_ == "FatJetAK15PFCands") {
       std::cout << "Jet nDaughters = " << daughters.size() << std::endl;
@@ -194,6 +195,7 @@ void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::Even
         if (candInNewList == candPtrs.end()) {
           if (name_ == "FatJetAK15PFCands") {
             std::cout << "Cannot find candidate : " << cand.id() << ", " << cand.key() << ", pt = " << cand->pt() << std::endl;
+            exit(1);
           }
           continue;
         }
@@ -228,6 +230,7 @@ void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::Even
   }
 
   auto candTable = std::make_unique<nanoaod::FlatTable>(outCands->size(), name_, false);
+  std::cout << "DEBUG : candTable (" << name_ << ") has N = " << outCands->size() << std::endl;
   // We fill from here only stuff that cannot be created with the SimpleFlatTableProducer
   candTable->addColumn<int>(idx_name_, pfcandIdx, "Index in the candidate list", nanoaod::FlatTable::IntColumn);
   candTable->addColumn<int>("jetIdx", jetIdx_pf, "Index of the parent jet", nanoaod::FlatTable::IntColumn);
@@ -264,6 +267,7 @@ void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::Even
     svTable->addColumn<float>("deltaR", sv_deltaR, "dR from parent jet", nanoaod::FlatTable::FloatColumn, 10);
     svTable->addColumn<float>("enration", sv_enratio, "energy relative to parent jet", nanoaod::FlatTable::FloatColumn, 10);
   }
+
   iEvent.put(std::move(svTable), nameSV_);
 
   iEvent.put(std::move(outCands));
