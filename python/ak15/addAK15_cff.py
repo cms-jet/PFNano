@@ -25,10 +25,10 @@ def setupAK15(process, runOnMC=False, path=None, runParticleNet=False, runPartic
     ]
     JETCorrLevels = ['L2Relative', 'L3Absolute', 'L2L3Residual']
 
-    print("Flag 1")
-    for aatt in dir(process):
-        if "ak4" in aatt.lower():
-            print(aatt)
+    #print("Flag 1")
+    #for aatt in dir(process):
+    #    if "ak4" in aatt.lower():
+    #        print(aatt)
 
 
     from PhysicsTools.PFNano.ak15.jetToolbox_cff import jetToolbox
@@ -43,10 +43,10 @@ def setupAK15(process, runOnMC=False, path=None, runParticleNet=False, runPartic
         addEnergyCorrFuncSubjets=True, ecfSubjetType = "N", ecfSubjetBeta = 1.0, ecfSubjetN3 = False,
     )
 
-    print("\nFlag 2")
-    for aatt in dir(process):
-        if "ak4" in aatt.lower():
-            print(aatt)
+    #print("\nFlag 2")
+    #for aatt in dir(process):
+    #    if "ak4" in aatt.lower():
+    #        print(aatt)
 
     if runOnMC:
         process.ak15GenJetsNoNu.jetPtMin = 100
@@ -76,13 +76,13 @@ def setupAK15(process, runOnMC=False, path=None, runParticleNet=False, runPartic
 
 
     # DEBUG : Print process attributes with AK15 in name
-    for aatt in dir(process):
-        if "ak15" in aatt.lower() or "ak4" in aatt.lower():
-            print(aatt)
-    print("\n")
-    for aatt in dir(process):
-        if "pfParticleNet" in aatt:
-            print(aatt)
+    #for aatt in dir(process):
+    #    if "ak15" in aatt.lower() or "ak4" in aatt.lower():
+    #        print(aatt)
+    #print("\n")
+    #for aatt in dir(process):
+    #    if "pfParticleNet" in aatt:
+    #        print(aatt)
 
 
     # configure DeepAK15
@@ -288,7 +288,7 @@ def setupPFNanoAK15_data(process):
 
 def setupPFNanoAK15_mc(process):
     setupAK15(process, runOnMC=True, runParticleNet=False, runParticleNetMD=True)
-    addPFCands(process, runOnMC=True, saveAll=False, addAK4=True, addAK8=True, addAK15=True)
+    addPFCands(process, runOnMC=True, saveAll=False, addAK4=True, addAK8=True, addAK15=True, saveAllGen=False)
     add_BTV(process, runOnMC=True)
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process

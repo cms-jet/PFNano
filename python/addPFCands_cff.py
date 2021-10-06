@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 from  PhysicsTools.NanoAOD.common_cff import *
 
-def addPFCands(process, runOnMC=False, saveAll=False, addAK4=False, addAK8=False, addAK15=False):
+def addPFCands(process, runOnMC=False, saveAll=False, addAK4=False, addAK8=False, addAK15=False, saveAllGen=False):
     '''
         Add PFCands and/or jet-PFCand association tables to NanoAOD
 
@@ -135,7 +135,7 @@ def addPFCands(process, runOnMC=False, saveAll=False, addAK4=False, addAK8=False
                                                         cut = cms.string("pt > 100")
                                                         )
 
-        if saveAll:
+        if saveAll or saveAllGen:
             genCandInput = cms.InputTag("packedGenParticles")
         else:
             genCandList = cms.VInputTag()
@@ -183,7 +183,7 @@ def addPFCands(process, runOnMC=False, saveAll=False, addAK4=False, addAK8=False
                                                              readBtag = cms.bool(False))
         if addAK15:
             process.genAK15ConstituentsTable = cms.EDProducer("GenJetConstituentTableProducer",
-                                                             candidates = cms.InputTag("genJetsAK15Constituents"),
+                                                             candidates = genCandInput,
                                                              jets = cms.InputTag("genJetsAK15Constituents"), # Note: The name has "Constituents" in it, but these are the jets
                                                              name = cms.string("GenJetCandsAK15"),
                                                              nameSV = cms.string("GenJetSVsAK15"),
@@ -198,7 +198,7 @@ def addPFCands(process, runOnMC=False, saveAll=False, addAK4=False, addAK8=False
             process.customizedPFCandsTask.add(process.genJetsAK8Constituents)
         if addAK15:
             process.customizedPFCandsTask.add(process.genJetsAK15Constituents)
-        if not saveAll:
+        if not (saveAll or saveAllGen):
             process.customizedPFCandsTask.add(process.genJetsConstituents)
         process.customizedPFCandsTask.add(process.genJetsParticleTable)
         if addAK4:
