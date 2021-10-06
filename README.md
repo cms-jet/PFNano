@@ -11,16 +11,20 @@ git cms-rebase-topic andrzejnovak:614nosort
 git cms-rebase-topic DryRun:CMSSW_10_6_19_patch_pfnano
 git clone git@github.com:DAZSLE/PFNano PhysicsTools/PFNano
 cd PhysicsTools/PFNano
-git checkout tags/v1.0 -b v1.0
+git checkout tags/v1.1 -b v1.1
+cd $CMSSW_BASE/src
+scram b -j8
 ```
 
 Launching production:
 ```
 setupCrab
 voms-proxy-init -voms cms
-cd PhysicsTools/PFNano/production
+cd $CMSSW_BASE/src/PhysicsTools/PFNano/production
 python submit.py -y samples_testdata.yaml
 ```
+
+Use the `.yaml` files to configure the submission. Hopefully it's straightforward to understand, ask David if not.
 
 
 # Central branch README is below
