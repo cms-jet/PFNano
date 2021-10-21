@@ -2,13 +2,13 @@
 # using: 
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
-# with command line options: nano_data_2018_UL --data --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO --conditions 106X_dataRun2_v32 --era Run2_2018,run2_nanoAOD_106Xv1 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False))) --nThreads 4 -n 100 --filein /store/data/Run2018A/JetHT/MINIAOD/12Nov2019_UL2018-v2/100000/BBE577F0-95A1-A542-B86C-58FD46079404.root --fileout file:nano_data2018.root --customise PhysicsTools/PFNano/ak15/addAK15_cff.setupPFNanoAK15_data --no_exec
+# with command line options: nano_data_2018_UL --data --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO --conditions 106X_dataRun2_v35 --era Run2_2018,run2_nanoAOD_106Xv2 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False))) --nThreads 4 -n 100 --filein /store/data/Run2018C/JetHT/MINIAOD/UL2018_MiniAODv2-v1/00000/CE9AAE3E-F928-884D-8FB3-9A6A347D7A28.root --fileout file:nano_data2018.root --customise PhysicsTools/PFNano/ak15/addAK15_cff.setupPFNanoAK15_data --no_exec
 import FWCore.ParameterSet.Config as cms
 
 from Configuration.Eras.Era_Run2_2018_cff import Run2_2018
-from Configuration.Eras.Modifier_run2_nanoAOD_106Xv1_cff import run2_nanoAOD_106Xv1
+from Configuration.Eras.Modifier_run2_nanoAOD_106Xv2_cff import run2_nanoAOD_106Xv2
 
-process = cms.Process('NANO',Run2_2018,run2_nanoAOD_106Xv1)
+process = cms.Process('NANO',Run2_2018,run2_nanoAOD_106Xv2)
 
 # import of standard configurations
 process.load('Configuration.StandardSequences.Services_cff')
@@ -27,7 +27,7 @@ process.maxEvents = cms.untracked.PSet(
 
 # Input source
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('/store/data/Run2018A/JetHT/MINIAOD/12Nov2019_UL2018-v2/100000/BBE577F0-95A1-A542-B86C-58FD46079404.root'),
+    fileNames = cms.untracked.vstring('/store/data/Run2018C/JetHT/MINIAOD/UL2018_MiniAODv2-v1/00000/CE9AAE3E-F928-884D-8FB3-9A6A347D7A28.root'),
     secondaryFileNames = cms.untracked.vstring()
 )
 
@@ -59,7 +59,7 @@ process.NANOAODSIMoutput = cms.OutputModule("NanoAODOutputModule",
 
 # Other statements
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, '106X_dataRun2_v32', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, '106X_dataRun2_v35', '')
 
 # Path and EndPath definitions
 process.nanoAOD_step = cms.Path(process.nanoSequence)
