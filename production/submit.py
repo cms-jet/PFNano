@@ -16,7 +16,7 @@ from CRABClient.ClientExceptions import ClientException
 sys.path.append(".")
 from production_tag import production_tag # Get from a text file
 # Get from git tag (tbd)
-#production_tag = "vTEST3" # Specify by hand
+#production_tag = "vTEST4" # Specify by hand
 requestname_base = "pfnano"
 output_site = "T3_US_FNALLPC"
 output_lfn_base = "/store/group/lpcpfnano/{username}/{production_tag}".format(
@@ -62,8 +62,8 @@ if __name__ == '__main__':
                 this_config.section_('General')
                 this_config.General.transferOutputs = True
                 this_config.General.transferLogs = True
-                this_config.General.workArea = "crab/{}/{}/{}".format(requestname_base, production_tag, info["year"])
-                this_config.General.requestName = "{}_{}_{}".format(requestname_base, info["year"], dataset_shortname)
+                this_config.General.workArea = "crab/{}_{}_{}".format(requestname_base, production_tag, info["year"])
+                this_config.General.requestName = "{}_{}_{}_{}".format(requestname_base, production_tag, info["year"], dataset_shortname)
 
                 this_config.section_('JobType')
                 this_config.JobType.pluginName = 'Analysis'
