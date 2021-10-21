@@ -2,7 +2,7 @@ defaults:
   isMC: False
   splitting: Automatic
   reco_version: UL
-  globaltag: 106X_dataRun2_v32
+  globaltag: 106X_dataRun2_v35
 
 samples:
   SingleMu2016: 
@@ -10,34 +10,35 @@ samples:
     pset: $CMSSW_BASE/src/PhysicsTools/PFNano/test/ak15/nano_data_2016_UL_NANO.py
     lumimask: https://cms-service-dqmdc.web.cern.ch/CAF/certification/Collisions16/13TeV/Legacy_2016/Cert_271036-284044_13TeV_Legacy2016_Collisions16_JSON.txt
     datasets: 
-      SingleMuon_Run2016Bver1_HIPM: /SingleMuon/Run2016B-21Feb2020_ver1_UL2016_HIPM-v1/MINIAOD
-      SingleMuon_Run2016Bver2_HIPM: /SingleMuon/Run2016B-21Feb2020_ver2_UL2016_HIPM-v1/MINIAOD
-      SingleMuon_Run2016C_HIPM: /SingleMuon/Run2016C-21Feb2020_UL2016_HIPM-v1/MINIAOD
-      SingleMuon_Run2016D_HIPM: /SingleMuon/Run2016D-21Feb2020_UL2016_HIPM-v1/MINIAOD
-      SingleMuon_Run2016E_HIPM: /SingleMuon/Run2016E-21Feb2020_UL2016_HIPM-v1/MINIAOD
-      SingleMuon_Run2016F_HIPM: /SingleMuon/Run2016F-21Feb2020_UL2016_HIPM-v1/MINIAOD
-      SingleMuon_Run2016F: /SingleMuon/Run2016F-21Feb2020_UL2016-v1/MINIAOD
-      SingleMuon_Run2016G: /SingleMuon/Run2016G-21Feb2020_UL2016-v1/MINIAOD
-      SingleMuon_Run2016H: /SingleMuon/Run2016H-21Feb2020_UL2016-v1/MINIAOD
+      /SingleMuon/Run2016B_ver1_HIPM: /SingleMuon/Run2016B-ver1_HIPM_UL2016_MiniAODv2-v2/MINIAOD
+      /SingleMuon/Run2016B_ver2_HIPM: /SingleMuon/Run2016B-ver2_HIPM_UL2016_MiniAODv2-v2/MINIAOD
+      /SingleMuon/Run2016C_HIPM     : /SingleMuon/Run2016C-HIPM_UL2016_MiniAODv2-v2/MINIAOD
+      /SingleMuon/Run2016D_HIPM     : /SingleMuon/Run2016D-HIPM_UL2016_MiniAODv2-v2/MINIAOD
+      /SingleMuon/Run2016E_HIPM     : /SingleMuon/Run2016E-HIPM_UL2016_MiniAODv2-v2/MINIAOD
+      /SingleMuon/Run2016F_HIPM     : /SingleMuon/Run2016F-HIPM_UL2016_MiniAODv2-v2/MINIAOD
+      /SingleMuon/Run2016F          : /SingleMuon/Run2016F-UL2016_MiniAODv2-v2/MINIAOD
+      /SingleMuon/Run2016G          : /SingleMuon/Run2016G-UL2016_MiniAODv2-v2/MINIAOD
+      /SingleMuon/Run2016H          : /SingleMuon/Run2016H-UL2016_MiniAODv2-v2/MINIAOD
 
   SingleMu2017: 
     year: 2017
     pset: $CMSSW_BASE/src/PhysicsTools/PFNano/test/ak15/nano_data_2017_UL_NANO.py
     lumimask: https://cms-service-dqmdc.web.cern.ch/CAF/certification/Collisions17/13TeV/Legacy_2017/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt
     datasets: 
-      SingleMuon_Run2017B: /SingleMuon/Run2017B-09Aug2019_UL2017-v1/MINIAOD
-      SingleMuon_Run2017C: /SingleMuon/Run2017C-09Aug2019_UL2017-v1/MINIAOD
-      SingleMuon_Run2017D: /SingleMuon/Run2017D-09Aug2019_UL2017-v1/MINIAOD
-      SingleMuon_Run2017E: /SingleMuon/Run2017E-09Aug2019_UL2017-v1/MINIAOD
-      SingleMuon_Run2017F: /SingleMuon/Run2017F-09Aug2019_UL2017-v1/MINIAOD
-      SingleMuon_Run2017G: /SingleMuon/Run2017G-09Aug2019_UL2017-v1/MINIAOD
+      SingleMuon_Run2017B : /SingleMuon/Run2017B-UL2017_MiniAODv2-v1/MINIAOD
+      SingleMuon_Run2017C : /SingleMuon/Run2017C-UL2017_MiniAODv2-v1/MINIAOD
+      SingleMuon_Run2017D : /SingleMuon/Run2017D-UL2017_MiniAODv2-v1/MINIAOD
+      SingleMuon_Run2017E : /SingleMuon/Run2017E-UL2017_MiniAODv2-v1/MINIAOD
+      SingleMuon_Run2017F : /SingleMuon/Run2017F-UL2017_MiniAODv2-v1/MINIAOD
+      SingleMuon_Run2017G : /SingleMuon/Run2017G-UL2017_MiniAODv2-v1/MINIAOD
+      #SingleMuon_Run2017H: /SingleMuon/Run2017H-UL2017_MiniAODv2-v1/MINIAOD
 
   SingleMu2018: 
     year: 2018
     pset: $CMSSW_BASE/src/PhysicsTools/PFNano/test/ak15/nano_data_2018_UL_NANO.py
     lumimask : https://cms-service-dqmdc.web.cern.ch/CAF/certification/Collisions18/13TeV/Legacy_2018/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt
     datasets: 
-      SingleMuon_Run2018A: /SingleMuon/Run2018A-12Nov2019_UL2018-v3/MINIAOD
-      SingleMuon_Run2018B: /SingleMuon/Run2018B-12Nov2019_UL2018-v2/MINIAOD
-      SingleMuon_Run2018C: /SingleMuon/Run2018C-12Nov2019_UL2018-v2/MINIAOD
-      SingleMuon_Run2018D: /SingleMuon/Run2018D-12Nov2019_UL2018-v8/MINIAOD
+      SingleMuon_Run2018A: /SingleMuon/Run2018A-UL2018_MiniAODv2-v2/MINIAOD
+      SingleMuon_Run2018B: /SingleMuon/Run2018B-UL2018_MiniAODv2-v2/MINIAOD
+      SingleMuon_Run2018C: /SingleMuon/Run2018C-UL2018_MiniAODv2-v2/MINIAOD
+      SingleMuon_Run2018D: /SingleMuon/Run2018D-UL2018_MiniAODv2-v3/MINIAOD

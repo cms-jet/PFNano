@@ -5,29 +5,32 @@ defaults:
   totalUnits: 5000
   unitsPerJob: 180
   reco_version: UL
-  globaltag: 106X_dataRun2_v32
+  globaltag: 106X_dataRun2_v35
 
 samples:
   JetHT2016: 
     year: 2016
     pset: $CMSSW_BASE/src/PhysicsTools/PFNano/test/ak15/nano_data_2016_UL_NANO.py
-    globaltag: 106X_dataRun2_v32
+    globaltag: 106X_dataRun2_v35
     lumimask: https://cms-service-dqmdc.web.cern.ch/CAF/certification/Collisions16/13TeV/Legacy_2016/Cert_271036-284044_13TeV_Legacy2016_Collisions16_JSON.txt
     datasets: 
-      JetHT_Run2016E: /JetHT/Run2016E-21Feb2020_UL2016_HIPM-v1/MINIAOD
+      JetHT_Run2016E_HIPM: /JetHT/Run2016E-HIPM_UL2016_MiniAODv2-v2/MINIAOD
 
   JetHT2017: 
     year: 2017
     pset: $CMSSW_BASE/src/PhysicsTools/PFNano/test/ak15/nano_data_2017_UL_NANO.py
-    globaltag: 106X_dataRun2_v32
+    globaltag: 106X_dataRun2_v35
     lumimask: https://cms-service-dqmdc.web.cern.ch/CAF/certification/Collisions17/13TeV/Legacy_2017/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt
     datasets: 
-      JetHT_Run2017D: /JetHT/Run2017D-09Aug2019_UL2017-v1/MINIAOD
+      JetHT_Run2017D: /JetHT/Run2017D-UL2017_MiniAODv2-v1/MINIAOD
 
   JetHT2018: 
     year: 2018
     pset: $CMSSW_BASE/src/PhysicsTools/PFNano/test/ak15/nano_data_2018_UL_NANO.py
-    globaltag: 106X_dataRun2_v32
+    globaltag: 106X_dataRun2_v35
     lumimask : https://cms-service-dqmdc.web.cern.ch/CAF/certification/Collisions18/13TeV/Legacy_2018/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt
     datasets: 
-      JetHT_Run2018C: /JetHT/Run2018C-12Nov2019_UL2018_rsb-v1/MINIAOD
+      JetHT_Run2018C: /JetHT/Run2018C-UL2018_MiniAODv2-v1/MINIAOD
+
+
+
