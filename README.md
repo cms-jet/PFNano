@@ -3,18 +3,18 @@ This is a fork of PFNano, used by DAZSLE for signal ntuples.
 
 Setup instructions:
 ```
-scram project -n "CMSSW_10_6_19_prod"  CMSSW_10_6_19 # 10_6_19 is the last version that works with PFcand merging...
-cd  CMSSW_10_6_19/src
+scram project -n "CMSSW_10_6_26_prod"  CMSSW_10_6_26
+cd  CMSSW_10_6_26/src
 cmsenv
 git cms-init
-git cms-rebase-topic andrzejnovak:614nosort
 git cms-rebase-topic DryRun:CMSSW_10_6_19_patch_pfnano
 git clone git@github.com:DAZSLE/PFNano PhysicsTools/PFNano
 cd PhysicsTools/PFNano
-git checkout tags/v1.1 -b v1.1
+git checkout tags/v2.0 -b v2.0
 cd $CMSSW_BASE/src
 scram b -j8
 ```
+(Note: for MiniAODv2, we no longer need `git cms-rebase-topic andrzejnovak:614nosort`, since that was merged into CMSSW sometime prior to 10_6_26.)
 
 Launching production:
 ```
