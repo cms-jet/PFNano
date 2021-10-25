@@ -43,6 +43,25 @@ def setupAK15(process, runOnMC=False, path=None, runParticleNet=False, runPartic
         addEnergyCorrFuncSubjets=True, ecfSubjetType = "N", ecfSubjetBeta = 1.0, ecfSubjetN3 = False,
     )
 
+    ### EXPERIMENTAL
+    ### Try to add jetCorrFactors like in jets_cff.py
+    from  PhysicsTools.PatAlgos.recoLayer0.jetCorrFactors_cfi import *
+    from  PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cfi import *
+    process.jetCorrFactorsAK15 = patJetCorrFactors.clone(src='packedPatJetsAK15PFPuppiSoftDrop',
+        levels = cms.vstring('L1FastJet',
+            'L2Relative',
+            'L3Absolute',
+        'L2L3Residual'),
+        payload = cms.string('AK8PFPuppi'),
+        primaryVertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
+    )
+
+    process.updatedJetsAK15 = updatedPatJets.clone(
+        addBTagInfo=False,
+        jetSource='packedPatJetsAK15PFPuppiSoftDrop',
+        jetCorrFactorsSource=cms.VInputTag(cms.InputTag("jetCorrFactorsAK15") ),
+    )
+
     #print("\nFlag 2")
     #for aatt in dir(process):
     #    if "ak4" in aatt.lower():
@@ -66,7 +85,7 @@ def setupAK15(process, runOnMC=False, path=None, runParticleNet=False, runPartic
     print("*** Adding ParticleNet discriminators for AK15 ***")
     updateJetCollection(
         process,
-        jetSource=cms.InputTag('packedPatJetsAK15PFPuppiSoftDrop'),
+        jetSource=cms.InputTag('updatedJetsAK15'),
         rParam=1.5,
         jetCorrections=('AK8PFPuppi', cms.vstring(JETCorrLevels), 'None'),
         btagDiscriminators=bTagDiscriminators,
@@ -152,31 +171,39 @@ def setupAK15(process, runOnMC=False, path=None, runParticleNet=False, runPartic
         tightIdLepVeto=None,
     )
 
+    # Final AK15 jets
+    process.finalJetsAK15 = cms.EDFilter("PATJetRefSelector",
+        src = cms.InputTag("ak15WithUserData"),
+        cut = cms.string("") # pt > 170
+    )
+
+
     process.ak15Table = cms.EDProducer("SimpleCandidateFlatTableProducer",
-        src=cms.InputTag("ak15WithUserData"),
+        src=cms.InputTag("finalJetsAK15"), # ak15WithUserData
         name=cms.string("FatJetAK15"), # AK15Puppi
         cut=cms.string(""),
         doc=cms.string("ak15 puppi jets"),
         singleton=cms.bool(False),  # the number of entries is variable
         extension=cms.bool(False),  # this is the main table for the jets
         variables=cms.PSet(P4Vars,
-            jetId=Var("userInt('tightId')*2+4*userInt('tightIdLepVeto')", int, doc="Jet ID flags bit1 is loose (always false in 2017 since it does not exist), bit2 is tight, bit3 is tightLepVeto"),
-            area=Var("jetArea()", float, doc="jet catchment area, for JECs", precision=10),
-            rawFactor=Var("1.-jecFactor('Uncorrected')", float, doc="1 - Factor to get back to raw pT", precision=6),
-            nPFConstituents=Var("numberOfDaughters()", int, doc="Number of PF candidate constituents"),
-            tau1=Var("userFloat('NjettinessAK15Puppi:tau1')", float, doc="Nsubjettiness (1 axis)", precision=10),
-            tau2=Var("userFloat('NjettinessAK15Puppi:tau2')", float, doc="Nsubjettiness (2 axis)", precision=10),
-            tau3=Var("userFloat('NjettinessAK15Puppi:tau3')", float, doc="Nsubjettiness (3 axis)", precision=10),
-            msoftdrop=Var("groomedMass()", float, doc="Corrected soft drop mass with PUPPI", precision=10),
-            btagCSVV2=Var("bDiscriminator('pfCombinedInclusiveSecondaryVertexV2BJetTags')", float, doc="pfCombinedInclusiveSecondaryVertexV2 b-tag discriminator (aka CSVV2)", precision=10),
-            btagDeepB=Var("bDiscriminator('pfDeepCSVJetTags:probb')+bDiscriminator('pfDeepCSVJetTags:probbb')", float, doc="DeepCSV b+bb tag discriminator", precision=10),
-            btagJP=Var("bDiscriminator('pfJetProbabilityBJetTags')", float, doc="pfJetProbabilityBJetTags b-tag discriminator (aka JP)", precision=10),
-            nBHadrons=Var("jetFlavourInfo().getbHadrons().size()", int, doc="number of b-hadrons"),
-            nCHadrons=Var("jetFlavourInfo().getcHadrons().size()", int, doc="number of c-hadrons"),
-            subJetIdx1=Var("?nSubjetCollections()>0 && subjets().size()>0?subjets()[0].key():-1", int,
-                 doc="index of first subjet"),
-            subJetIdx2=Var("?nSubjetCollections()>0 && subjets().size()>1?subjets()[1].key():-1", int,
-                 doc="index of second subjet"),
+            jetId           = Var("userInt('tightId')*2+4*userInt('tightIdLepVeto')", int, doc="Jet ID flags bit1 is loose (always false in 2017 since it does not exist), bit2 is tight, bit3 is tightLepVeto"),
+            area            = Var("jetArea()", float, doc="jet catchment area, for JECs", precision=10),
+            rawFactor       = Var("1.-jecFactor('Uncorrected')", float, doc="1 - Factor to get back to raw pT", precision=6),
+            nPFConstituents = Var("numberOfDaughters()", int, doc="Number of PF candidate constituents"),
+            tau1            = Var("userFloat('NjettinessAK15Puppi:tau1')", float, doc="Nsubjettiness (1 axis)", precision=10),
+            tau2            = Var("userFloat('NjettinessAK15Puppi:tau2')", float, doc="Nsubjettiness (2 axis)", precision=10),
+            tau3            = Var("userFloat('NjettinessAK15Puppi:tau3')", float, doc="Nsubjettiness (3 axis)", precision=10),
+            #tau4            = Var("userFloat('NjettinessAK15Puppi:tau4')", float, doc="Nsubjettiness (4 axis)", precision=10),
+            n2b1            = Var("?hasUserFloat('nb1AK15PuppiSoftDrop:ecfN2')?userFloat('nb1AK15PuppiSoftDrop:ecfN2'):-99999.", float, doc="N2 with beta=1 (for jets with raw pT>250 GeV)", precision=10),
+            n3b1            = Var("?hasUserFloat('nb1AK15PuppiSoftDrop:ecfN3')?userFloat('nb1AK15PuppiSoftDrop:ecfN3'):-99999.", float, doc="N3 with beta=1 (for jets with raw pT>250 GeV)", precision=10), 
+            msoftdrop       = Var("groomedMass()", float, doc="Corrected soft drop mass with PUPPI", precision=10),
+            btagCSVV2       = Var("bDiscriminator('pfCombinedInclusiveSecondaryVertexV2BJetTags')", float, doc="pfCombinedInclusiveSecondaryVertexV2 b-tag discriminator (aka CSVV2)", precision=10),
+            btagDeepB       = Var("bDiscriminator('pfDeepCSVJetTags:probb')+bDiscriminator('pfDeepCSVJetTags:probbb')", float, doc="DeepCSV b+bb tag discriminator", precision=10),
+            btagJP          = Var("bDiscriminator('pfJetProbabilityBJetTags')", float, doc="pfJetProbabilityBJetTags b-tag discriminator (aka JP)", precision=10),
+            nBHadrons       = Var("jetFlavourInfo().getbHadrons().size()", int, doc="number of b-hadrons"),
+            nCHadrons       = Var("jetFlavourInfo().getcHadrons().size()", int, doc="number of c-hadrons"),
+            subJetIdx1      = Var("?nSubjetCollections()>0 && subjets().size()>0?subjets()[0].key():-1", int, doc="index of first subjet"),
+            subJetIdx2      = Var("?nSubjetCollections()>0 && subjets().size()>1?subjets()[1].key():-1", int, doc="index of second subjet"),
         )
     )
     run2_jme_2016.toModify(process.ak15Table.variables, jetId=Var("userInt('tightId')*2+userInt('looseId')", int, doc="Jet ID flags bit1 is loose, bit2 is tight"))
@@ -215,9 +242,12 @@ def setupAK15(process, runOnMC=False, path=None, runParticleNet=False, runPartic
     process.ak15SubJetTable.variables.pt.precision = 10
 
     process.ak15Task = cms.Task(
+        process.jetCorrFactorsAK15,
+        process.updatedJetsAK15,
         process.tightJetIdAK15Puppi,
         process.tightJetIdLepVetoAK15Puppi,
         process.ak15WithUserData,
+        process.finalJetsAK15,
         process.ak15Table,
         process.ak15SubJetTable,
     )
@@ -264,10 +294,6 @@ def setupAK15(process, runOnMC=False, path=None, runParticleNet=False, runPartic
     else:
         getattr(process, path).associate(process.ak15Task)
 
-    finalJetsAK15 = cms.EDFilter("PATJetRefSelector",
-        src = cms.InputTag("updatedJetsAK8WithUserData"),
-        cut = cms.string("pt > 170")
-    )
 
 
 #
@@ -282,13 +308,13 @@ def setupPFNanoAK15_data(process):
         process.patJetsPuppi.JetFlavourInfoSource = cms.InputTag("")
     setupAK15(process, runOnMC=False, runParticleNet=False, runParticleNetMD=True)
     addPFCands(process, runOnMC=False, saveAll=False, addAK4=True, addAK8=True, addAK15=True)
-    add_BTV(process, runOnMC=False)
+    add_BTV(process, runOnMC=False, addAK4=True, addAK8=True, addAK15=True)
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process
 
 def setupPFNanoAK15_mc(process):
     setupAK15(process, runOnMC=True, runParticleNet=False, runParticleNetMD=True)
     addPFCands(process, runOnMC=True, saveAll=False, addAK4=True, addAK8=True, addAK15=True, saveAllGen=False)
-    add_BTV(process, runOnMC=True)
+    add_BTV(process, runOnMC=True, addAK4=True, addAK8=True, addAK15=True)
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process

@@ -109,6 +109,76 @@ def update_jets_AK8_subjet(process):
 
     return process
 
+def update_jets_AK15(process):
+    # Based on ``update_jets_AK8``, in the same file
+    # Care needs to be taken to make sure no discriminators from stock Nano are excluded -> would results in unfilled vars
+    _btagDiscriminators = [
+        'pfJetProbabilityBJetTags',
+        'pfDeepCSVJetTags:probb',
+        'pfDeepCSVJetTags:probc',
+        'pfDeepCSVJetTags:probbb',
+        'pfDeepCSVJetTags:probudsg',
+        'pfMassIndependentDeepDoubleBvLJetTags:probHbb',
+        'pfMassIndependentDeepDoubleCvLJetTags:probHcc',
+        'pfMassIndependentDeepDoubleCvBJetTags:probHcc',
+        'pfMassIndependentDeepDoubleBvLV2JetTags:probHbb',
+        'pfMassIndependentDeepDoubleCvLV2JetTags:probHcc',
+        'pfMassIndependentDeepDoubleCvBV2JetTags:probHcc',
+        ]
+    from RecoBTag.ONNXRuntime.pfParticleNet_cff import _pfParticleNetJetTagsAll as pfParticleNetJetTagsAll
+    _btagDiscriminators += pfParticleNetJetTagsAll
+    updateJetCollection(
+        process,
+        jetSource=cms.InputTag('packedPatJetsAK15PFPuppiSoftDrop'),
+        pvSource=cms.InputTag('offlineSlimmedPrimaryVertices'),
+        svSource=cms.InputTag('slimmedSecondaryVertices'),
+        rParam=1.5,
+        jetCorrections=('AK8PFPuppi',
+                        cms.vstring([
+                            'L1FastJet', 'L2Relative', 'L3Absolute',
+                            'L2L3Residual'
+                        ]), 'None'),
+        btagDiscriminators=_btagDiscriminators,
+        postfix='AK15WithDeepInfo',
+        # this should work but doesn't seem to enable the tag info with addTagInfos
+        # btagInfos=['pfDeepDoubleXTagInfos'],
+        printWarning=False)
+    process.jetCorrFactorsAK15.src = "selectedUpdatedPatJetsAK15WithDeepInfo"
+    process.updatedPatJetsAK15.jetSource = "selectedUpdatedPatJetsAK15WithDeepInfo"
+    # add DeepDoubleX taginfos
+    process.updatedPatJetsTransientCorrectedAK15WithDeepInfo.tagInfoSources.append(cms.InputTag("pfDeepDoubleXTagInfosAK15WithDeepInfo"))
+    process.updatedPatJetsTransientCorrectedAK15WithDeepInfo.addTagInfos = cms.bool(True)
+    return process
+
+
+def update_jets_AK15_subjet(process):
+    # Based on ``update_jets_AK8_subjet`` in this same file
+    _btagDiscriminators = [
+        'pfJetProbabilityBJetTags',
+        'pfDeepCSVJetTags:probb',
+        'pfDeepCSVJetTags:probc',
+        'pfDeepCSVJetTags:probbb',
+        'pfDeepCSVJetTags:probudsg',
+        ]
+    updateJetCollection(
+        process,
+        labelName='SoftDropSubjetsPF',
+        #jetSource=cms.InputTag("ak15PFJetsPuppiSoftDrop","SubJets"),
+        jetSource=cms.InputTag("patJetsAK15PFPuppiSoftDropSubjets"),
+        jetCorrections=('AK4PFPuppi',
+                        ['L2Relative', 'L3Absolute'], 'None'),
+        btagDiscriminators=list(_btagDiscriminators),
+        explicitJTA=True,  # needed for subjet b tagging
+        svClustering=False,  # needed for subjet b tagging (IMPORTANT: Needs to be set to False to disable ghost-association which does not work with slimmed jets)
+        fatJets=cms.InputTag('packedPatJetsAK15PFPuppiSoftDrop'),  # needed for subjet b tagging
+        rParam=1.5,  # needed for subjet b tagging
+        sortByPt=False, # Don't change order (would mess with subJetIdx for FatJets)
+        postfix='AK15SubjetsWithDeepInfo')
+
+    process.ak15SubJetTable.src = 'selectedUpdatedPatJetsSoftDropSubjetsPFAK15SubjetsWithDeepInfo' 
+
+    return process
+
 def get_DDX_vars():
     # retreive 27 jet-level features used in double-b and deep double-x taggers
     # defined in arXiv:1712.07158
@@ -222,6 +292,9 @@ def add_BTV(process, runOnMC=False, addAK4=True, addAK8=True, addAK15=False, kee
     if addAK8:
         process = update_jets_AK8(process)
         process = update_jets_AK8_subjet(process)
+    if addAK15:
+        process = update_jets_AK15(process)
+        process = update_jets_AK15_subjet(process)
 
     process.customizeJetTask = cms.Task()
     process.schedule.associate(process.customizeJetTask)
@@ -284,6 +357,25 @@ def add_BTV(process, runOnMC=False, addAK4=True, addAK8=True, addAK15=False, kee
             get_DDX_vars() if keepInputs else cms.PSet(),
         ))
 
+    # AK15
+    process.customFatJetAK15ExtTable = cms.EDProducer(
+        "SimpleCandidateFlatTableProducer",
+        src       = cms.InputTag("finalJetsAK15"),
+        cut       = cms.string(""),
+        name      = cms.string("FatJetAK15"), # AK15Puppi
+        doc       = cms.string("ak15 puppi jets"),
+        singleton = cms.bool(False),  # the number of entries is variable
+        extension = cms.bool(True),  # this is the extension table for FatJets
+        variables = cms.PSet(
+            CommonVars,
+            cms.PSet(
+                btagDDBvLV2 = Var("bDiscriminator('pfMassIndependentDeepDoubleBvLV2JetTags:probHbb')",float,doc="DeepDoubleX V2 discriminator for H(Z)->bb vs QCD",precision=10),
+                btagDDCvLV2 = Var("bDiscriminator('pfMassIndependentDeepDoubleCvLV2JetTags:probHcc')",float,doc="DeepDoubleX V2 discriminator for H(Z)->cc vs QCD",precision=10),
+                btagDDCvBV2 = Var("bDiscriminator('pfMassIndependentDeepDoubleCvBV2JetTags:probHcc')",float,doc="DeepDoubleX V2 discriminator for H(Z)->cc vs H(Z)->bb",precision=10),
+            ),
+            get_DDX_vars() if keepInputs else cms.PSet(),
+        ))
+
     # Subjets
     process.customSubJetExtTable = cms.EDProducer(
         "SimpleCandidateFlatTableProducer",
@@ -302,19 +394,51 @@ def add_BTV(process, runOnMC=False, addAK4=True, addAK8=True, addAK15=False, kee
 
     ))
 
+    process.customAK15SubJetExtTable = cms.EDProducer(
+        "SimpleCandidateFlatTableProducer",
+        src       = cms.InputTag("selectedPatJetsAK15PFPuppiSoftDropPacked", "SubJets"),
+        cut       = cms.string(""),
+        name      = cms.string("FatJetAK15SubJet"), # AK15PuppiSubJet
+        doc       = cms.string("ak15 puppi subjets"),
+        singleton = cms.bool(False),  # the number of entries is variable
+        extension = cms.bool(True),  # this is the extension table for FatJets
+        variables = cms.PSet(
+            CommonVars,
+             btagDeepC = Var("bDiscriminator('pfDeepCSVJetTags:probc')",
+                        float,
+                        doc="DeepCSV charm btag discriminator",
+                        precision=10),
+
+    ))
+
     process.customSubJetMCExtTable = cms.EDProducer(
     "SimpleCandidateFlatTableProducer",
-    src = subJetTable.src,
-    cut = subJetTable.cut,
-        name = subJetTable.name,
-        doc=subJetTable.doc,
-    singleton = cms.bool(False),
-       extension = cms.bool(True),
-        variables = cms.PSet(
-            subGenJetAK8Idx = Var("?genJetFwdRef().backRef().isNonnull()?genJetFwdRef().backRef().key():-1",
+    src             = subJetTable.src,
+    cut             = subJetTable.cut,
+    name            = subJetTable.name,
+    doc             =subJetTable.doc,
+    singleton       = cms.bool(False),
+    extension       = cms.bool(True),
+    variables       = cms.PSet(
+    subGenJetAK8Idx = Var("?genJetFwdRef().backRef().isNonnull()?genJetFwdRef().backRef().key():-1",
         int,
         doc="index of matched gen Sub jet"),
        )
+    )
+
+    process.customAK15SubJetMCExtTable = cms.EDProducer(
+        "SimpleCandidateFlatTableProducer",
+        src       = cms.InputTag("selectedPatJetsAK15PFPuppiSoftDropPacked", "SubJets"),
+        cut       = cms.string(""),
+        name      = cms.string("FatJetAK15SubJet"), # AK15PuppiSubJet
+        doc       = cms.string("ak15 puppi subjets"),
+        singleton = cms.bool(False),
+        extension = cms.bool(True),
+        variables = cms.PSet(
+                        subGenJetAK8Idx = Var("?genJetFwdRef().backRef().isNonnull()?genJetFwdRef().backRef().key():-1", 
+                            int, 
+                            doc="index of matched gen Sub jet"),
+                        )
     )
 
     if addAK4:
@@ -322,7 +446,12 @@ def add_BTV(process, runOnMC=False, addAK4=True, addAK8=True, addAK15=False, kee
     if addAK8:
         process.customizeJetTask.add(process.customFatJetExtTable)
         process.customizeJetTask.add(process.customSubJetExtTable)
-    if runOnMC and addAK8:
-        process.customizeJetTask.add(process.customSubJetMCExtTable)
+        if runOnMC: 
+            process.customizeJetTask.add(process.customSubJetMCExtTable)
+    if addAK15:
+        process.customizeJetTask.add(process.customFatJetAK15ExtTable)
+        process.customizeJetTask.add(process.customAK15SubJetExtTable)
+        if runOnMC: 
+            process.customizeJetTask.add(process.customAK15SubJetMCExtTable)
 
     return process

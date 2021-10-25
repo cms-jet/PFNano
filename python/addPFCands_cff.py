@@ -40,7 +40,7 @@ def addPFCands(process, runOnMC=False, saveAll=False, addAK4=False, addAK8=False
 
         if addAK15:
             process.finalJetsAK15Constituents = cms.EDProducer("PatJetConstituentPtrSelector",
-                                                    src = cms.InputTag("ak15WithUserData"),
+                                                    src = cms.InputTag("finalJetsAK15"),
                                                     cut = cms.string("")
                                                     )
             candList.append(cms.InputTag("finalJetsAK15Constituents", "constituents"))
@@ -99,7 +99,7 @@ def addPFCands(process, runOnMC=False, saveAll=False, addAK4=False, addAK8=False
     if addAK15:
         process.customAK15ConstituentsTable = cms.EDProducer("PatJetConstituentTableProducer",
                                                             candidates = candInput,
-                                                            jets       = cms.InputTag("ak15WithUserData"),
+                                                            jets       = cms.InputTag("finalJetsAK15"),
                                                             jet_radius = cms.double(1.5),
                                                             name       = cms.string("FatJetAK15PFCands"),
                                                             idx_name = cms.string("pFCandsIdx"),

@@ -2,7 +2,7 @@
 # using: 
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
-# with command line options: nano_mc_2018_UL --mc --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO --conditions 106X_upgrade2018_realistic_v16_L1v1 --era Run2_2018,run2_nanoAOD_106Xv2 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False))) --nThreads 4 -n 100 --filein /store/mc/RunIISummer20UL18MiniAODv2/QCD_Pt_2400to3200_TuneCP5_13TeV_pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v1/110000/7999F6FD-CFD7-BA48-85B6-80BA90319213.root --fileout file:nano_mc2018.root --customise PhysicsTools/PFNano/ak15/addAK15_cff.setupPFNanoAK15_mc --no_exec
+# with command line options: nano_mc_2018_UL --mc --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO --conditions 106X_upgrade2018_realistic_v16_L1v1 --era Run2_2018,run2_nanoAOD_106Xv2 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False))) --nThreads 4 -n 100 --filein /store/mc/RunIISummer20UL18MiniAODv2/QCD_Pt_2400to3200_TuneCP5_13TeV_pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v1/230000/3CC1A90C-F5D0-084D-9C72-0AE3D658B09B.root --fileout file:nano_mc2018.root --customise PhysicsTools/PFNano/ak15/addAK15_cff.setupPFNanoAK15_mc --no_exec
 import FWCore.ParameterSet.Config as cms
 
 from Configuration.Eras.Era_Run2_2018_cff import Run2_2018
@@ -28,7 +28,7 @@ process.maxEvents = cms.untracked.PSet(
 
 # Input source
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('/store/mc/RunIISummer20UL18MiniAODv2/QCD_Pt_2400to3200_TuneCP5_13TeV_pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v1/110000/7999F6FD-CFD7-BA48-85B6-80BA90319213.root'),
+    fileNames = cms.untracked.vstring('/store/mc/RunIISummer20UL18MiniAODv2/QCD_Pt_2400to3200_TuneCP5_13TeV_pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v1/230000/3CC1A90C-F5D0-084D-9C72-0AE3D658B09B.root'),
     secondaryFileNames = cms.untracked.vstring()
 )
 
