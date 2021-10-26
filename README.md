@@ -1,4 +1,33 @@
 # PFNano
+This is a fork of PFNano, used by DAZSLE for signal ntuples. 
+
+Setup instructions:
+```
+scram project -n "CMSSW_10_6_26_prod"  CMSSW_10_6_26
+cd  CMSSW_10_6_26/src
+cmsenv
+git cms-init
+git cms-rebase-topic DryRun:CMSSW_10_6_19_patch_pfnano
+git clone git@github.com:DAZSLE/PFNano PhysicsTools/PFNano
+cd PhysicsTools/PFNano
+git checkout tags/v2.0 -b v2.0
+cd $CMSSW_BASE/src
+scram b -j8
+```
+(Note: for MiniAODv2, we no longer need `git cms-rebase-topic andrzejnovak:614nosort`, since that was merged into CMSSW sometime prior to 10_6_26.)
+
+Launching production:
+```
+setupCrab
+voms-proxy-init -voms cms
+cd $CMSSW_BASE/src/PhysicsTools/PFNano/production
+python submit.py -y samples_testdata.yaml
+```
+
+Use the `.yaml` files to configure the submission. Hopefully it's straightforward to understand, ask David if not.
+
+
+# Central branch README is below
 
 This is a [NanoAOD](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD) framework for advance developments of jet algorithms. 
 The current full content of this development branch can be seen [here](http://algomez.web.cern.ch/algomez/testWeb/PFnano_content_v02.html) and the size [here](http://algomez.web.cern.ch/algomez/testWeb/PFnano_size_v02.html).

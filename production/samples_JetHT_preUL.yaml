@@ -1,0 +1,47 @@
+defaults:
+  splitting: Automatic
+  reco_version: preUL
+  globaltag: 102X_dataRun2_v14
+
+samples:
+  JetHT2016: 
+    year: 2016
+    globaltag: 102X_dataRun2_v14
+    lumimask: https://cms-service-dqmdc.web.cern.ch/CAF/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_ReReco_07Aug2017_Collisions16_JSON.txt
+    datasets: 
+      /JetHT/Run2016B-17Jul2018_ver1-v1/MINIAOD
+      /JetHT/Run2016B-17Jul2018_ver2-v2/MINIAOD
+      /JetHT/Run2016C-17Jul2018-v1/MINIAOD
+      /JetHT/Run2016D-17Jul2018-v1/MINIAOD
+      /JetHT/Run2016E-17Jul2018-v1/MINIAOD
+      /JetHT/Run2016F-17Jul2018-v1/MINIAOD
+      /JetHT/Run2016G-17Jul2018-v1/MINIAOD
+      /JetHT/Run2016H-17Jul2018-v1/MINIAOD      
+
+  JetHT2017: 
+    year: 2017
+    globaltag: 102X_dataRun2_v14
+    lumimask: https://cms-service-dqmdc.web.cern.ch/CAF/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt
+    datasets: 
+      /JetHT/Run2017B-31Mar2018-v1/MINIAOD
+      /JetHT/Run2017C-31Mar2018-v1/MINIAOD
+      /JetHT/Run2017D-31Mar2018-v1/MINIAOD
+      /JetHT/Run2017E-31Mar2018-v1/MINIAOD
+      /JetHT/Run2017F-31Mar2018-v1/MINIAOD
+
+  JetHT2018: 
+    year: 2018
+    globaltag: 102X_dataRun2_v14
+    lumimask : https://cms-service-dqmdc.web.cern.ch/CAF/certification/Collisions18/13TeV/ReReco/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt
+    datasets: 
+      /JetHT/Run2018A-17Sep2018-v1/MINIAOD
+      /JetHT/Run2018B-17Sep2018-v1/MINIAOD
+      /JetHT/Run2018C-17Sep2018-v1/MINIAOD
+
+  JetHT2018D:
+    year: 2018
+    globaltag: 102X_dataRun2_Prompt_v16
+    lumimask : https://cms-service-dqmdc.web.cern.ch/CAF/certification/Collisions18/13TeV/ReReco/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt
+    datasets:
+      /JetHT/Run2018D-PromptReco-v1/MINIAOD
+      /JetHT/Run2018D-PromptReco-v2/MINIAOD

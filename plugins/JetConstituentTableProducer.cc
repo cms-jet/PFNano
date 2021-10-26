@@ -1,5 +1,6 @@
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/stream/EDProducer.h"
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -103,10 +104,12 @@ void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::Even
   std::vector<float> sv_mass, sv_pt, sv_ntracks, sv_chi2, sv_normchi2, sv_dxy, sv_dxysig, sv_d3d, sv_d3dsig, sv_costhetasvpv;
   std::vector<float> sv_ptrel, sv_phirel, sv_deltaR, sv_enratio;
 
+
   auto jets = iEvent.getHandle(jet_token_);
   iEvent.getByToken(vtx_token_, vtxs_);
   iEvent.getByToken(cand_token_, cands_);
   iEvent.getByToken(sv_token_, svs_);
+
 
   if(readBtag_){
     iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder", track_builder_);
@@ -119,7 +122,7 @@ void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::Even
     VertexDistance3D vdist;
 
     pv_ = &vtxs_->at(0);
-    
+
     //////////////////////
     // Secondary Vertices
     std::vector<const reco::VertexCompositePtrCandidate *> jetSVs;
@@ -175,16 +178,28 @@ void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::Even
       }
     }
 
-    // PF Cands    
+    // PF Cands   
     std::vector<reco::CandidatePtr> const & daughters = jet.daughterPtrVector();
-
     for (const auto &cand : daughters) {
+      if (!(cand.isNonnull() && cand.isAvailable())) {
+        edm::LogWarning("InvalidCand") << "Found null candidate, skipping." << std::endl;
+        continue;
+      }
       auto candPtrs = cands_->ptrs();
       auto candInNewList = std::find( candPtrs.begin(), candPtrs.end(), cand );
       if ( candInNewList == candPtrs.end() ) {
-        //std::cout << "Cannot find candidate : " << cand.id() << ", " << cand.key() << ", pt = " << cand->pt() << std::endl;
-        continue;
+        // Hack: try to patch with momentum matching
+        for (auto candInNewList2 : candPtrs) {
+          if ((candInNewList2->pt() - cand->pt() < 1.e-3) && (candInNewList2->eta() - cand->eta() < 1.e-3) && (candInNewList2->phi() - cand->phi() < 1.e-3)) {
+            candInNewList = std::find(candPtrs.begin(), candPtrs.end(), candInNewList2);
+          }
+        }
+        if (candInNewList == candPtrs.end()) {
+          edm::LogWarning("InvalidCand") << "Cannot find candidate in original cand collection, skipping: " << cand.id() << ", " << cand.key() << ", pt = " << cand->pt() << ", eta = " << cand->eta() << ", phi = " << cand->phi() << ", mass = " << cand->mass() << std::endl;
+          continue;
+        }
       }
+
       outCands->push_back(cand);
       jetIdx_pf.push_back(i_jet);
       pfcandIdx.push_back(candInNewList - candPtrs.begin());
@@ -215,6 +230,7 @@ void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::Even
   }
 
   auto candTable = std::make_unique<nanoaod::FlatTable>(outCands->size(), name_, false);
+  // std::cout << "DEBUG : candTable (" << name_ << ") has N = " << outCands->size() << std::endl;
   // We fill from here only stuff that cannot be created with the SimpleFlatTableProducer
   candTable->addColumn<int>(idx_name_, pfcandIdx, "Index in the candidate list", nanoaod::FlatTable::IntColumn);
   candTable->addColumn<int>("jetIdx", jetIdx_pf, "Index of the parent jet", nanoaod::FlatTable::IntColumn);
@@ -251,8 +267,8 @@ void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::Even
     svTable->addColumn<float>("deltaR", sv_deltaR, "dR from parent jet", nanoaod::FlatTable::FloatColumn, 10);
     svTable->addColumn<float>("enration", sv_enratio, "energy relative to parent jet", nanoaod::FlatTable::FloatColumn, 10);
   }
-  iEvent.put(std::move(svTable), nameSV_);
 
+  iEvent.put(std::move(svTable), nameSV_);
   iEvent.put(std::move(outCands));
 }
 
