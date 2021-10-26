@@ -277,8 +277,20 @@ def setupAK15(process, runOnMC=False, path=None, runParticleNet=False, runPartic
         )
         process.genSubJetAK15Table.variables.pt.precision = 10
 
+        process.genJetAK15SoftDropTable = cms.EDProducer("SimpleCandidateFlatTableProducer",
+                                                         src=cms.InputTag("ak15GenJetsNoNuSoftDrop"),
+                                                         cut=cms.string("pt > 100."),
+                                                         name=cms.string("SoftDropGenJetAK15"),
+                                                         doc=cms.string("AK15 GenJets made with visible genparticles and SD"),
+                                                         singleton=cms.bool(False),
+                                                         extension=cms.bool(False),
+                                                         variables=cms.PSet(P4Vars,
+                                                                        ))
+        process.genJetAK15SoftDropTable.variables.pt.precision = 10
+
         process.ak15Task.add(process.genJetAK15Table)
         process.ak15Task.add(process.genSubJetAK15Table)
+        process.ak15Task.add(process.genJetAK15SoftDropTable)
 
         ###### hack to avoid circular dependency ######
         process.jetMC.remove(process.patJetPartons)
