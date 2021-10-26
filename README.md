@@ -4,7 +4,7 @@ This is a fork of PFNano, used by DAZSLE for signal ntuples.
 Setup instructions:
 ```
 scram project -n "CMSSW_10_6_26_prod"  CMSSW_10_6_26
-cd  CMSSW_10_6_26/src
+cd  CMSSW_10_6_26_prod/src
 cmsenv
 git cms-init
 git cms-rebase-topic DryRun:CMSSW_10_6_19_patch_pfnano
