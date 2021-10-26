@@ -2,7 +2,7 @@
 # using: 
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
-# with command line options: nano_data_2016_UL --data --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO --conditions 106X_dataRun2_v35 --era Run2_2016,run2_nanoAOD_106Xv2 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False))) --nThreads 4 -n 100 --filein /store/data/Run2016D/JetHT/MINIAOD/HIPM_UL2016_MiniAODv2-v2/120000/03FFBE66-6D9D-AA42-BC5A-83D3788026FA.root --fileout file:nano_data2016.root --customise PhysicsTools/PFNano/ak15/addAK15_cff.setupPFNanoAK15_data --no_exec
+# with command line options: nano_data_2016_UL --data --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO --conditions 106X_dataRun2_v35 --era Run2_2016,run2_nanoAOD_106Xv2 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False))) --nThreads 4 -n 100 --filein /store/data/Run2016D/JetHT/MINIAOD/HIPM_UL2016_MiniAODv2-v2/70000/EF073836-B5FC-F342-9907-922315729D4A.root --fileout file:nano_data2016.root --customise PhysicsTools/PFNano/ak15/addAK15_cff.setupPFNanoAK15_data --no_exec
 import FWCore.ParameterSet.Config as cms
 
 from Configuration.Eras.Era_Run2_2016_cff import Run2_2016
@@ -27,7 +27,7 @@ process.maxEvents = cms.untracked.PSet(
 
 # Input source
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('/store/data/Run2016D/JetHT/MINIAOD/HIPM_UL2016_MiniAODv2-v2/120000/03FFBE66-6D9D-AA42-BC5A-83D3788026FA.root'),
+    fileNames = cms.untracked.vstring('/store/data/Run2016D/JetHT/MINIAOD/HIPM_UL2016_MiniAODv2-v2/70000/EF073836-B5FC-F342-9907-922315729D4A.root'),
     secondaryFileNames = cms.untracked.vstring()
 )
 

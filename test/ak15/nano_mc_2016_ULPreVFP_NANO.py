@@ -2,7 +2,7 @@
 # using: 
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
-# with command line options: nano_mc_2016_ULPreVFP --mc --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO --conditions 106X_mcRun2_asymptotic_preVFP_v11 --era Run2_2016_HIPM,run2_nanoAOD_106Xv2 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False))) --nThreads 4 -n 100 --filein /store/mc/RunIISummer20UL16MiniAODAPVv2/QCD_Pt_2400to3200_TuneCP5_13TeV_pythia8/MINIAODSIM/106X_mcRun2_asymptotic_preVFP_v11-v1/270000/AAFBC977-E69D-044F-8179-77B4B16A5851.root --fileout file:nano_mc2016pre.root --customise PhysicsTools/PFNano/ak15/addAK15_cff.setupPFNanoAK15_mc --no_exec
+# with command line options: nano_mc_2016_ULPreVFP --mc --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO --conditions 106X_mcRun2_asymptotic_preVFP_v11 --era Run2_2016_HIPM,run2_nanoAOD_106Xv2 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False))) --nThreads 4 -n 100 --filein /store/mc/RunIISummer20UL16MiniAODAPVv2/QCD_Pt_2400to3200_TuneCP5_13TeV_pythia8/MINIAODSIM/106X_mcRun2_asymptotic_preVFP_v11-v1/280000/CF2F010D-2073-DF40-BABB-9B767F347919.root --fileout file:nano_mc2016pre.root --customise PhysicsTools/PFNano/ak15/addAK15_cff.setupPFNanoAK15_mc --no_exec
 import FWCore.ParameterSet.Config as cms
 
 from Configuration.Eras.Era_Run2_2016_HIPM_cff import Run2_2016_HIPM
@@ -28,7 +28,7 @@ process.maxEvents = cms.untracked.PSet(
 
 # Input source
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('/store/mc/RunIISummer20UL16MiniAODAPVv2/QCD_Pt_2400to3200_TuneCP5_13TeV_pythia8/MINIAODSIM/106X_mcRun2_asymptotic_preVFP_v11-v1/270000/AAFBC977-E69D-044F-8179-77B4B16A5851.root'),
+    fileNames = cms.untracked.vstring('/store/mc/RunIISummer20UL16MiniAODAPVv2/QCD_Pt_2400to3200_TuneCP5_13TeV_pythia8/MINIAODSIM/106X_mcRun2_asymptotic_preVFP_v11-v1/280000/CF2F010D-2073-DF40-BABB-9B767F347919.root'),
     secondaryFileNames = cms.untracked.vstring()
 )
 
