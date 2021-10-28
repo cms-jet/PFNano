@@ -3,10 +3,13 @@ defaults:
   reco_version: UL
   year: 2017
   globaltag: 106X_mc2017_realistic_v9
-  splitting: Automatic
   # Automatic unitsPerJob=max job target runtime, totalUnits = events
-  totalUnits: 5000
-  unitsPerJob: 180
+  #splitting: Automatic
+  #totalUnits: 5000
+  #unitsPerJob: 180
+  splitting: FileBased
+  totalUnits: 20
+  unitsPerJob: 2
   pset: $CMSSW_BASE/src/PhysicsTools/PFNano/test/ak15/nano_mc_2017_UL_NANO.py
   allowInvalid: True
 
@@ -15,6 +18,6 @@ samples:
     datasets: 
       QCD_HT1500to2000: /QCD_HT1500to2000_TuneCP5_PSWeights_13TeV-madgraph-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v1/MINIAODSIM
 
-  ZJetsToQQ:
+  WJetsToQQ:
     datasets:
       WJetsToQQ_HT-600to800: /WJetsToQQ_HT-600to800_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM
