@@ -319,14 +319,14 @@ def setupPFNanoAK15_data(process):
         process.patJetsPuppi.JetPartonMapSource = cms.InputTag("")
         process.patJetsPuppi.JetFlavourInfoSource = cms.InputTag("")
     setupAK15(process, runOnMC=False, runParticleNet=False, runParticleNetMD=True)
-    addPFCands(process, runOnMC=False, saveAll=False, addAK4=True, addAK8=True, addAK15=True)
+    addPFCands(process, runOnMC=False, saveAll=False, addAK4=False, addAK8=True, addAK15=True)
     add_BTV(process, runOnMC=False, addAK4=True, addAK8=True, addAK15=True)
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process
 
 def setupPFNanoAK15_mc(process):
     setupAK15(process, runOnMC=True, runParticleNet=False, runParticleNetMD=True)
-    addPFCands(process, runOnMC=True, saveAll=False, addAK4=True, addAK8=True, addAK15=True, saveAllGen=False)
+    addPFCands(process, runOnMC=False, saveAll=False, addAK4=False, addAK8=True, addAK15=True, saveAllGen=False) # runOnMC=False because we don't need GenCands associated to GenJets
     add_BTV(process, runOnMC=True, addAK4=True, addAK8=True, addAK15=True)
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process
