@@ -389,7 +389,7 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=Tru
 
         #print('add_DeepJet_noclip ? ' + str(add_DeepJet_noclip))
 
-        process.customAK4ConstituentsForDeepJetTable = cms.EDProducer("PatJetConstituentTableProducerDeepJet",
+        process.customAK4ConstituentsForDeepJetTable = cms.EDProducer("PatJetConstituentTableProducerDeepJet_MWE",
                                                                       #candidates = cms.InputTag("packedPFCandidates"),
                                                                       candidates = candInput,
                                                                       jets = cms.InputTag("finalJets"),

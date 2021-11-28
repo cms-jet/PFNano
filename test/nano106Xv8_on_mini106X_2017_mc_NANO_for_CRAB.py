@@ -25,7 +25,7 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 #process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(100)  # use 100 originally
+    input = cms.untracked.int32(-1)  # use 100 originally
 )
 
 # Input source
@@ -40,16 +40,12 @@ process.options = cms.untracked.PSet(
 
 # Production Info
 process.configurationMetadata = cms.untracked.PSet(
-    annotation = cms.untracked.string('nano106Xv8_on_mini106X_2017_mc_NANO.py nevts:100'),
+    annotation = cms.untracked.string('nano106Xv8_on_mini106X_2017_mc_NANO.py nevts:-1'),
     name = cms.untracked.string('Applications'),
     version = cms.untracked.string('$Revision: 1.19 $')
 )
 
 # Output definition
-
-from datetime import datetime
-now = datetime.now()
-dt_string = now.strftime("%d-%m-%Y_%H%M%S")
 
 process.NANOAODSIMoutput = cms.OutputModule("NanoAODOutputModule",
     compressionAlgorithm = cms.untracked.string('LZMA'),
@@ -58,7 +54,7 @@ process.NANOAODSIMoutput = cms.OutputModule("NanoAODOutputModule",
         dataTier = cms.untracked.string('NANOAODSIM'),
         filterName = cms.untracked.string('')
     ),
-    fileName = cms.untracked.string('nano106Xv8_on_mini106X_2017_mc_NANO_py_NANO_{dt}.root'.format(dt=dt_string)),
+    fileName = cms.untracked.string('nano106Xv8_on_mini106X_2017_mc_NANO_py_NANO.root'),
     outputCommands = process.NANOAODSIMEventContent.outputCommands
 )
 
@@ -117,6 +113,3 @@ from Configuration.StandardSequences.earlyDeleteSettings_cff import customiseEar
 process = customiseEarlyDelete(process)
 # End adding early deletion
 
-
-# print file name for convenience
-print('nano106Xv8_on_mini106X_2017_mc_NANO_py_NANO_{dt}.root'.format(dt=dt_string))

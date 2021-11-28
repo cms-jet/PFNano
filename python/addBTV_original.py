@@ -6,7 +6,7 @@ from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 from PhysicsTools.PatAlgos.tools.helpers import addToProcessAndTask, getPatAlgosToolsTask
 
 
-def update_jets_AK4(process, add_DeepJet):
+def update_jets_AK4(process):
     # Based on ``nanoAOD_addDeepInfo``
     # in https://github.com/cms-sw/cmssw/blob/master/PhysicsTools/NanoAOD/python/nano_cff.py
     _btagDiscriminators = [
@@ -14,19 +14,8 @@ def update_jets_AK4(process, add_DeepJet):
         'pfDeepCSVJetTags:probb',
         'pfDeepCSVJetTags:probc',
         'pfDeepCSVJetTags:probbb',
-        'pfDeepCSVJetTags:probudsg'
+        'pfDeepCSVJetTags:probudsg',
     ]
-    if add_DeepJet:
-        # start adding DeepFlavour (DeepJet) here, also part of nanoAOD_addDeepInfo
-        # DeepJet flav_names as found in https://github.com/cms-sw/cmssw/blob/master/RecoBTag/ONNXRuntime/plugins/DeepFlavourONNXJetTagsProducer.cc#L86
-        # and https://twiki.cern.ch/twiki/bin/view/CMS/DeepJet
-        _btagDiscriminators.extend([            
-            'pfDeepFlavourJetTags:probb',
-            'pfDeepFlavourJetTags:probbb',
-            'pfDeepFlavourJetTags:problepb',
-            'pfDeepFlavourJetTags:probuds',
-            'pfDeepFlavourJetTags:probg',
-            ])
     updateJetCollection(
         process,
         jetSource=cms.InputTag('slimmedJets'),
@@ -36,19 +25,12 @@ def update_jets_AK4(process, add_DeepJet):
                              'L2L3Residual']), 'None'),
         btagDiscriminators=_btagDiscriminators,
         postfix='WithDeepInfo',
-        svSource=cms.InputTag('slimmedSecondaryVertices'),
-        pfCandidates=cms.InputTag('packedPFCandidates'),
     )
     process.load("Configuration.StandardSequences.MagneticField_cff")
     process.jetCorrFactorsNano.src = "selectedUpdatedPatJetsWithDeepInfo"
     process.updatedJets.jetSource = "selectedUpdatedPatJetsWithDeepInfo"
 
     process.updatedPatJetsTransientCorrectedWithDeepInfo.tagInfoSources.append(cms.InputTag("pfDeepCSVTagInfosWithDeepInfo"))
-    if add_DeepJet:
-        # DeepJet here, "append" sounds like one could have that line once for DeepCSV and again for DeepJet
-        process.updatedPatJetsTransientCorrectedWithDeepInfo.tagInfoSources.append(cms.InputTag("pfDeepFlavourTagInfosWithDeepInfo"))
-    
-    
     process.updatedPatJetsTransientCorrectedWithDeepInfo.addTagInfos = cms.bool(True)
     
     return process
@@ -234,80 +216,12 @@ def get_DeepCSV_vars():
     )
     return DeepCSVVars
 
-def get_DeepJet_vars():
-    DeepJetVars = cms.PSet(
-        # global (probably *not all* are necessary, because that's already part of DeepCSV Jet based, see above get_DeepCSV_vars, or of the normal jet collection) --> commented out
-        #DeepJet_jet_pt = Var("tagInfo(\'pfDeepFlavour\').features().jet_features.pt", float, doc="pt of the jet", precision=10),
-        #DeepJet_jet_eta = Var("tagInfo(\'pfDeepFlavour\').features().jet_features.eta", float, doc="eta of the jet", precision=10),
-        #DeepJet_nCpfcand = Var("tagInfo('\pfDeepFlavour\').features().c_pf_features.size()", int, doc="number of charged PFCands in jet", precision=10),
-        #DeepJet_nNpfcand = Var("tagInfo('\pfDeepFlavour\').features().n_pf_features.size()", int, doc="number of neutral PFCands in jet", precision=10),
-        #DeepJet_nsv = Var("tagInfo('\pfDeepFlavour\').features().sv_features.size()", int, doc="number of reconstructed possible secondary vertices in jet", precision=10),
-        DeepJet_npv = Var("tagInfo(\'pfDeepFlavour\').features().npv", int, doc="number of primary vertices", precision=10),
-        
-        # global, shallow (probably not necessary, because that's already part of DeepCSV Jet based, see above get_DeepCSV_vars)
-        ### this is one example to read shallow info via DeepFlavour
-        # already in DeepCSV
-        #DeepJet_trackSumJetEtRatio = Var("tagInfo(\'pfDeepFlavour\').features().tag_info_features.trackSumJetEtRatio", float, doc="ratio of track sum transverse energy over jet energy", precision=10),
-        ### and here are all others, but read via DeepCSV tag info (copied from above - there's the -999, where I don't know if I should keep it like that)
-        # not part of DeepJet currently DeepJet_trackJetPt = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'trackJetPt\', -999)", float, doc="track-based jet transverse momentum", precision=10),
-        # already in DeepCSV DeepJet_vertexCategory = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'vertexCategory\', -999)", float, doc="category of secondary vertex (Reco, Pseudo, No)", precision=10),
-        # see global DeepJet_jetNSecondaryVertices = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'jetNSecondaryVertices\', -999)", int, doc="number of reconstructed possible secondary vertices in jet"),
-        # already in DeepCSV DeepJet_jetNSelectedTracks = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'jetNSelectedTracks\', -999)", int, doc="selected tracks in the jet"), 
-        # already in DeepCSV DeepJet_jetNTracksEtaRel = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'jetNTracksEtaRel\', -999)", int, doc="number of tracks for which etaRel is computed"), 
-        # alraedy done above as DeepFlavour example DeepJet_trackSumJetEtRatio = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'trackSumJetEtRatio\', -999)", float, doc="ratio of track sum transverse energy over jet energy", precision=10),
-        # already in DeepCSV DeepJet_trackSumJetDeltaR = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'trackSumJetDeltaR\', -999)", float, doc="pseudoangular distance between jet axis and track fourvector sum", precision=10),
-        # already in DeepCSV DeepJet_trackSip2dValAboveCharm = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'trackSip2dValAboveCharm\', -999)", float, doc="track 2D signed impact parameter of first track lifting mass above charm", precision=10),
-        # already in DeepCSV DeepJet_trackSip2dSigAboveCharm = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'trackSip2dSigAboveCharm\', -999)", float, doc="track 2D signed impact parameter significance of first track lifting mass above charm", precision=10),
-        # already in DeepCSV DeepJet_trackSip3dValAboveCharm = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'trackSip3dValAboveCharm\', -999)", float, doc="track 3D signed impact parameter of first track lifting mass above charm", precision=10),
-        # already in DeepCSV DeepJet_trackSip3dSigAboveCharm = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'trackSip3dSigAboveCharm\', -999)", float, doc="track 3D signed impact parameter significance of first track lifting mass above charm", precision=10),
-    )
-    return DeepJetVars
-'''
-def get_DeepJet_constituents_vars():
-    DJconstiVars = cms.PSet(
-        DeepJet_nCpfcand = Var("tagInfo('\pfDeepFlavour\').features().c_pf_features.size()", int, doc="number of charged PFCands in jet", precision=10),
-    )
-    return DJconstiVars
-'''
-def get_DeepJet_outputs():
-    DeepJetOutputVars = cms.PSet(
-        btagDeepFlavB_b=Var("bDiscriminator('pfDeepFlavourJetTags:probb')",
-                            float,
-                            doc="DeepJet b tag discriminator",
-                            precision=10),
-        btagDeepFlavB_bb=Var("bDiscriminator('pfDeepFlavourJetTags:probbb')",
-                             float,
-                             doc="DeepJet bb tag discriminator",
-                             precision=10),
-        btagDeepFlavB_lepb=Var("bDiscriminator('pfDeepFlavourJetTags:problepb')",
-                               float,
-                               doc="DeepJet lepb tag discriminator",
-                               precision=10),
-        btagDeepFlavC=Var("bDiscriminator('pfDeepFlavourJetTags:probc')",
-                            float,
-                            doc="DeepJet c tag discriminator",
-                            precision=10),
-        btagDeepFlavUDS=Var("bDiscriminator('pfDeepFlavourJetTags:probuds')",
-                            float,
-                            doc="DeepJet uds discriminator",
-                            precision=10),
-        btagDeepFlavG=Var("bDiscriminator('pfDeepFlavourJetTags:probg')",
-                          float,
-                          doc="DeepJet gluon discriminator",
-                          precision=10),
-        btagDeepFlavL=Var("bDiscriminator('pfDeepFlavourJetTags:probuds')+bDiscriminator('pfDeepFlavourJetTags:probg')",
-                          float,
-                          doc="DeepJet light discriminator",
-                          precision=10),
-    )
-    return DeepJetOutputVars
-
-def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=True, add_DeepJet=False, add_DeepJet_noclip=False):
+def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=True):
     addAK4 = not onlyAK8
     addAK8 = not onlyAK4
 
     if addAK4:
-        process = update_jets_AK4(process, add_DeepJet)
+        process = update_jets_AK4(process)
     if addAK8:
         process = update_jets_AK8(process)
         process = update_jets_AK8_subjet(process)
@@ -339,23 +253,6 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=Tru
                       doc="DeepCSV light btag discriminator",
                       precision=10),
     )
-    
-    
-    #TestVars = cms.PSet(
-        # https://github.com/cms-sw/cmssw/blob/master/DataFormats/PatCandidates/interface/Jet.h#L205
-        #tagInfoLabelsSize=Var("tagInfoLabels().size()",
-        #                 int,
-        #                 doc="n tagInfoLabels for jet",
-        #                 ),
-        #tagInfoLabels=Var("tagInfoLabels()",
-        #                 cms.vstring,
-        #                 doc="tagInfoLabels for jet",
-        #                 ),
-        #tagInfoSecondaryVertex=Var("tagInfoSecondaryVertex().nVertices()",
- #                        int,
- #                        doc="tagInfoSecondaryVertex for jet",
- #                        ),
- #   )
 
     # AK4
     process.customJetExtTable = cms.EDProducer(
@@ -367,43 +264,10 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=Tru
         singleton=cms.bool(False),  # the number of entries is variable
         extension=cms.bool(True),  # this is the extension table for Jets
         variables=cms.PSet(
-            #TestVars,
             CommonVars,
             get_DeepCSV_vars() if keepInputs else cms.PSet(),
-            get_DeepJet_outputs() if add_DeepJet else cms.PSet(),
-            get_DeepJet_vars() if (keepInputs and add_DeepJet) else cms.PSet(),
         ))
-    
-    if (keepInputs and add_DeepJet):
-        # try adding constituents here
-        process.customizedPFCandsForDeepJetTask = cms.Task( )
-        process.schedule.associate(process.customizedPFCandsForDeepJetTask)
-        process.finalJetsAK4ConstituentsForDeepJet = cms.EDProducer("PatJetConstituentPtrSelector",
-                                                                    src = cms.InputTag("finalJets"),
-                                                                    cut = cms.string("")
-                                                                    )
-        candList = cms.VInputTag(cms.InputTag("finalJetsAK4Constituents", "constituents"))
-        process.customizedPFCandsForDeepJetTask.add(process.finalJetsAK4ConstituentsForDeepJet)
-        process.finalJetsConstituentsForDeepJet = cms.EDProducer("PackedCandidatePtrMerger", src = candList, skipNulls = cms.bool(True), warnOnSkip = cms.bool(True))
-        candInput = cms.InputTag("finalJetsConstituents")
 
-        #print('add_DeepJet_noclip ? ' + str(add_DeepJet_noclip))
-
-        process.customAK4ConstituentsForDeepJetTable = cms.EDProducer("PatJetConstituentTableProducerDeepJet",
-                                                                      #candidates = cms.InputTag("packedPFCandidates"),
-                                                                      candidates = candInput,
-                                                                      jets = cms.InputTag("finalJets"),
-                                                                      jet_radius = cms.double(0.4),
-                                                                      #name = cms.string("JetPFCandsForDeepJet"),
-                                                                      #idx_name = cms.string("pFCandsIdx"),
-                                                                      #nameSV = cms.string("JetSVsForDeepJet"),
-                                                                      #idx_nameSV = cms.string("sVIdx"),
-                                                                      nameDeepJet = cms.string("Jet"),
-                                                                      idx_nameDeepJet = cms.string("djIdx"),
-                                                                      add_DeepJet_noclip = cms.bool(add_DeepJet_noclip)
-                                                                      )
-    
-    
     # AK8
     process.customFatJetExtTable = cms.EDProducer(
         "SimpleCandidateFlatTableProducer",
@@ -458,10 +322,6 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=Tru
 
     if addAK4:
         process.customizeJetTask.add(process.customJetExtTable)
-        if add_DeepJet:
-            process.customizedPFCandsForDeepJetTask.add(process.finalJetsConstituentsForDeepJet)
-            process.customizedPFCandsForDeepJetTask.add(process.customAK4ConstituentsForDeepJetTable)
-
     if addAK8:
         process.customizeJetTask.add(process.customFatJetExtTable)
         process.customizeJetTask.add(process.customSubJetExtTable)

@@ -237,7 +237,7 @@ void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::Even
   if (readBtag_) {
     svTable->addColumn<float>("mass", sv_mass, "SV mass", nanoaod::FlatTable::FloatColumn, 10);
     svTable->addColumn<float>("pt", sv_pt, "SV pt", nanoaod::FlatTable::FloatColumn, 10);
-    svTable->addColumn<float>("ntracks", sv_ntracks, "Number of trakcs associated to SV", nanoaod::FlatTable::FloatColumn, 10);
+    svTable->addColumn<float>("ntracks", sv_ntracks, "Number of tracks associated to SV", nanoaod::FlatTable::FloatColumn, 10);
     svTable->addColumn<float>("chi2", sv_chi2, "chi2", nanoaod::FlatTable::FloatColumn, 10);
     svTable->addColumn<float>("normchi2", sv_normchi2, "chi2/ndof", nanoaod::FlatTable::FloatColumn, 10);
     svTable->addColumn<float>("dxy", sv_dxy, "", nanoaod::FlatTable::FloatColumn, 10);
