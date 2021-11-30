@@ -236,39 +236,10 @@ def get_DeepCSV_vars():
 
 def get_DeepJet_vars():
     DeepJetVars = cms.PSet(
-        # global (probably *not all* are necessary, because that's already part of DeepCSV Jet based, see above get_DeepCSV_vars, or of the normal jet collection) --> commented out
-        #DeepJet_jet_pt = Var("tagInfo(\'pfDeepFlavour\').features().jet_features.pt", float, doc="pt of the jet", precision=10),
-        #DeepJet_jet_eta = Var("tagInfo(\'pfDeepFlavour\').features().jet_features.eta", float, doc="eta of the jet", precision=10),
-        #DeepJet_nCpfcand = Var("tagInfo('\pfDeepFlavour\').features().c_pf_features.size()", int, doc="number of charged PFCands in jet", precision=10),
-        #DeepJet_nNpfcand = Var("tagInfo('\pfDeepFlavour\').features().n_pf_features.size()", int, doc="number of neutral PFCands in jet", precision=10),
-        #DeepJet_nsv = Var("tagInfo('\pfDeepFlavour\').features().sv_features.size()", int, doc="number of reconstructed possible secondary vertices in jet", precision=10),
-        DeepJet_npv = Var("tagInfo(\'pfDeepFlavour\').features().npv", int, doc="number of primary vertices", precision=10),
-        
-        # global, shallow (probably not necessary, because that's already part of DeepCSV Jet based, see above get_DeepCSV_vars)
-        ### this is one example to read shallow info via DeepFlavour
-        # already in DeepCSV
-        #DeepJet_trackSumJetEtRatio = Var("tagInfo(\'pfDeepFlavour\').features().tag_info_features.trackSumJetEtRatio", float, doc="ratio of track sum transverse energy over jet energy", precision=10),
-        ### and here are all others, but read via DeepCSV tag info (copied from above - there's the -999, where I don't know if I should keep it like that)
-        # not part of DeepJet currently DeepJet_trackJetPt = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'trackJetPt\', -999)", float, doc="track-based jet transverse momentum", precision=10),
-        # already in DeepCSV DeepJet_vertexCategory = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'vertexCategory\', -999)", float, doc="category of secondary vertex (Reco, Pseudo, No)", precision=10),
-        # see global DeepJet_jetNSecondaryVertices = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'jetNSecondaryVertices\', -999)", int, doc="number of reconstructed possible secondary vertices in jet"),
-        # already in DeepCSV DeepJet_jetNSelectedTracks = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'jetNSelectedTracks\', -999)", int, doc="selected tracks in the jet"), 
-        # already in DeepCSV DeepJet_jetNTracksEtaRel = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'jetNTracksEtaRel\', -999)", int, doc="number of tracks for which etaRel is computed"), 
-        # alraedy done above as DeepFlavour example DeepJet_trackSumJetEtRatio = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'trackSumJetEtRatio\', -999)", float, doc="ratio of track sum transverse energy over jet energy", precision=10),
-        # already in DeepCSV DeepJet_trackSumJetDeltaR = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'trackSumJetDeltaR\', -999)", float, doc="pseudoangular distance between jet axis and track fourvector sum", precision=10),
-        # already in DeepCSV DeepJet_trackSip2dValAboveCharm = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'trackSip2dValAboveCharm\', -999)", float, doc="track 2D signed impact parameter of first track lifting mass above charm", precision=10),
-        # already in DeepCSV DeepJet_trackSip2dSigAboveCharm = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'trackSip2dSigAboveCharm\', -999)", float, doc="track 2D signed impact parameter significance of first track lifting mass above charm", precision=10),
-        # already in DeepCSV DeepJet_trackSip3dValAboveCharm = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'trackSip3dValAboveCharm\', -999)", float, doc="track 3D signed impact parameter of first track lifting mass above charm", precision=10),
-        # already in DeepCSV DeepJet_trackSip3dSigAboveCharm = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'trackSip3dSigAboveCharm\', -999)", float, doc="track 3D signed impact parameter significance of first track lifting mass above charm", precision=10),
+        DeepJet_npv = Var("tagInfo(\'pfDeepFlavour\').features().npv", int, doc="number of primary vertices", precision=10)
     )
     return DeepJetVars
-'''
-def get_DeepJet_constituents_vars():
-    DJconstiVars = cms.PSet(
-        DeepJet_nCpfcand = Var("tagInfo('\pfDeepFlavour\').features().c_pf_features.size()", int, doc="number of charged PFCands in jet", precision=10),
-    )
-    return DJconstiVars
-'''
+
 def get_DeepJet_outputs():
     DeepJetOutputVars = cms.PSet(
         btagDeepFlavB_b=Var("bDiscriminator('pfDeepFlavourJetTags:probb')",
@@ -340,22 +311,6 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=Tru
                       precision=10),
     )
     
-    
-    #TestVars = cms.PSet(
-        # https://github.com/cms-sw/cmssw/blob/master/DataFormats/PatCandidates/interface/Jet.h#L205
-        #tagInfoLabelsSize=Var("tagInfoLabels().size()",
-        #                 int,
-        #                 doc="n tagInfoLabels for jet",
-        #                 ),
-        #tagInfoLabels=Var("tagInfoLabels()",
-        #                 cms.vstring,
-        #                 doc="tagInfoLabels for jet",
-        #                 ),
-        #tagInfoSecondaryVertex=Var("tagInfoSecondaryVertex().nVertices()",
- #                        int,
- #                        doc="tagInfoSecondaryVertex for jet",
- #                        ),
- #   )
 
     # AK4
     process.customJetExtTable = cms.EDProducer(
