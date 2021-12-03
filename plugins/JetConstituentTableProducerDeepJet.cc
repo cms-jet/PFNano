@@ -487,7 +487,7 @@ void JetConstituentTableProducerDeepJet<T>::produce(edm::Event &iEvent, const ed
             
             // is neutral candidate
             auto entry_sorted = n_sortedindices.at(i_pf_in_jet);
-            //std::cout << "Current candidate is " << i_pf_in_jet << " and entry_sorted = c_sortedindices.at(i_pf_in_jet) = " << entry_sorted << std::endl; 
+            //std::cout << "Current candidate is " << i_pf_in_jet << " and entry_sorted = n_sortedindices.at(i_pf_in_jet) = " << entry_sorted << std::endl; 
             // need only the first 25 cpfs for DeepJet
             if (entry_sorted > 24) {
                 continue;
@@ -735,11 +735,7 @@ void JetConstituentTableProducerDeepJet<T>::produce(edm::Event &iEvent, const ed
 template< typename T>
 void JetConstituentTableProducerDeepJet<T>::fillDescriptions(edm::ConfigurationDescriptions &descriptions) {
   edm::ParameterSetDescription desc;
-  //desc.add<std::string>("name", "JetPFCands");
-  //desc.add<std::string>("nameSV", "JetSV");
   desc.add<std::string>("nameDeepJet", "Jet");
-  //desc.add<std::string>("idx_name", "candIdx");
-  //desc.add<std::string>("idx_nameSV", "svIdx");
   desc.add<std::string>("idx_nameDeepJet", "djIdx");
   desc.add<double>("jet_radius", true);
   desc.add<bool>("readBtag", true);

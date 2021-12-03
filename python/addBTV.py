@@ -18,7 +18,8 @@ def update_jets_AK4(process, add_DeepJet):
     ]
     if add_DeepJet:
         # start adding DeepFlavour (DeepJet) here, also part of nanoAOD_addDeepInfo
-        # DeepJet flav_names as found in https://github.com/cms-sw/cmssw/blob/master/RecoBTag/ONNXRuntime/plugins/DeepFlavourONNXJetTagsProducer.cc#L86
+        # DeepJet flav_names as found in
+        # https://github.com/cms-sw/cmssw/blob/master/RecoBTag/ONNXRuntime/plugins/DeepFlavourONNXJetTagsProducer.cc#L86
         # and https://twiki.cern.ch/twiki/bin/view/CMS/DeepJet
         _btagDiscriminators.extend([            
             'pfDeepFlavourJetTags:probb',
@@ -45,7 +46,6 @@ def update_jets_AK4(process, add_DeepJet):
 
     process.updatedPatJetsTransientCorrectedWithDeepInfo.tagInfoSources.append(cms.InputTag("pfDeepCSVTagInfosWithDeepInfo"))
     if add_DeepJet:
-        # DeepJet here, "append" sounds like one could have that line once for DeepCSV and again for DeepJet
         process.updatedPatJetsTransientCorrectedWithDeepInfo.tagInfoSources.append(cms.InputTag("pfDeepFlavourTagInfosWithDeepInfo"))
     
     
@@ -234,6 +234,7 @@ def get_DeepCSV_vars():
     )
     return DeepCSVVars
 
+# the only DeepCSV feature that is a) not part of DeepCSV and b) can be accessed without the custom producer
 def get_DeepJet_vars():
     DeepJetVars = cms.PSet(
         DeepJet_npv = Var("tagInfo(\'pfDeepFlavour\').features().npv", int, doc="number of primary vertices", precision=10)
@@ -322,7 +323,6 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=Tru
         singleton=cms.bool(False),  # the number of entries is variable
         extension=cms.bool(True),  # this is the extension table for Jets
         variables=cms.PSet(
-            #TestVars,
             CommonVars,
             get_DeepCSV_vars() if keepInputs else cms.PSet(),
             get_DeepJet_outputs() if add_DeepJet else cms.PSet(),
@@ -330,7 +330,7 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=Tru
         ))
     
     if (keepInputs and add_DeepJet):
-        # try adding constituents here
+        # constituents of AK4 jets, similar to addPFCands
         process.customizedPFCandsForDeepJetTask = cms.Task( )
         process.schedule.associate(process.customizedPFCandsForDeepJetTask)
         process.finalJetsAK4ConstituentsForDeepJet = cms.EDProducer("PatJetConstituentPtrSelector",
@@ -342,17 +342,10 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=Tru
         process.finalJetsConstituentsForDeepJet = cms.EDProducer("PackedCandidatePtrMerger", src = candList, skipNulls = cms.bool(True), warnOnSkip = cms.bool(True))
         candInput = cms.InputTag("finalJetsConstituents")
 
-        #print('add_DeepJet_noclip ? ' + str(add_DeepJet_noclip))
-
         process.customAK4ConstituentsForDeepJetTable = cms.EDProducer("PatJetConstituentTableProducerDeepJet",
-                                                                      #candidates = cms.InputTag("packedPFCandidates"),
                                                                       candidates = candInput,
                                                                       jets = cms.InputTag("finalJets"),
                                                                       jet_radius = cms.double(0.4),
-                                                                      #name = cms.string("JetPFCandsForDeepJet"),
-                                                                      #idx_name = cms.string("pFCandsIdx"),
-                                                                      #nameSV = cms.string("JetSVsForDeepJet"),
-                                                                      #idx_nameSV = cms.string("sVIdx"),
                                                                       nameDeepJet = cms.string("Jet"),
                                                                       idx_nameDeepJet = cms.string("djIdx"),
                                                                       add_DeepJet_noclip = cms.bool(add_DeepJet_noclip)

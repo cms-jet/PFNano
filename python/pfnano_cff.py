@@ -1,7 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 from PhysicsTools.PFNano.addPFCands_cff import addPFCands
 from PhysicsTools.PFNano.addBTV import add_BTV
-#from PhysicsTools.PFNano.addBTV_WIP import add_BTV # modified script that should also be able to include DeepJet is here (currently not working)
 from PhysicsTools.NanoAOD.common_cff import Var
 
 
@@ -11,12 +10,15 @@ def PFnano_customizeMC(process):
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process
 
+# _add_DeepJet adds DeepJet outputs and inputs on top of the respective customization function
 def PFnano_customizeMC_add_DeepJet(process):
     addPFCands(process, True)
     add_BTV(process, True, add_DeepJet=True)
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process
 
+# _noclip includes all additional branches of _add_DeepJet, as well as raw variables
+# (not using catch_infs_and_bound, i.e. no preprocessing or clipping of features)
 def PFnano_customizeMC_add_DeepJet_noclip(process):
     addPFCands(process, True)
     add_BTV(process, True, add_DeepJet=True, add_DeepJet_noclip=True)
