@@ -22,10 +22,9 @@ process.load('PhysicsTools.NanoAOD.nano_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
-#process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(100)  # use 100 originally
+    input = cms.untracked.int32(100)
 )
 
 # Input source
@@ -47,10 +46,6 @@ process.configurationMetadata = cms.untracked.PSet(
 
 # Output definition
 
-from datetime import datetime
-now = datetime.now()
-dt_string = now.strftime("%d-%m-%Y_%H%M%S")
-
 process.NANOAODSIMoutput = cms.OutputModule("NanoAODOutputModule",
     compressionAlgorithm = cms.untracked.string('LZMA'),
     compressionLevel = cms.untracked.int32(9),
@@ -58,7 +53,7 @@ process.NANOAODSIMoutput = cms.OutputModule("NanoAODOutputModule",
         dataTier = cms.untracked.string('NANOAODSIM'),
         filterName = cms.untracked.string('')
     ),
-    fileName = cms.untracked.string('nano106Xv8_on_mini106X_2017_mc_NANO_py_NANO_{dt}.root'.format(dt=dt_string)),
+    fileName = cms.untracked.string('nano106Xv8_on_mini106X_2017_mc_NANO_py_NANO.root'),
     outputCommands = process.NANOAODSIMEventContent.outputCommands
 )
 
@@ -79,7 +74,7 @@ from PhysicsTools.PatAlgos.tools.helpers import associatePatAlgosToolsTask
 associatePatAlgosToolsTask(process)
 
 #Setup FWK for multithreaded
-process.options.numberOfThreads=cms.untracked.uint32(4)  # originally use 4, but less for testing
+process.options.numberOfThreads=cms.untracked.uint32(4)
 process.options.numberOfStreams=cms.untracked.uint32(0)
 process.options.numberOfConcurrentLuminosityBlocks=cms.untracked.uint32(1)
 
@@ -116,7 +111,3 @@ process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(Fals
 from Configuration.StandardSequences.earlyDeleteSettings_cff import customiseEarlyDelete
 process = customiseEarlyDelete(process)
 # End adding early deletion
-
-
-# print file name for convenience
-print('nano106Xv8_on_mini106X_2017_mc_NANO_py_NANO_{dt}.root'.format(dt=dt_string))

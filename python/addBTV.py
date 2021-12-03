@@ -14,7 +14,7 @@ def update_jets_AK4(process, add_DeepJet):
         'pfDeepCSVJetTags:probb',
         'pfDeepCSVJetTags:probc',
         'pfDeepCSVJetTags:probbb',
-        'pfDeepCSVJetTags:probudsg'
+        'pfDeepCSVJetTags:probudsg',
     ]
     if add_DeepJet:
         # start adding DeepFlavour (DeepJet) here, also part of nanoAOD_addDeepInfo
