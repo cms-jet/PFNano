@@ -87,9 +87,11 @@ from PhysicsTools.NanoAOD.nano_cff import nanoAOD_customizeMC
 process = nanoAOD_customizeMC(process)
 
 # Automatic addition of the customisation function from PhysicsTools.PFNano.pfnano_cff
+# manually added DeepJet customisation
 from PhysicsTools.PFNano.pfnano_cff import PFnano_customizeMC, PFnano_customizeMC_allPF, PFnano_customizeMC_AK4JetsOnly, PFnano_customizeMC_AK8JetsOnly, PFnano_customizeMC_noInputs, PFnano_customizeMC_add_DeepJet, PFnano_customizeMC_add_DeepJet_noclip, PFnano_customizeMC_allPF_add_DeepJet, PFnano_customizeMC_allPF_add_DeepJet_noclip, PFnano_customizeMC_AK4JetsOnly_add_DeepJet, PFnano_customizeMC_AK4JetsOnly_add_DeepJet_noclip
 
 #call to customisation function PFnano_customizeMC imported from PhysicsTools.PFNano.pfnano_cff
+# manually added DeepJet customisation
 process = PFnano_customizeMC(process)
 #process = PFnano_customizeMC_add_DeepJet(process)
 #process = PFnano_customizeMC_add_DeepJet_noclip(process)

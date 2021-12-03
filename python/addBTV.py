@@ -234,7 +234,7 @@ def get_DeepCSV_vars():
     )
     return DeepCSVVars
 
-# the only DeepCSV feature that is a) not part of DeepCSV and b) can be accessed without the custom producer
+# the only DeepJet feature that is a) not part of DeepCSV and b) can be accessed without the custom producer
 def get_DeepJet_vars():
     DeepJetVars = cms.PSet(
         DeepJet_npv = Var("tagInfo(\'pfDeepFlavour\').features().npv", int, doc="number of primary vertices", precision=10)

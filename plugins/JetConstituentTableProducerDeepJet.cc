@@ -50,12 +50,7 @@ private:
   //=====
   typedef reco::VertexCompositePtrCandidateCollection SVCollection;
 
-  //const std::string name_;
-  //const std::string name_;
-  //const std::string nameSV_;
   const std::string nameDeepJet_;
-  //const std::string idx_name_;
-  //const std::string idx_nameSV_;
   const std::string idx_nameDeepJet_;
   const bool readBtag_;
   const double jet_radius_;
@@ -82,11 +77,7 @@ private:
 //
 template< typename T>
 JetConstituentTableProducerDeepJet<T>::JetConstituentTableProducerDeepJet(const edm::ParameterSet &iConfig)
-    : //name_(iConfig.getParameter<std::string>("name")),
-      //nameSV_(iConfig.getParameter<std::string>("nameSV")),
-      nameDeepJet_(iConfig.getParameter<std::string>("nameDeepJet")),
-      //idx_name_(iConfig.getParameter<std::string>("idx_name")),
-      //idx_nameSV_(iConfig.getParameter<std::string>("idx_nameSV")),
+    : nameDeepJet_(iConfig.getParameter<std::string>("nameDeepJet")),
       idx_nameDeepJet_(iConfig.getParameter<std::string>("idx_nameDeepJet")),
       readBtag_(iConfig.getParameter<bool>("readBtag")),
       jet_radius_(iConfig.getParameter<double>("jet_radius")),
@@ -95,12 +86,7 @@ JetConstituentTableProducerDeepJet<T>::JetConstituentTableProducerDeepJet(const 
       vtx_token_(consumes<VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"))),
       cand_token_(consumes<reco::CandidateView>(iConfig.getParameter<edm::InputTag>("candidates"))),
       sv_token_(consumes<SVCollection>(iConfig.getParameter<edm::InputTag>("secondary_vertices"))){
-  // for some reason, the tokens need to come after the other parameters (i.e. keeping the order from above)
-  //produces<nanoaod::FlatTable>(name_);
-  //produces<nanoaod::FlatTable>(name_);
-  //produces<nanoaod::FlatTable>(nameSV_);
   produces<nanoaod::FlatTable>(nameDeepJet_);
-  //produces<std::vector<reco::CandidatePtr>>();
 }
 
 template< typename T>
@@ -455,6 +441,9 @@ void JetConstituentTableProducerDeepJet<T>::produce(edm::Event &iEvent, const ed
               //c_pf_features.btagPf_trackPtRatio    = catch_infs_and_bound(track_info.getTrackPtRatio(), 0, -1, 10);
                 
               //Cpfcan_ptrel.push_back(catch_infs_and_bound(cand->pt() / jet.pt(), 0, -1, 0, -1));
+                
+              // note: in JetConstituentTableProducer, there is an additional 0.4 inside the mindrsvpfcand call below
+              // but this is not present for other producers I looked at
               //Cpfcan_drminsv.push_back(catch_infs_and_bound(mindrsvpfcand(svs_unsorted, &(*cand), 0.4), 0, -1. * jet_radius_, 0, -1. * jet_radius_));
             } else {
                     // default negative chi2 and loose track if notTrackDetails
@@ -467,19 +456,7 @@ void JetConstituentTableProducerDeepJet<T>::produce(edm::Event &iEvent, const ed
                       Cpfcan_chi2_0to24_noclip[entry_sorted][i_jet] = -1;
                     }
                 
-                    // vector defaults to 0 anyway
-                    //Cpfcan_BtagPf_trackEtaRel.push_back(0);
-                    //Cpfcan_BtagPf_trackPtRel.push_back(0);
-                    //Cpfcan_BtagPf_trackPPar.push_back(0);
-                    //Cpfcan_BtagPf_trackDeltaR.push_back(0);
-                    //Cpfcan_BtagPf_trackPParRatio.push_back(0);
-                    //Cpfcan_BtagPf_trackSip2dVal.push_back(0);
-                    //Cpfcan_BtagPf_trackSip2dSig.push_back(0);
-                    //Cpfcan_BtagPf_trackSip3dVal.push_back(0);
-                    //Cpfcan_BtagPf_trackSip3dSig.push_back(0);
-                    //Cpfcan_BtagPf_trackJetDistVal.push_back(0);
-                    //Cpfcan_ptrel.push_back(0);
-                    //Cpfcan_drminsv.push_back(0);
+                    // vector defaults to 0 anyway (initialization), no need to push_back zeros here for other variables
 
            }
         } else {
