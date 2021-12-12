@@ -10,18 +10,12 @@ def PFnano_customizeMC(process):
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process
 
-# _add_DeepJet adds DeepJet outputs and inputs on top of the respective customization function
+# _add_DeepJet adds DeepJet outputs independent of keepInputs,
+# DeepJet inputs will be added if keepInputs is True as well
+# (on top of the respective customization function)
 def PFnano_customizeMC_add_DeepJet(process):
     addPFCands(process, True)
     add_BTV(process, True, add_DeepJet=True)
-    process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
-    return process
-
-# _noclip includes all additional branches of _add_DeepJet, as well as raw variables
-# (not using catch_infs_and_bound, i.e. no preprocessing or clipping of features)
-def PFnano_customizeMC_add_DeepJet_noclip(process):
-    addPFCands(process, True)
-    add_BTV(process, True, add_DeepJet=True, add_DeepJet_noclip=True)
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process
 
@@ -37,12 +31,6 @@ def PFnano_customizeMC_allPF_add_DeepJet(process):
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process
 
-def PFnano_customizeMC_allPF_add_DeepJet_noclip(process):
-    addPFCands(process, True, True)
-    add_BTV(process, True, add_DeepJet=True, add_DeepJet_noclip=True)
-    process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
-    return process
-
 def PFnano_customizeMC_AK4JetsOnly(process):
     addPFCands(process, True, False, True)
     add_BTV(process, True, True)
@@ -55,12 +43,6 @@ def PFnano_customizeMC_AK4JetsOnly_add_DeepJet(process):
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process
 
-def PFnano_customizeMC_AK4JetsOnly_add_DeepJet_noclip(process):
-    addPFCands(process, True, False, True)
-    add_BTV(process, True, True, add_DeepJet=True, add_DeepJet_noclip=True)
-    process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
-    return process
-
 def PFnano_customizeMC_AK8JetsOnly(process):
     addPFCands(process, True, False, False, True)
     add_BTV(process, True, False, True)
@@ -69,6 +51,11 @@ def PFnano_customizeMC_AK8JetsOnly(process):
 
 def PFnano_customizeMC_noInputs(process):
     add_BTV(process, True, keepInputs=False)
+    process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
+    return process
+
+def PFnano_customizeMC_noInputs_add_DeepJet(process):
+    add_BTV(process, True, keepInputs=False, add_DeepJet=True)
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process
 
@@ -85,12 +72,6 @@ def PFnano_customizeData_add_DeepJet(process):
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process
 
-def PFnano_customizeData_add_DeepJet_noclip(process):
-    addPFCands(process, False)
-    add_BTV(process, False, add_DeepJet=True, add_DeepJet_noclip=True)
-    process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
-    return process
-
 def PFnano_customizeData_allPF(process):
     addPFCands(process, False, True)
     add_BTV(process, False)
@@ -100,12 +81,6 @@ def PFnano_customizeData_allPF(process):
 def PFnano_customizeData_allPF_add_DeepJet(process):
     addPFCands(process, False, True)
     add_BTV(process, False, add_DeepJet=True)
-    process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
-    return process
-
-def PFnano_customizeData_allPF_add_DeepJet_noclip(process):
-    addPFCands(process, False, True)
-    add_BTV(process, False, add_DeepJet=True, add_DeepJet_noclip=True)
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process
 
@@ -121,12 +96,6 @@ def PFnano_customizeData_AK4JetsOnly_add_DeepJet(process):
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process
 
-def PFnano_customizeData_AK4JetsOnly_add_DeepJet_noclip(process):
-    addPFCands(process, False, False, True)
-    add_BTV(process, False, True, add_DeepJet=True, add_DeepJet_noclip=True)
-    process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
-    return process
-
 def PFnano_customizeData_AK8JetsOnly(process):
     addPFCands(process, False, False, False, True)
     add_BTV(process, False, False, True)
@@ -135,5 +104,10 @@ def PFnano_customizeData_AK8JetsOnly(process):
 
 def PFnano_customizeData_noInputs(process):
     add_BTV(process, False, keepInputs=False)
+    process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
+    return process
+
+def PFnano_customizeData_noInputs_add_DeepJet(process):
+    add_BTV(process, False, keepInputs=False, add_DeepJet=True)
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process

@@ -25,8 +25,9 @@ def update_jets_AK4(process, add_DeepJet):
             'pfDeepFlavourJetTags:probb',
             'pfDeepFlavourJetTags:probbb',
             'pfDeepFlavourJetTags:problepb',
+            'pfDeepFlavourJetTags:probc',
             'pfDeepFlavourJetTags:probuds',
-            'pfDeepFlavourJetTags:probg',
+            'pfDeepFlavourJetTags:probg'
             ])
     updateJetCollection(
         process,
@@ -234,47 +235,43 @@ def get_DeepCSV_vars():
     )
     return DeepCSVVars
 
-# the only DeepJet feature that is a) not part of DeepCSV and b) can be accessed without the custom producer
-def get_DeepJet_vars():
-    DeepJetVars = cms.PSet(
-        DeepJet_npv = Var("tagInfo(\'pfDeepFlavour\').features().npv", int, doc="number of primary vertices", precision=10)
-    )
-    return DeepJetVars
 
 def get_DeepJet_outputs():
     DeepJetOutputVars = cms.PSet(
         btagDeepFlavB_b=Var("bDiscriminator('pfDeepFlavourJetTags:probb')",
                             float,
-                            doc="DeepJet b tag discriminator",
+                            doc="DeepJet b tag probability",
                             precision=10),
         btagDeepFlavB_bb=Var("bDiscriminator('pfDeepFlavourJetTags:probbb')",
                              float,
-                             doc="DeepJet bb tag discriminator",
+                             doc="DeepJet bb tag probability",
                              precision=10),
         btagDeepFlavB_lepb=Var("bDiscriminator('pfDeepFlavourJetTags:problepb')",
                                float,
-                               doc="DeepJet lepb tag discriminator",
+                               doc="DeepJet lepb tag probability",
                                precision=10),
         btagDeepFlavC=Var("bDiscriminator('pfDeepFlavourJetTags:probc')",
                             float,
-                            doc="DeepJet c tag discriminator",
+                            doc="DeepJet c tag probability",
                             precision=10),
         btagDeepFlavUDS=Var("bDiscriminator('pfDeepFlavourJetTags:probuds')",
                             float,
-                            doc="DeepJet uds discriminator",
+                            doc="DeepJet uds tag probability",
                             precision=10),
         btagDeepFlavG=Var("bDiscriminator('pfDeepFlavourJetTags:probg')",
                           float,
-                          doc="DeepJet gluon discriminator",
+                          doc="DeepJet gluon tag probability",
                           precision=10),
-        btagDeepFlavL=Var("bDiscriminator('pfDeepFlavourJetTags:probuds')+bDiscriminator('pfDeepFlavourJetTags:probg')",
-                          float,
-                          doc="DeepJet light discriminator",
-                          precision=10),
+        # anstein: could add discriminators here (or just leave it as it is, only output nodes with individual probabilities)
+        #btagDeepFlavL=Var("bDiscriminator('pfDeepFlavourJetTags:probuds')+bDiscriminator('pfDeepFlavourJetTags:probg')",
+        #                  float,
+        #                  doc="DeepJet light discriminator",
+        #                  precision=10),
     )
     return DeepJetOutputVars
 
-def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=True, add_DeepJet=False, add_DeepJet_noclip=False):
+
+def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=True, add_DeepJet=False):
     addAK4 = not onlyAK8
     addAK8 = not onlyAK4
 
@@ -325,30 +322,12 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=Tru
         variables=cms.PSet(
             CommonVars,
             get_DeepCSV_vars() if keepInputs else cms.PSet(),
-            get_DeepJet_outputs() if add_DeepJet else cms.PSet(),
-            get_DeepJet_vars() if (keepInputs and add_DeepJet) else cms.PSet(),
+            get_DeepJet_outputs() if add_DeepJet else cms.PSet()
         ))
     
     if (keepInputs and add_DeepJet):
-        # constituents of AK4 jets, similar to addPFCands
-        process.customizedPFCandsForDeepJetTask = cms.Task( )
-        process.schedule.associate(process.customizedPFCandsForDeepJetTask)
-        process.finalJetsAK4ConstituentsForDeepJet = cms.EDProducer("PatJetConstituentPtrSelector",
-                                                                    src = cms.InputTag("finalJets"),
-                                                                    cut = cms.string("")
-                                                                    )
-        candList = cms.VInputTag(cms.InputTag("finalJetsAK4Constituents", "constituents"))
-        process.customizedPFCandsForDeepJetTask.add(process.finalJetsAK4ConstituentsForDeepJet)
-        process.finalJetsConstituentsForDeepJet = cms.EDProducer("PackedCandidatePtrMerger", src = candList, skipNulls = cms.bool(True), warnOnSkip = cms.bool(True))
-        candInput = cms.InputTag("finalJetsConstituents")
-
-        process.customAK4ConstituentsForDeepJetTable = cms.EDProducer("PatJetConstituentTableProducerDeepJet",
-                                                                      candidates = candInput,
-                                                                      jets = cms.InputTag("finalJets"),
-                                                                      jet_radius = cms.double(0.4),
-                                                                      nameDeepJet = cms.string("Jet"),
-                                                                      idx_nameDeepJet = cms.string("djIdx"),
-                                                                      add_DeepJet_noclip = cms.bool(add_DeepJet_noclip)
+        process.customAK4ConstituentsForDeepJetTable = cms.EDProducer("PatJetDeepJetTableProducer",
+                                                                      jets = cms.InputTag("finalJets")
                                                                       )
     
     
@@ -406,9 +385,8 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=Tru
 
     if addAK4:
         process.customizeJetTask.add(process.customJetExtTable)
-        if add_DeepJet:
-            process.customizedPFCandsForDeepJetTask.add(process.finalJetsConstituentsForDeepJet)
-            process.customizedPFCandsForDeepJetTask.add(process.customAK4ConstituentsForDeepJetTable)
+        if (keepInputs and add_DeepJet):
+            process.customizeJetTask.add(process.customAK4ConstituentsForDeepJetTable)
 
     if addAK8:
         process.customizeJetTask.add(process.customFatJetExtTable)
