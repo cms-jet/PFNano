@@ -143,8 +143,11 @@ void DeepJetTableProducer<T>::produce(edm::Event &iEvent, const edm::EventSetup 
   std::vector<std::vector<float>> sv_d3d_0to3(4, std::vector<float>(jets->size())); 
   std::vector<std::vector<float>> sv_d3dsig_0to3(4, std::vector<float>(jets->size())); 
   std::vector<std::vector<float>> sv_costhetasvpv_0to3(4, std::vector<float>(jets->size()));
+  /*
+  // anstein: not relevant for this version of the tagger
   std::vector<std::vector<float>> sv_ptrel_0to3(4, std::vector<float>(jets->size())); 
   std::vector<std::vector<float>> sv_phirel_0to3(4, std::vector<float>(jets->size()));
+  */
   std::vector<std::vector<float>> sv_deltaR_0to3(4, std::vector<float>(jets->size())); 
   std::vector<std::vector<float>> sv_enratio_0to3(4, std::vector<float>(jets->size())); 
   
@@ -363,12 +366,15 @@ void DeepJetTableProducer<T>::produce(edm::Event &iEvent, const edm::EventSetup 
       input_name = "DeepJet_sv_costhetasvpv_" + s;
       description = "cosine of the angle between the " + s + ". SV flight direction and the direction of the " + s + ". SV momentum";
       djTable->addColumn<float>(input_name, sv_costhetasvpv_0to3[p], description, nanoaod::FlatTable::FloatColumn, 10);
+      /*
+      // anstein: only relevant if also included in the tag info, not yet, maybe in future versions of the tagger
       input_name = "DeepJetExtra_sv_phirel_" + s;
       description = "DeltaPhi(sv, jet) for the " + s + ". SV";
       djTable->addColumn<float>(input_name, sv_phirel_0to3[p], description, nanoaod::FlatTable::FloatColumn, 10);
       input_name = "DeepJetExtra_sv_ptrel_" + s;
       description = "pT relative to parent jet for the " + s + ". SV";
       djTable->addColumn<float>(input_name, sv_ptrel_0to3[p], description, nanoaod::FlatTable::FloatColumn, 10);
+      */
       input_name = "DeepJet_sv_deltaR_" + s;
       description = "pseudoangular distance between jet axis and the " + s + ". SV direction";
       djTable->addColumn<float>(input_name, sv_deltaR_0to3[p], description, nanoaod::FlatTable::FloatColumn, 10);
