@@ -88,19 +88,18 @@ process = nanoAOD_customizeMC(process)
 
 # Automatic addition of the customisation function from PhysicsTools.PFNano.pfnano_cff
 # manually added DeepJet customisation
-from PhysicsTools.PFNano.pfnano_cff import PFnano_customizeMC, PFnano_customizeMC_allPF, PFnano_customizeMC_AK4JetsOnly, PFnano_customizeMC_AK8JetsOnly, PFnano_customizeMC_noInputs, PFnano_customizeMC_add_DeepJet, PFnano_customizeMC_allPF_add_DeepJet, PFnano_customizeMC_AK4JetsOnly_add_DeepJet, PFnano_customizeMC_noInputs_add_DeepJet
+from PhysicsTools.PFNano.pfnano_cff import PFnano_customizeMC, PFnano_customizeMC_allPF, PFnano_customizeMC_AK4JetsOnly, PFnano_customizeMC_AK8JetsOnly, PFnano_customizeMC_noInputs, PFnano_customizeMC_add_DeepJet, PFnano_customizeMC_allPF_add_DeepJet, PFnano_customizeMC_AK4JetsOnly_add_DeepJet
 
 #call to customisation function PFnano_customizeMC imported from PhysicsTools.PFNano.pfnano_cff
 # manually added DeepJet customisation
-process = PFnano_customizeMC(process)
-#process = PFnano_customizeMC_add_DeepJet(process)
+#process = PFnano_customizeMC(process)
+process = PFnano_customizeMC_add_DeepJet(process)
 #process = PFnano_customizeMC_allPF(process)
 #process = PFnano_customizeMC_allPF_add_DeepJet(process)
 #process = PFnano_customizeMC_AK4JetsOnly(process)
 #process = PFnano_customizeMC_AK4JetsOnly_add_DeepJet(process)
 #process = PFnano_customizeMC_AK8JetsOnly(process)
 #process = PFnano_customizeMC_noInputs(process)
-#process = PFnano_customizeMC_noInputs_add_DeepJet(process)
 
 # End of customisation functions
 
