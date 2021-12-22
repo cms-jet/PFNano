@@ -3,16 +3,13 @@ from PhysicsTools.PFNano.addPFCands_cff import addPFCands
 from PhysicsTools.PFNano.addBTV import add_BTV
 from PhysicsTools.NanoAOD.common_cff import Var
 
-
+# keepInputs can take DeepCSV, DeepJet and DDX (any combination, or use empty placeholder list if no inputs are required)
 def PFnano_customizeMC(process):
     addPFCands(process, True)
     add_BTV(process, True, keepInputs=['DeepCSV','DDX'])
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process
 
-# _add_DeepJet adds DeepJet outputs independent of keepInputs,
-# DeepJet inputs will be added if keepInputs is True as well
-# (on top of the respective customization function)
 def PFnano_customizeMC_add_DeepJet(process):
     addPFCands(process, True)
     add_BTV(process, True, keepInputs=['DeepCSV','DeepJet','DDX'])
