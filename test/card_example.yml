@@ -5,7 +5,7 @@ campaign:
   # User specific
   workArea: testing_yml
   storageSite: T2_DE_RWTH
-  outLFNDirBase: /store/user/anovak/nanotest
+  outLFNDirBase: /store/user/anstein/nanotest
   voGroup: dcms
 
   # Campaign specific
