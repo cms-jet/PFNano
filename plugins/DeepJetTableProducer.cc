@@ -15,7 +15,7 @@ using namespace btagbtvdeep;
 #include "DataFormats/NanoAOD/interface/FlatTable.h"
 #include <string> 
 
-// anstein: add tag info and a way to go back to the jet reference
+// add tag info and a way to go back to the jet reference
 #include "FWCore/Framework/interface/makeRefToBaseProdFrom.h"
 #include "DataFormats/BTauReco/interface/JetTag.h"
 #include "DataFormats/BTauReco/interface/DeepFlavourTagInfo.h"
@@ -36,18 +36,12 @@ private:
 
   edm::EDGetTokenT<edm::View<T>> jet_token_;
     
-  // anstein: from ONNX producer
   typedef std::vector<reco::DeepFlavourTagInfo> TagInfoCollection;
   const edm::EDGetTokenT<TagInfoCollection> tag_info_src_;
     
-  // anstein: number of constituents will be used, number of features per constituent not necessary
-  //constexpr static unsigned n_features_global_ = 15;
   constexpr static unsigned n_cpf_ = 25;
-  //constexpr static unsigned n_features_cpf_ = 16;
   constexpr static unsigned n_npf_ = 25;
-  //constexpr static unsigned n_features_npf_ = 6;
   constexpr static unsigned n_sv_ = 4;
-  //constexpr static unsigned n_features_sv_ = 12;
   
 };
 
@@ -69,8 +63,9 @@ DeepJetTableProducer<T>::~DeepJetTableProducer() {}
 template< typename T>
 void DeepJetTableProducer<T>::produce(edm::Event &iEvent, const edm::EventSetup &iSetup) {
   // elements in all these collections must have the same order!
-  // anstein: only necessary to explicitly check correct matching of jets
-  //  std::vector<int> jetIdx_dj;
+    
+  // only necessary to explicitly check correct matching of jets
+  // std::vector<int> jetIdx_dj;
   
   auto jets = iEvent.getHandle(jet_token_);
 
@@ -124,7 +119,7 @@ void DeepJetTableProducer<T>::produce(edm::Event &iEvent, const edm::EventSetup 
   std::vector<std::vector<float>> sv_d3dsig_nSV(n_sv_, std::vector<float>(jets->size())); 
   std::vector<std::vector<float>> sv_costhetasvpv_nSV(n_sv_, std::vector<float>(jets->size()));
   /*
-  // anstein: not relevant for this version of the tagger
+  // not relevant for this version of the tagger
   std::vector<std::vector<float>> sv_ptrel_nSV(n_sv_, std::vector<float>(jets->size())); 
   std::vector<std::vector<float>> sv_phirel_nSV(n_sv_, std::vector<float>(jets->size()));
   */
@@ -134,41 +129,21 @@ void DeepJetTableProducer<T>::produce(edm::Event &iEvent, const edm::EventSetup 
   if (!tag_infos->empty()) {  
 
       for (unsigned i_jet = 0; i_jet < jets->size(); ++i_jet) {
-          // anstein: new version of the jet loop which reads tag info instead of constituent info
+          // new version of the jet loop which reads tag info instead of constituent info
 
           const auto& taginfo = (*tag_infos)[i_jet];
           const auto& features = taginfo.features();
-          // jet variables
-          //const auto& jet_features = features.jet_features;
-          // anstein: already part of jet table
-          /*
-          *ptr = jet_features.pt;
-          *(++ptr) = jet_features.eta;
-          */
+          
+          // jet.pt and jet.eta as well as other jet variables (ShallowTagInfo) already included (via DeepCSV)
+          
           // number of elements in different collections
           jet_N_CPFCands[i_jet] = features.c_pf_features.size();
           jet_N_NPFCands[i_jet] = features.n_pf_features.size();
           jet_N_SVs[i_jet] = features.sv_features.size();
           jet_N_PVs[i_jet] = features.npv;
-          // variables from ShallowTagInfo
-          // anstein: already included via DeepCSV
-          /*
-          const auto& tag_info_features = features.tag_info_features;
-          *(++ptr) = tag_info_features.trackSumJetEtRatio;
-          *(++ptr) = tag_info_features.trackSumJetDeltaR;
-          *(++ptr) = tag_info_features.vertexCategory;
-          *(++ptr) = tag_info_features.trackSip2dValAboveCharm;
-          *(++ptr) = tag_info_features.trackSip2dSigAboveCharm;
-          *(++ptr) = tag_info_features.trackSip3dValAboveCharm;
-          *(++ptr) = tag_info_features.trackSip3dSigAboveCharm;
-          *(++ptr) = tag_info_features.jetNSelectedTracks;
-          *(++ptr) = tag_info_features.jetNTracksEtaRel;
-          */
           
           // c_pf candidates
           auto max_c_pf_n = std::min(features.c_pf_features.size(), (std::size_t)n_cpf_);
-          // anstein: I don't need the offset (similar for npf and sv)
-          //offset = i_jet * input_sizes_[kChargedCandidates];
           for (std::size_t c_pf_n = 0; c_pf_n < max_c_pf_n; c_pf_n++) {
             const auto& c_pf_features = features.c_pf_features.at(c_pf_n);
             Cpfcan_BtagPf_trackEtaRel_nCpf[c_pf_n][i_jet] = c_pf_features.btagPf_trackEtaRel;
@@ -226,33 +201,93 @@ void DeepJetTableProducer<T>::produce(edm::Event &iEvent, const edm::EventSetup 
   //djTable->addColumn<int>("DeepJet_jetIdx", jetIdx_dj, "Index of the parent jet", nanoaod::FlatTable::IntColumn);
     
     
-  djTable->addColumn<int>("DeepJet_nCpfcand", jet_N_CPFCands, "Number of charged PF candidates in the jet", nanoaod::FlatTable::IntColumn);
-  djTable->addColumn<int>("DeepJet_nNpfcand", jet_N_NPFCands, "Number of neutral PF candidates in the jet", nanoaod::FlatTable::IntColumn);
-  djTable->addColumn<int>("DeepJet_nsv", jet_N_SVs, "Number of secondary vertices in the jet", nanoaod::FlatTable::IntColumn);
-  djTable->addColumn<int>("DeepJet_npv", jet_N_PVs, "Number of primary vertices", nanoaod::FlatTable::IntColumn);
+  djTable->addColumn<int>("DeepJet_nCpfcand",
+                          jet_N_CPFCands,
+                          "Number of charged PF candidates in the jet",
+                          nanoaod::FlatTable::IntColumn);
+  djTable->addColumn<int>("DeepJet_nNpfcand",
+                          jet_N_NPFCands,
+                          "Number of neutral PF candidates in the jet",
+                          nanoaod::FlatTable::IntColumn);
+  djTable->addColumn<int>("DeepJet_nsv",
+                          jet_N_SVs,
+                          "Number of secondary vertices in the jet",
+                          nanoaod::FlatTable::IntColumn);
+  djTable->addColumn<int>("DeepJet_npv",
+                          jet_N_PVs,
+                          "Number of primary vertices",
+                          nanoaod::FlatTable::IntColumn);
     
     
   // ============================================================== Cpfs ===================================================================
   for (unsigned int p = 0; p < n_cpf_; p++) {
       auto s = std::to_string(p);
       
-      djTable->addColumn<float>("DeepJet_Cpfcan_puppiw_" + s, Cpfcan_puppiw_nCpf[p], "charged candidate PUPPI weight of the " + s + ". cpf", nanoaod::FlatTable::FloatColumn, 10);
-      djTable->addColumn<int>("DeepJet_Cpfcan_VTX_ass_" + s, Cpfcan_VTX_ass_nCpf[p], "integer flag that indicates whether the track was used in the primary vertex fit for the " + s + ". cpf", nanoaod::FlatTable::IntColumn, 10);
-      djTable->addColumn<float>("DeepJet_Cpfcan_drminsv_" + s, Cpfcan_drminsv_nCpf[p], "track pseudoangular distance from the closest secondary vertex of the " + s + ". cpf", nanoaod::FlatTable::FloatColumn, 10);
-      djTable->addColumn<float>("DeepJet_Cpfcan_ptrel_" + s, Cpfcan_ptrel_nCpf[p], "fraction of the jet momentum carried by the track for the " + s + ". cpf", nanoaod::FlatTable::FloatColumn, 10);
-      djTable->addColumn<int>("DeepJet_Cpfcan_quality_" + s, Cpfcan_quality_nCpf[p], "integer flag which indicates the quality of the fitted track, based on number of detector hits used for the reconstruction as well as the overall chi2 of the charged track fit for the " + s + ". cpf", nanoaod::FlatTable::IntColumn, 10);
-      djTable->addColumn<float>("DeepJet_Cpfcan_chi2_" + s, Cpfcan_chi2_nCpf[p], "chi2 of the charged track fit for the " + s + ". cpf", nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<float>("DeepJet_Cpfcan_puppiw_" + s,
+                                Cpfcan_puppiw_nCpf[p],
+                                "charged candidate PUPPI weight of the " + s + ". cpf",
+                                nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<int>("DeepJet_Cpfcan_VTX_ass_" + s,
+                              Cpfcan_VTX_ass_nCpf[p],
+                              "integer flag that indicates whether the track was used in the primary vertex fit for the " + s + ". cpf",
+                              nanoaod::FlatTable::IntColumn, 10);
+      djTable->addColumn<float>("DeepJet_Cpfcan_drminsv_" + s,
+                                Cpfcan_drminsv_nCpf[p],
+                                "track pseudoangular distance from the closest secondary vertex of the " + s + ". cpf",
+                                nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<float>("DeepJet_Cpfcan_ptrel_" + s, 
+                                Cpfcan_ptrel_nCpf[p],
+                                "fraction of the jet momentum carried by the track for the " + s + ". cpf",
+                                nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<int>("DeepJet_Cpfcan_quality_" + s,
+                              Cpfcan_quality_nCpf[p],
+                              "integer flag which indicates the quality of the fitted track, based on number of detector hits used for the reconstruction as well as the overall chi2 of the charged track fit for the " + s + ". cpf", 
+                              nanoaod::FlatTable::IntColumn, 10);
+      djTable->addColumn<float>("DeepJet_Cpfcan_chi2_" + s,
+                                Cpfcan_chi2_nCpf[p],
+                                "chi2 of the charged track fit for the " + s + ". cpf", 
+                                nanoaod::FlatTable::FloatColumn, 10);
       
-      djTable->addColumn<float>("DeepJet_Cpfcan_BtagPf_trackDeltaR_" + s, Cpfcan_BtagPf_trackDeltaR_nCpf[p], "track pseudoangular distance from the jet axis for the " + s + ". cpf", nanoaod::FlatTable::FloatColumn, 10);
-      djTable->addColumn<float>("DeepJet_Cpfcan_BtagPf_trackEtaRel_" + s, Cpfcan_BtagPf_trackEtaRel_nCpf[p], "track pseudorapidity, relative to the jet axis for the " + s + ". cpf", nanoaod::FlatTable::FloatColumn, 10);
-      djTable->addColumn<float>("DeepJet_Cpfcan_BtagPf_trackJetDistVal_" + s, Cpfcan_BtagPf_trackJetDistVal_nCpf[p], "minimum track approach distance to jet axis for the " + s + ". cpf", nanoaod::FlatTable::FloatColumn, 10);
-      djTable->addColumn<float>("DeepJet_Cpfcan_BtagPf_trackPPar_" + s, Cpfcan_BtagPf_trackPPar_nCpf[p], "dot product of the jet and track momentum for the " + s + ". cpf", nanoaod::FlatTable::FloatColumn, 10);
-      djTable->addColumn<float>("DeepJet_Cpfcan_BtagPf_trackPParRatio_" + s, Cpfcan_BtagPf_trackPParRatio_nCpf[p], "dot product of the jet and track momentum divided by the magnitude of the jet momentum for the " + s + ". cpf", nanoaod::FlatTable::FloatColumn, 10);
-      djTable->addColumn<float>("DeepJet_Cpfcan_BtagPf_trackPtRel_" + s, Cpfcan_BtagPf_trackPtRel_nCpf[p], "track transverse momentum, relative to the jet axis for the " + s + ". cpf", nanoaod::FlatTable::FloatColumn, 10);
-      djTable->addColumn<float>("DeepJet_Cpfcan_BtagPf_trackSip2dSig_" + s, Cpfcan_BtagPf_trackSip2dSig_nCpf[p], "track 2D signed impact parameter significance for the " + s + ". cpf", nanoaod::FlatTable::FloatColumn, 10);
-      djTable->addColumn<float>("DeepJet_Cpfcan_BtagPf_trackSip3dSig_" + s, Cpfcan_BtagPf_trackSip3dSig_nCpf[p], "track 3D signed impact parameter significance for the " + s + ". cpf", nanoaod::FlatTable::FloatColumn, 10);
-      djTable->addColumn<float>("DeepJet_Cpfcan_BtagPf_trackSip2dVal_" + s, Cpfcan_BtagPf_trackSip2dVal_nCpf[p], "track 2D signed impact parameter for the " + s + ". cpf", nanoaod::FlatTable::FloatColumn, 10);
-      djTable->addColumn<float>("DeepJet_Cpfcan_BtagPf_trackSip3dVal_" + s, Cpfcan_BtagPf_trackSip3dVal_nCpf[p], "track 3D signed impact parameter for the " + s + ". cpf", nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<float>("DeepJet_Cpfcan_BtagPf_trackDeltaR_" + s,
+                                Cpfcan_BtagPf_trackDeltaR_nCpf[p],
+                                "track pseudoangular distance from the jet axis for the " + s + ". cpf",
+                                nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<float>("DeepJet_Cpfcan_BtagPf_trackEtaRel_" + s,
+                                Cpfcan_BtagPf_trackEtaRel_nCpf[p],
+                                "track pseudorapidity, relative to the jet axis for the " + s + ". cpf",
+                                nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<float>("DeepJet_Cpfcan_BtagPf_trackJetDistVal_" + s,
+                                Cpfcan_BtagPf_trackJetDistVal_nCpf[p],
+                                "minimum track approach distance to jet axis for the " + s + ". cpf",
+                                nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<float>("DeepJet_Cpfcan_BtagPf_trackPPar_" + s,
+                                Cpfcan_BtagPf_trackPPar_nCpf[p],
+                                "dot product of the jet and track momentum for the " + s + ". cpf",
+                                nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<float>("DeepJet_Cpfcan_BtagPf_trackPParRatio_" + s,
+                                Cpfcan_BtagPf_trackPParRatio_nCpf[p],
+                                "dot product of the jet and track momentum divided by the magnitude of the jet momentum for the " + s + ". cpf",
+                                nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<float>("DeepJet_Cpfcan_BtagPf_trackPtRel_" + s,
+                                Cpfcan_BtagPf_trackPtRel_nCpf[p],
+                                "track transverse momentum, relative to the jet axis for the " + s + ". cpf",
+                                nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<float>("DeepJet_Cpfcan_BtagPf_trackSip2dSig_" + s,
+                                Cpfcan_BtagPf_trackSip2dSig_nCpf[p],
+                                "track 2D signed impact parameter significance for the " + s + ". cpf",
+                                nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<float>("DeepJet_Cpfcan_BtagPf_trackSip3dSig_" + s,
+                                Cpfcan_BtagPf_trackSip3dSig_nCpf[p],
+                                "track 3D signed impact parameter significance for the " + s + ". cpf",
+                                nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<float>("DeepJet_Cpfcan_BtagPf_trackSip2dVal_" + s,
+                                Cpfcan_BtagPf_trackSip2dVal_nCpf[p],
+                                "track 2D signed impact parameter for the " + s + ". cpf",
+                                nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<float>("DeepJet_Cpfcan_BtagPf_trackSip3dVal_" + s,
+                                Cpfcan_BtagPf_trackSip3dVal_nCpf[p],
+                                "track 3D signed impact parameter for the " + s + ". cpf",
+                                nanoaod::FlatTable::FloatColumn, 10);
   
   }
       
@@ -260,12 +295,30 @@ void DeepJetTableProducer<T>::produce(edm::Event &iEvent, const edm::EventSetup 
   for (unsigned int p = 0; p < n_npf_; p++) {
       auto s = std::to_string(p);
       
-      djTable->addColumn<float>("DeepJet_Npfcan_puppiw_" + s, Npfcan_puppiw_nNpf[p], "neutral candidate PUPPI weight for the " + s + ". npf", nanoaod::FlatTable::FloatColumn, 10);
-      djTable->addColumn<float>("DeepJet_Npfcan_deltaR_" + s, Npfcan_deltaR_nNpf[p], "pseudoangular distance between the neutral candidate and the jet axis for the " + s + ". npf", nanoaod::FlatTable::FloatColumn, 10);
-      djTable->addColumn<float>("DeepJet_Npfcan_drminsv_" + s, Npfcan_drminsv_nNpf[p], "pseudoangular distance between the neutral candidate and the closest secondary vertex for the " + s + ". npf", nanoaod::FlatTable::FloatColumn, 10);
-      djTable->addColumn<float>("DeepJet_Npfcan_HadFrac_" + s, Npfcan_HadFrac_nNpf[p], "fraction of the neutral candidate energy deposited in the hadronic calorimeter for the " + s + ". npf", nanoaod::FlatTable::FloatColumn, 10);
-      djTable->addColumn<float>("DeepJet_Npfcan_ptrel_" + s, Npfcan_ptrel_nNpf[p], "fraction of the jet momentum carried by the neutral candidate for the " + s + ". npf", nanoaod::FlatTable::FloatColumn, 10);
-      djTable->addColumn<int>("DeepJet_Npfcan_isGamma_" + s, Npfcan_isGamma_nNpf[p], "integer flag indicating whether the neutral candidate is a photon for the " + s + ". npf", nanoaod::FlatTable::IntColumn, 10);
+      djTable->addColumn<float>("DeepJet_Npfcan_puppiw_" + s,
+                                Npfcan_puppiw_nNpf[p],
+                                "neutral candidate PUPPI weight for the " + s + ". npf",
+                                nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<float>("DeepJet_Npfcan_deltaR_" + s,
+                                Npfcan_deltaR_nNpf[p],
+                                "pseudoangular distance between the neutral candidate and the jet axis for the " + s + ". npf",
+                                nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<float>("DeepJet_Npfcan_drminsv_" + s,
+                                Npfcan_drminsv_nNpf[p],
+                                "pseudoangular distance between the neutral candidate and the closest secondary vertex for the " + s + ". npf",
+                                nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<float>("DeepJet_Npfcan_HadFrac_" + s,
+                                Npfcan_HadFrac_nNpf[p],
+                                "fraction of the neutral candidate energy deposited in the hadronic calorimeter for the " + s + ". npf",
+                                nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<float>("DeepJet_Npfcan_ptrel_" + s,
+                                Npfcan_ptrel_nNpf[p],
+                                "fraction of the jet momentum carried by the neutral candidate for the " + s + ". npf",
+                                nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<int>("DeepJet_Npfcan_isGamma_" + s,
+                              Npfcan_isGamma_nNpf[p],
+                              "integer flag indicating whether the neutral candidate is a photon for the " + s + ". npf",
+                              nanoaod::FlatTable::IntColumn, 10);
       
   }  
 
@@ -273,23 +326,65 @@ void DeepJetTableProducer<T>::produce(edm::Event &iEvent, const edm::EventSetup 
   for (unsigned int p = 0; p < n_sv_; p++) {
       auto s = std::to_string(p);
       
-      djTable->addColumn<float>("DeepJet_sv_mass_" + s, sv_mass_nSV[p], "SV mass of the " + s + ". SV", nanoaod::FlatTable::FloatColumn, 10);
-      djTable->addColumn<float>("DeepJet_sv_pt_" + s, sv_pt_nSV[p], "SV pt of the " + s + ". SV", nanoaod::FlatTable::FloatColumn, 10);
-      djTable->addColumn<float>("DeepJet_sv_ntracks_" + s, sv_ntracks_nSV[p], "Number of tracks asociated to the " + s + ". SV", nanoaod::FlatTable::FloatColumn, 10);
-      djTable->addColumn<float>("DeepJet_sv_chi2_" + s, sv_chi2_nSV[p], "chi2 of the " + s + ". SV", nanoaod::FlatTable::FloatColumn, 10);
-      djTable->addColumn<float>("DeepJet_sv_normchi2_" + s, sv_normchi2_nSV[p], "chi2/dof of the " + s + ". SV", nanoaod::FlatTable::FloatColumn, 10);
-      djTable->addColumn<float>("DeepJet_sv_dxy_" + s, sv_dxy_nSV[p], "2D impact parameter (flight distance) value of the " + s + ". SV", nanoaod::FlatTable::FloatColumn, 10);
-      djTable->addColumn<float>("DeepJet_sv_dxysig_" + s, sv_dxysig_nSV[p], "2D impact parameter (flight distance) significance of the " + s + ". SV", nanoaod::FlatTable::FloatColumn, 10);
-      djTable->addColumn<float>("DeepJet_sv_d3d_" + s, sv_d3d_nSV[p], "3D impact parameter (flight distance) value of the " + s + ". SV", nanoaod::FlatTable::FloatColumn, 10);
-      djTable->addColumn<float>("DeepJet_sv_d3dsig_" + s, sv_d3dsig_nSV[p], "3D impact parameter (flight distance) significance of the " + s + ". SV", nanoaod::FlatTable::FloatColumn, 10);
-      djTable->addColumn<float>("DeepJet_sv_costhetasvpv_" + s, sv_costhetasvpv_nSV[p], "cosine of the angle between the " + s + ". SV flight direction and the direction of the " + s + ". SV momentum", nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<float>("DeepJet_sv_mass_" + s,
+                                sv_mass_nSV[p],
+                                "SV mass of the " + s + ". SV",
+                                nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<float>("DeepJet_sv_pt_" + s,
+                                sv_pt_nSV[p],
+                                "SV pt of the " + s + ". SV",
+                                nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<float>("DeepJet_sv_ntracks_" + s,
+                                sv_ntracks_nSV[p],
+                                "Number of tracks asociated to the " + s + ". SV",
+                                nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<float>("DeepJet_sv_chi2_" + s, 
+                                sv_chi2_nSV[p],
+                                "chi2 of the " + s + ". SV",
+                                nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<float>("DeepJet_sv_normchi2_" + s,
+                                sv_normchi2_nSV[p],
+                                "chi2/dof of the " + s + ". SV",
+                                nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<float>("DeepJet_sv_dxy_" + s,
+                                sv_dxy_nSV[p],
+                                "2D impact parameter (flight distance) value of the " + s + ". SV",
+                                nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<float>("DeepJet_sv_dxysig_" + s,
+                                sv_dxysig_nSV[p],
+                                "2D impact parameter (flight distance) significance of the " + s + ". SV",
+                                nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<float>("DeepJet_sv_d3d_" + s,
+                                sv_d3d_nSV[p],
+                                "3D impact parameter (flight distance) value of the " + s + ". SV",
+                                nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<float>("DeepJet_sv_d3dsig_" + s,
+                                sv_d3dsig_nSV[p],
+                                "3D impact parameter (flight distance) significance of the " + s + ". SV",
+                                nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<float>("DeepJet_sv_costhetasvpv_" + s,
+                                sv_costhetasvpv_nSV[p],
+                                "cosine of the angle between the " + s + ". SV flight direction and the direction of the " + s + ". SV momentum",
+                                nanoaod::FlatTable::FloatColumn, 10);
       /*
-      // anstein: only relevant if also included in the tag info, not yet, maybe in future versions of the tagger
-      djTable->addColumn<float>("DeepJetExtra_sv_phirel_" + s, sv_phirel_nSV[p], "DeltaPhi(sv, jet) for the " + s + ". SV", nanoaod::FlatTable::FloatColumn, 10);
-      djTable->addColumn<float>("DeepJetExtra_sv_ptrel_" + s, sv_ptrel_nSV[p], "pT relative to parent jet for the " + s + ". SV", nanoaod::FlatTable::FloatColumn, 10);
+      // only relevant if also included in the tag info, not yet, maybe in future versions of the tagger
+      djTable->addColumn<float>("DeepJetExtra_sv_phirel_" + s,
+                                sv_phirel_nSV[p],
+                                "DeltaPhi(sv, jet) for the " + s + ". SV",
+                                nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<float>("DeepJetExtra_sv_ptrel_" + s,
+                                sv_ptrel_nSV[p], 
+                                "pT relative to parent jet for the " + s + ". SV",
+                                nanoaod::FlatTable::FloatColumn, 10);
       */
-      djTable->addColumn<float>("DeepJet_sv_deltaR_" + s, sv_deltaR_nSV[p], "pseudoangular distance between jet axis and the " + s + ". SV direction", nanoaod::FlatTable::FloatColumn, 10);
-      djTable->addColumn<float>("DeepJet_sv_enratio_" + s, sv_enratio_nSV[p], "ratio of the " + s + ". SV energy ratio to the jet energy", nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<float>("DeepJet_sv_deltaR_" + s,
+                                sv_deltaR_nSV[p],
+                                "pseudoangular distance between jet axis and the " + s + ". SV direction",
+                                nanoaod::FlatTable::FloatColumn, 10);
+      djTable->addColumn<float>("DeepJet_sv_enratio_" + s,
+                                sv_enratio_nSV[p],
+                                "ratio of the " + s + ". SV energy ratio to the jet energy",
+                                nanoaod::FlatTable::FloatColumn, 10);
 
   }
   

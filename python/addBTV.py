@@ -254,25 +254,8 @@ def get_DeepJet_outputs():
         btagDeepFlavG=Var("bDiscriminator('pfDeepFlavourJetTags:probg')",
                           float,
                           doc="DeepJet gluon tag probability",
-                          precision=10),
-        
-        # anstein: discriminators are already part of jets_cff.py from NanoAOD
-        #btagDeepFlavB = Var("bDiscriminator('pfDeepFlavourJetTags:probb')+bDiscriminator('pfDeepFlavourJetTags:probbb')+bDiscriminator('pfDeepFlavourJetTags:problepb')",
-        #                    float,
-        #                    doc="DeepJet b+bb+lepb tag discriminator",
-        #                    precision=10),
-        #btagDeepFlavCvL = Var("?(bDiscriminator('pfDeepFlavourJetTags:probc')+bDiscriminator('pfDeepFlavourJetTags:probuds')+bDiscriminator('pfDeepFlavourJetTags:probg'))>0?bDiscriminator('pfDeepFlavourJetTags:probc')/(bDiscriminator('pfDeepFlavourJetTags:probc')+bDiscriminator('pfDeepFlavourJetTags:probuds')+bDiscriminator('pfDeepFlavourJetTags:probg')):-1",
-        #                      float,
-        #                      doc="DeepJet c vs uds+g discriminator",
-        #                      precision=10),
-        #btagDeepFlavCvB = Var("?(bDiscriminator('pfDeepFlavourJetTags:probc')+bDiscriminator('pfDeepFlavourJetTags:probb')+bDiscriminator('pfDeepFlavourJetTags:probbb')+bDiscriminator('pfDeepFlavourJetTags:problepb'))>0?bDiscriminator('pfDeepFlavourJetTags:probc')/(bDiscriminator('pfDeepFlavourJetTags:probc')+bDiscriminator('pfDeepFlavourJetTags:probb')+bDiscriminator('pfDeepFlavourJetTags:probbb')+bDiscriminator('pfDeepFlavourJetTags:problepb')):-1",
-        #                      float,
-        #                      doc="DeepJet c vs b+bb+lepb discriminator",
-        #                      precision=10),
-        #btagDeepFlavQG = Var("?(bDiscriminator('pfDeepFlavourJetTags:probg')+bDiscriminator('pfDeepFlavourJetTags:probuds'))>0?bDiscriminator('pfDeepFlavourJetTags:probg')/(bDiscriminator('pfDeepFlavourJetTags:probg')+bDiscriminator('pfDeepFlavourJetTags:probuds')):-1",
-        #                     float,
-        #                     doc="DeepJet g vs uds discriminator",
-        #                     precision=10)        
+                          precision=10)
+        # discriminators are already part of jets_cff.py from NanoAOD and therefore not added here     
     )
     return DeepJetOutputVars
 
@@ -328,7 +311,7 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=['D
         variables=cms.PSet(
             CommonVars,
             get_DeepCSV_vars() if ('DeepCSV' in keepInputs) else cms.PSet(),
-            get_DeepJet_outputs()  # outputs and discriminators are added in any case, inputs only i:qqf requested
+            get_DeepJet_outputs()  # outputs are added in any case, inputs only if requested
         ))
     
     if ('DeepJet' in keepInputs):
