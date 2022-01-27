@@ -9,13 +9,23 @@ from PhysicsTools.PatAlgos.tools.helpers import addToProcessAndTask, getPatAlgos
 def update_jets_AK4(process):
     # Based on ``nanoAOD_addDeepInfo``
     # in https://github.com/cms-sw/cmssw/blob/master/PhysicsTools/NanoAOD/python/nano_cff.py
+    # DeepJet flav_names as found in
+    # https://github.com/cms-sw/cmssw/blob/master/RecoBTag/ONNXRuntime/plugins/DeepFlavourONNXJetTagsProducer.cc#L86
+    # and https://twiki.cern.ch/twiki/bin/view/CMS/DeepJet
     _btagDiscriminators = [
         'pfJetProbabilityBJetTags',
         'pfDeepCSVJetTags:probb',
         'pfDeepCSVJetTags:probc',
         'pfDeepCSVJetTags:probbb',
-        'pfDeepCSVJetTags:probudsg',
+        'pfDeepCSVJetTags:probudsg',       
+        'pfDeepFlavourJetTags:probb',
+        'pfDeepFlavourJetTags:probbb',
+        'pfDeepFlavourJetTags:problepb',
+        'pfDeepFlavourJetTags:probc',
+        'pfDeepFlavourJetTags:probuds',
+        'pfDeepFlavourJetTags:probg'
     ]
+    
     updateJetCollection(
         process,
         jetSource=cms.InputTag('slimmedJets'),
@@ -31,6 +41,8 @@ def update_jets_AK4(process):
     process.updatedJets.jetSource = "selectedUpdatedPatJetsWithDeepInfo"
 
     process.updatedPatJetsTransientCorrectedWithDeepInfo.tagInfoSources.append(cms.InputTag("pfDeepCSVTagInfosWithDeepInfo"))
+    process.updatedPatJetsTransientCorrectedWithDeepInfo.tagInfoSources.append(cms.InputTag("pfDeepFlavourTagInfosWithDeepInfo"))
+    
     process.updatedPatJetsTransientCorrectedWithDeepInfo.addTagInfos = cms.bool(True)
     
     return process
@@ -216,7 +228,39 @@ def get_DeepCSV_vars():
     )
     return DeepCSVVars
 
-def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=True):
+
+def get_DeepJet_outputs():
+    DeepJetOutputVars = cms.PSet(
+        btagDeepFlavB_b=Var("bDiscriminator('pfDeepFlavourJetTags:probb')",
+                            float,
+                            doc="DeepJet b tag probability",
+                            precision=10),
+        btagDeepFlavB_bb=Var("bDiscriminator('pfDeepFlavourJetTags:probbb')",
+                             float,
+                             doc="DeepJet bb tag probability",
+                             precision=10),
+        btagDeepFlavB_lepb=Var("bDiscriminator('pfDeepFlavourJetTags:problepb')",
+                               float,
+                               doc="DeepJet lepb tag probability",
+                               precision=10),
+        btagDeepFlavC=Var("bDiscriminator('pfDeepFlavourJetTags:probc')",
+                            float,
+                            doc="DeepJet c tag probability",
+                            precision=10),
+        btagDeepFlavUDS=Var("bDiscriminator('pfDeepFlavourJetTags:probuds')",
+                            float,
+                            doc="DeepJet uds tag probability",
+                            precision=10),
+        btagDeepFlavG=Var("bDiscriminator('pfDeepFlavourJetTags:probg')",
+                          float,
+                          doc="DeepJet gluon tag probability",
+                          precision=10)
+        # discriminators are already part of jets_cff.py from NanoAOD and therefore not added here     
+    )
+    return DeepJetOutputVars
+
+
+def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=['DeepCSV','DDX']):
     addAK4 = not onlyAK8
     addAK8 = not onlyAK4
 
@@ -253,6 +297,7 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=Tru
                       doc="DeepCSV light btag discriminator",
                       precision=10),
     )
+    
 
     # AK4
     process.customJetExtTable = cms.EDProducer(
@@ -265,9 +310,16 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=Tru
         extension=cms.bool(True),  # this is the extension table for Jets
         variables=cms.PSet(
             CommonVars,
-            get_DeepCSV_vars() if keepInputs else cms.PSet(),
+            get_DeepCSV_vars() if ('DeepCSV' in keepInputs) else cms.PSet(),
+            get_DeepJet_outputs()  # outputs are added in any case, inputs only if requested
         ))
-
+    
+    if ('DeepJet' in keepInputs):
+        process.customAK4ConstituentsForDeepJetTable = cms.EDProducer("PatJetDeepJetTableProducer",
+                                                                      jets = cms.InputTag("finalJets")
+                                                                      )
+    
+    
     # AK8
     process.customFatJetExtTable = cms.EDProducer(
         "SimpleCandidateFlatTableProducer",
@@ -284,7 +336,7 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=Tru
                 btagDDCvLV2 = Var("bDiscriminator('pfMassIndependentDeepDoubleCvLV2JetTags:probHcc')",float,doc="DeepDoubleX V2 discriminator for H(Z)->cc vs QCD",precision=10),
                 btagDDCvBV2 = Var("bDiscriminator('pfMassIndependentDeepDoubleCvBV2JetTags:probHcc')",float,doc="DeepDoubleX V2 discriminator for H(Z)->cc vs H(Z)->bb",precision=10),
             ),
-            get_DDX_vars() if keepInputs else cms.PSet(),
+            get_DDX_vars() if ('DDX' in keepInputs) else cms.PSet(),
         ))
 
     # Subjets
@@ -322,6 +374,9 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=Tru
 
     if addAK4:
         process.customizeJetTask.add(process.customJetExtTable)
+        if ('DeepJet' in keepInputs):
+            process.customizeJetTask.add(process.customAK4ConstituentsForDeepJetTable)
+
     if addAK8:
         process.customizeJetTask.add(process.customFatJetExtTable)
         process.customizeJetTask.add(process.customSubJetExtTable)
