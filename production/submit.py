@@ -91,7 +91,7 @@ if __name__ == '__main__':
                 this_config.Site.storageSite = output_site
 
                 this_config.section_('Data')
-                this_config.Data.publication = False
+                this_config.Data.publication = True
                 this_config.Data.outLFNDirBase = "{}/{}/{}".format(output_lfn_base, info["year"], sample)
                 this_config.Data.outputDatasetTag = dataset_shortname
                 # Outputs land at outLFNDirBase/outputDatasetTag
