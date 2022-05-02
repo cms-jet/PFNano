@@ -15,6 +15,9 @@ def addPFCands(process, runOnMC=False, saveAll=False, addAK4=False, addAK8=False
     if not (saveAll or addAK4 or addAK8 or addAK15):
         raise ValueError("In call to addPFCands(), at least one save* or add* option must be True.")
 
+    if saveAll and (addAK4 or addAK8 or addAK15):
+        raise ValueError("In call to addPFCands(), you can't specify saveAll=True and addAK*=True at the same time.")
+
     process.customizedPFCandsTask = cms.Task()
     process.schedule.associate(process.customizedPFCandsTask)
 
