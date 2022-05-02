@@ -2,7 +2,7 @@ defaults:
   isMC: True
   splitting: Automatic
   reco_version: UL
-  year: 2017
+  year: 2018
   globaltag: 106X_upgrade2018_realistic_v16_L1v1
   pset: $CMSSW_BASE/src/PhysicsTools/PFNano/test/ak15/nano_mc_2018_UL_NANO.py
   allowInvalid: True
