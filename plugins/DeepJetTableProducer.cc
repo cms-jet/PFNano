@@ -19,6 +19,12 @@ using namespace btagbtvdeep;
 #include "FWCore/Framework/interface/makeRefToBaseProdFrom.h"
 #include "DataFormats/BTauReco/interface/JetTag.h"
 #include "DataFormats/BTauReco/interface/DeepFlavourTagInfo.h"
+// To store the gen info to get the truth flavour of the jet
+
+#include "DataFormats/PatCandidates/interface/Jet.h"
+#include "DataFormats/PatCandidates/interface/Muon.h"
+#include "DataFormats/PatCandidates/interface/Electron.h"
+#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 
 template<typename T>
 class DeepJetTableProducer : public edm::stream::EDProducer<> {
@@ -27,21 +33,44 @@ public:
   ~DeepJetTableProducer() override;
 
   static void fillDescriptions(edm::ConfigurationDescriptions &descriptions);
-
+    
+  //void setGenParticles(const reco::GenParticleCollection &genParticles);
+  /*
+  void setGenParticlesToken(edm::EDGetTokenT<reco::GenParticleCollection> genParticlesToken) {
+        genParticlesToken_ = genParticlesToken;
+    }
+  */
+  //edm::EDGetTokenT<reco::GenParticleCollection> genParticlesToken_;
+  
 private:
   void produce(edm::Event &, const edm::EventSetup &) override;
     
   const std::string nameDeepJet_;
   const std::string idx_nameDeepJet_;
 
+    
+  //typedef reco::GenParticleCollection GenParticleCollection;
+    
+    
+    
+  const edm::EDGetTokenT<reco::GenParticleCollection> genParticlesToken_;
+    
   edm::EDGetTokenT<edm::View<T>> jet_token_;
     
   typedef std::vector<reco::DeepFlavourTagInfo> TagInfoCollection;
   const edm::EDGetTokenT<TagInfoCollection> tag_info_src_;
     
+    
   constexpr static unsigned n_cpf_ = 25;
   constexpr static unsigned n_npf_ = 25;
-  constexpr static unsigned n_sv_ = 4;
+  constexpr static unsigned n_sv_ = 4; // 5
+    
+  constexpr static double jetR_ = 0.4;
+  //std::vector<const reco::GenParticle*> neutrinosLepB;
+  //std::vector<const reco::GenParticle*> neutrinosLepB_C;
+    
+    
+    
   
 };
 
@@ -52,6 +81,8 @@ template< typename T>
 DeepJetTableProducer<T>::DeepJetTableProducer(const edm::ParameterSet &iConfig)
     : nameDeepJet_(iConfig.getParameter<std::string>("nameDeepJet")),
       idx_nameDeepJet_(iConfig.getParameter<std::string>("idx_nameDeepJet")),
+      //genParticlesToken_(consumes<GenParticleCollection>(iConfig.getParameter<edm::InputTag>("genparticles"))),
+      genParticlesToken_(consumes<reco::GenParticleCollection>(iConfig.getParameter<edm::InputTag>("genparticles"))),
       jet_token_(consumes<edm::View<T>>(iConfig.getParameter<edm::InputTag>("jets"))),
       tag_info_src_(consumes<TagInfoCollection>(iConfig.getParameter<edm::InputTag>("tagInfo_src"))){
   produces<nanoaod::FlatTable>(nameDeepJet_);
@@ -67,73 +98,322 @@ void DeepJetTableProducer<T>::produce(edm::Event &iEvent, const edm::EventSetup 
   // only necessary to explicitly check correct matching of jets
   // std::vector<int> jetIdx_dj;
   
+  /*  
+  edm::Handle<reco::GenParticleCollection> genParticlesHandle;  
+  iEvent.getByToken(genParticlesToken_, genParticlesHandle);
+  */
+  //auto genparts = iEvent.getHandle(genParticlesToken_);
+    
+  edm::Handle<reco::GenParticleCollection> genParticlesHandle;
+  iEvent.getByToken(genParticlesToken_, genParticlesHandle);
+    
   auto jets = iEvent.getHandle(jet_token_);
 
   edm::Handle<TagInfoCollection> tag_infos;
   iEvent.getByToken(tag_info_src_, tag_infos);
+  
+    
+  std::vector <reco::GenParticle> neutrinosLepB;
+  std::vector <reco::GenParticle> neutrinosLepB_C;
+  
+  std::vector<reco::GenParticle> gToBB;
+  std::vector<reco::GenParticle> gToCC;
+  std::vector<reco::GenParticle> alltaus_;
+    
     
   
-  std::vector<int> jet_N_CPFCands(jets->size());
-  std::vector<int> jet_N_NPFCands(jets->size());
-  std::vector<int> jet_N_PVs(jets->size()); 
-  std::vector<int> jet_N_SVs(jets->size()); 
+  unsigned nGenParts = genParticlesHandle->size();  
+  unsigned nJets = jets->size();
     
+  std::vector<int> jet_N_CPFCands(nJets);
+  std::vector<int> jet_N_NPFCands(nJets);
+  std::vector<int> jet_N_PVs(nJets); 
+  std::vector<int> jet_N_SVs(nJets); 
+    
+  std::vector<bool> jet_isB(nJets);
+  std::vector<bool> jet_isLeptonicB(nJets);
+  std::vector<bool> jet_isBB(nJets); 
+  std::vector<bool> jet_isC(nJets); 
+  std::vector<bool> jet_isUDS(nJets); 
+  std::vector<bool> jet_isG(nJets); 
     
   // should default to 0 if less than nCpf cpf with information
-  std::vector<std::vector<float>> Cpfcan_BtagPf_trackEtaRel_nCpf(n_cpf_, std::vector<float>(jets->size()));
-  std::vector<std::vector<float>> Cpfcan_BtagPf_trackPtRel_nCpf(n_cpf_, std::vector<float>(jets->size())); 
-  std::vector<std::vector<float>> Cpfcan_BtagPf_trackPPar_nCpf(n_cpf_, std::vector<float>(jets->size())); 
-  std::vector<std::vector<float>> Cpfcan_BtagPf_trackDeltaR_nCpf(n_cpf_, std::vector<float>(jets->size())); 
-  std::vector<std::vector<float>> Cpfcan_BtagPf_trackPParRatio_nCpf(n_cpf_, std::vector<float>(jets->size())); 
-  std::vector<std::vector<float>> Cpfcan_BtagPf_trackSip2dVal_nCpf(n_cpf_, std::vector<float>(jets->size())); 
-  std::vector<std::vector<float>> Cpfcan_BtagPf_trackSip2dSig_nCpf(n_cpf_, std::vector<float>(jets->size())); 
-  std::vector<std::vector<float>> Cpfcan_BtagPf_trackSip3dVal_nCpf(n_cpf_, std::vector<float>(jets->size())); 
-  std::vector<std::vector<float>> Cpfcan_BtagPf_trackSip3dSig_nCpf(n_cpf_, std::vector<float>(jets->size())); 
-  std::vector<std::vector<float>> Cpfcan_BtagPf_trackJetDistVal_nCpf(n_cpf_, std::vector<float>(jets->size()));
-  std::vector<std::vector<float>> Cpfcan_ptrel_nCpf(n_cpf_, std::vector<float>(jets->size())); 
-  std::vector<std::vector<float>> Cpfcan_drminsv_nCpf(n_cpf_, std::vector<float>(jets->size()));
-  std::vector<std::vector<int>> Cpfcan_VTX_ass_nCpf(n_cpf_, std::vector<int>(jets->size())); 
-  std::vector<std::vector<float>> Cpfcan_puppiw_nCpf(n_cpf_, std::vector<float>(jets->size()));
-  std::vector<std::vector<float>> Cpfcan_chi2_nCpf(n_cpf_, std::vector<float>(jets->size())); 
-  std::vector<std::vector<int>> Cpfcan_quality_nCpf(n_cpf_, std::vector<int>(jets->size()));
+  std::vector<std::vector<float>> Cpfcan_BtagPf_trackEtaRel_nCpf(n_cpf_, std::vector<float>(nJets));
+  std::vector<std::vector<float>> Cpfcan_BtagPf_trackPtRel_nCpf(n_cpf_, std::vector<float>(nJets)); 
+  std::vector<std::vector<float>> Cpfcan_BtagPf_trackPPar_nCpf(n_cpf_, std::vector<float>(nJets)); 
+  std::vector<std::vector<float>> Cpfcan_BtagPf_trackDeltaR_nCpf(n_cpf_, std::vector<float>(nJets)); 
+  std::vector<std::vector<float>> Cpfcan_BtagPf_trackPParRatio_nCpf(n_cpf_, std::vector<float>(nJets)); 
+  std::vector<std::vector<float>> Cpfcan_BtagPf_trackSip2dVal_nCpf(n_cpf_, std::vector<float>(nJets)); 
+  std::vector<std::vector<float>> Cpfcan_BtagPf_trackSip2dSig_nCpf(n_cpf_, std::vector<float>(nJets)); 
+  std::vector<std::vector<float>> Cpfcan_BtagPf_trackSip3dVal_nCpf(n_cpf_, std::vector<float>(nJets)); 
+  std::vector<std::vector<float>> Cpfcan_BtagPf_trackSip3dSig_nCpf(n_cpf_, std::vector<float>(nJets)); 
+  std::vector<std::vector<float>> Cpfcan_BtagPf_trackJetDistVal_nCpf(n_cpf_, std::vector<float>(nJets));
+  std::vector<std::vector<float>> Cpfcan_ptrel_nCpf(n_cpf_, std::vector<float>(nJets)); 
+  std::vector<std::vector<float>> Cpfcan_drminsv_nCpf(n_cpf_, std::vector<float>(nJets));
+  std::vector<std::vector<int>> Cpfcan_VTX_ass_nCpf(n_cpf_, std::vector<int>(nJets)); 
+  std::vector<std::vector<float>> Cpfcan_puppiw_nCpf(n_cpf_, std::vector<float>(nJets));
+  std::vector<std::vector<float>> Cpfcan_chi2_nCpf(n_cpf_, std::vector<float>(nJets)); 
+  std::vector<std::vector<int>> Cpfcan_quality_nCpf(n_cpf_, std::vector<int>(nJets));
     
     
   // should default to 0 if less than nNpf npf with information
-  std::vector<std::vector<float>> Npfcan_ptrel_nNpf(n_npf_, std::vector<float>(jets->size()));
-  std::vector<std::vector<float>> Npfcan_deltaR_nNpf(n_npf_, std::vector<float>(jets->size())); 
-  std::vector<std::vector<int>> Npfcan_isGamma_nNpf(n_npf_, std::vector<int>(jets->size())); 
-  std::vector<std::vector<float>> Npfcan_HadFrac_nNpf(n_npf_, std::vector<float>(jets->size())); 
-  std::vector<std::vector<float>> Npfcan_drminsv_nNpf(n_npf_, std::vector<float>(jets->size())); 
-  std::vector<std::vector<float>> Npfcan_puppiw_nNpf(n_npf_, std::vector<float>(jets->size()));
+  std::vector<std::vector<float>> Npfcan_ptrel_nNpf(n_npf_, std::vector<float>(nJets));
+  std::vector<std::vector<float>> Npfcan_deltaR_nNpf(n_npf_, std::vector<float>(nJets)); 
+  std::vector<std::vector<int>> Npfcan_isGamma_nNpf(n_npf_, std::vector<int>(nJets)); 
+  std::vector<std::vector<float>> Npfcan_HadFrac_nNpf(n_npf_, std::vector<float>(nJets)); 
+  std::vector<std::vector<float>> Npfcan_drminsv_nNpf(n_npf_, std::vector<float>(nJets)); 
+  std::vector<std::vector<float>> Npfcan_puppiw_nNpf(n_npf_, std::vector<float>(nJets));
+  /*
+  // not relevant for this version of the tagger
+  std::vector<std::vector<float>> Npfcan_etarel_nNpf(n_npf_, std::vector<float>(nJets)); 
+  std::vector<std::vector<float>> Npfcan_phirel_nNpf(n_npf_, std::vector<float>(nJets));
+  */
     
     
   // should default to 0 if less than nSv SVs with information
-  std::vector<std::vector<float>> sv_mass_nSV(n_sv_, std::vector<float>(jets->size()));
-  std::vector<std::vector<float>> sv_pt_nSV(n_sv_, std::vector<float>(jets->size())); 
-  std::vector<std::vector<int>> sv_ntracks_nSV(n_sv_, std::vector<int>(jets->size())); 
-  std::vector<std::vector<float>> sv_chi2_nSV(n_sv_, std::vector<float>(jets->size())); 
-  std::vector<std::vector<float>> sv_normchi2_nSV(n_sv_, std::vector<float>(jets->size())); 
-  std::vector<std::vector<float>> sv_dxy_nSV(n_sv_, std::vector<float>(jets->size())); 
-  std::vector<std::vector<float>> sv_dxysig_nSV(n_sv_, std::vector<float>(jets->size())); 
-  std::vector<std::vector<float>> sv_d3d_nSV(n_sv_, std::vector<float>(jets->size())); 
-  std::vector<std::vector<float>> sv_d3dsig_nSV(n_sv_, std::vector<float>(jets->size())); 
-  std::vector<std::vector<float>> sv_costhetasvpv_nSV(n_sv_, std::vector<float>(jets->size()));
+  std::vector<std::vector<float>> sv_mass_nSV(n_sv_, std::vector<float>(nJets));
+  std::vector<std::vector<float>> sv_pt_nSV(n_sv_, std::vector<float>(nJets)); 
+  std::vector<std::vector<int>> sv_ntracks_nSV(n_sv_, std::vector<int>(nJets)); 
+  std::vector<std::vector<float>> sv_chi2_nSV(n_sv_, std::vector<float>(nJets)); 
+  std::vector<std::vector<float>> sv_normchi2_nSV(n_sv_, std::vector<float>(nJets)); 
+  std::vector<std::vector<float>> sv_dxy_nSV(n_sv_, std::vector<float>(nJets)); 
+  std::vector<std::vector<float>> sv_dxysig_nSV(n_sv_, std::vector<float>(nJets)); 
+  std::vector<std::vector<float>> sv_d3d_nSV(n_sv_, std::vector<float>(nJets)); 
+  std::vector<std::vector<float>> sv_d3dsig_nSV(n_sv_, std::vector<float>(nJets)); 
+  std::vector<std::vector<float>> sv_costhetasvpv_nSV(n_sv_, std::vector<float>(nJets));
   /*
   // not relevant for this version of the tagger
-  std::vector<std::vector<float>> sv_ptrel_nSV(n_sv_, std::vector<float>(jets->size())); 
-  std::vector<std::vector<float>> sv_phirel_nSV(n_sv_, std::vector<float>(jets->size()));
+  std::vector<std::vector<float>> sv_etarel_nSV(n_sv_, std::vector<float>(nJets)); 
+  std::vector<std::vector<float>> sv_phirel_nSV(n_sv_, std::vector<float>(nJets));
   */
-  std::vector<std::vector<float>> sv_deltaR_nSV(n_sv_, std::vector<float>(jets->size())); 
-  std::vector<std::vector<float>> sv_enratio_nSV(n_sv_, std::vector<float>(jets->size())); 
+  std::vector<std::vector<float>> sv_deltaR_nSV(n_sv_, std::vector<float>(nJets)); 
+  std::vector<std::vector<float>> sv_enratio_nSV(n_sv_, std::vector<float>(nJets)); 
   
-  if (!tag_infos->empty()) {  
+  if (!tag_infos->empty()) { 
+      
+      /* 
+      // ToDo
+         For a single jet, fill in gToBB,
+          gTobCC,
+          neutrinosLepB,
+          neurtrinosLeoB_C,
+          alltaus
+         based on GenParticles.
+         
+         Once these are all available, fill in the flavour info with the help of the jet_flavour function.
+      
+      */
+      
+      
+      /*
+        JetFlavor jet_flavour(const pat::Jet& jet,
+            const std::vector<reco::GenParticle>& gToBB,
+            const std::vector<reco::GenParticle>& gToCC,
+            const std::vector<reco::GenParticle>& neutrinosLepB,
+            const std::vector<reco::GenParticle>& neutrinosLepB_C,
+            const std::vector<reco::GenParticle>& alltaus,
+            bool usePhysForLightAndUndefined) { 
+        int hflav = abs(jet.hadronFlavour());
+        int pflav = abs(jet.partonFlavour());
+        int physflav = 0;
+        if(jet.genParton()) physflav=abs(jet.genParton()->pdgId());
+        std::size_t nbs = jet.jetFlavourInfo().getbHadrons().size();
+        std::size_t ncs = jet.jetFlavourInfo().getcHadrons().size();
 
-      for (unsigned i_jet = 0; i_jet < jets->size(); ++i_jet) {
+        unsigned int nbFromGSP(0);
+        for (reco::GenParticle p : gToBB) {
+            double dr(reco::deltaR(jet, p));
+            if (dr < 0.4) ++nbFromGSP;
+        }
+
+        unsigned int ncFromGSP(0);
+        for (reco::GenParticle p : gToCC) {
+            double dr(reco::deltaR(jet, p));
+            if (dr < 0.4) ++ncFromGSP;
+        }
+
+        //std::cout << " jet pt = " << jet.pt() << " hfl = " << hflav << " pfl = " << pflav << " genpart = " << physflav
+                //  << " nbFromGSP = " << nbFromGSP << " ncFromGSP = " << ncFromGSP
+        //  << " nBhadrons " << nbs << " nCHadrons " << ncs << std::endl;
+        if(hflav == 5) { //B jet
+            if(nbs > 1) {
+                if (nbFromGSP > 0) return JetFlavor::GBB;
+                else return JetFlavor::BB;
+            }
+            else if(nbs == 1) {
+                for (std::vector<reco::GenParticle>::const_iterator it = neutrinosLepB.begin(); it != neutrinosLepB.end(); ++it){
+                    if(reco::deltaR(it->eta(),it->phi(),jet.eta(),jet.phi()) < 0.4) {
+                        return JetFlavor::LeptonicB;
+                    }
+                }
+                for (std::vector<reco::GenParticle>::const_iterator it = neutrinosLepB_C.begin(); it != neutrinosLepB_C.end(); ++it){
+                    if(reco::deltaR(it->eta(),it->phi(),jet.eta(),jet.phi()) < 0.4) {
+                        return JetFlavor::LeptonicB_C;
+                    }
+                }
+                return JetFlavor::B;
+            }
+            else {
+                if(usePhysForLightAndUndefined){
+                    if(physflav == 21) return JetFlavor::G;
+                    else if(physflav == 3) return JetFlavor::S;
+                    else if(physflav == 2 || physflav ==1) return JetFlavor::UD;
+                    else return JetFlavor::UNDEFINED;
+                }
+                else return JetFlavor::UNDEFINED;
+            }
+        }
+        else if(hflav == 4) { //C jet
+            if (ncs > 1) {
+                if (ncFromGSP > 0) return JetFlavor::GCC;
+                else return JetFlavor::CC;
+            }
+            else return JetFlavor::C;
+        }
+        else { //not a heavy jet
+            if(alltaus.size()>0){ //check for tau in a simplistic way
+                bool ishadrtaucontained=true;
+                for(const auto& p:alltaus){
+                    size_t ndau=p.numberOfDaughters();
+                    for(size_t i=0;i<ndau;i++){
+                        const reco::Candidate* dau=p.daughter(i);
+                        int daupid=std::abs(dau->pdgId());
+                        if(daupid == 13 || daupid == 11){
+                            ishadrtaucontained=false;
+                            break;
+                        }
+                        if(daupid != 12 && daupid!=14 && daupid!=16 &&
+                                reco::deltaR(*dau,jet) > 0.4){
+                            ishadrtaucontained=false;
+                            break;
+                        }
+                    }
+                }
+                if(ishadrtaucontained) return JetFlavor::TAU;
+            }
+            if(std::abs(pflav) == 4 || std::abs(pflav) == 5 || nbs || ncs) {
+                if(usePhysForLightAndUndefined){
+                    if(physflav == 21) return JetFlavor::G;
+                    else if(physflav == 3) return JetFlavor::S;
+                    else if(physflav == 2 || physflav ==1) return JetFlavor::UD;
+                    else return JetFlavor::UNDEFINED;
+                }
+                else return JetFlavor::UNDEFINED;
+            }
+            else if(usePhysForLightAndUndefined){
+                if(physflav == 21) return JetFlavor::G;
+                else if(physflav == 3) return JetFlavor::S;
+                else if(physflav == 2 || physflav ==1) return JetFlavor::UD;
+                else return JetFlavor::UNDEFINED;
+            }
+            else {
+                if(pflav == 21) return JetFlavor::G;
+                else if(pflav == 3) return JetFlavor::S;
+                else if(pflav == 2 || pflav ==1) return JetFlavor::UD;
+                else return JetFlavor::UNDEFINED;
+            }
+        }
+        return JetFlavor::UNDEFINED;
+      }
+      */
+      
+      
+      
+      /*
+      for (const reco::Candidate &genC : *genParticlesHandle)
+   {
+     const reco::GenParticle &gen = static_cast< const reco::GenParticle &>(genC);
+     
+     if((abs(gen.pdgId())>500&&abs(gen.pdgId())<600)||(abs(gen.pdgId())>5000&&abs(gen.pdgId())<6000)) {
+
+       //std::cout<<gen.end_vertex()<<endl;
+
+       Bhadron_.push_back(gen);
+       if(gen.numberOfDaughters()>0){
+     
+	 if( (abs(gen.daughter(0)->pdgId())>500&&abs(gen.daughter(0)->pdgId())<600)||(abs(gen.daughter(0)->pdgId())>5000&&abs(gen.daughter(0)->pdgId())<6000))
+	   {
+	     if(gen.daughter(0)->numberOfDaughters()>0)
+	       {
+		
+		 const reco::GenParticle &daughter_ = static_cast< const reco::GenParticle &>(*(gen.daughter(0)->daughter(0)));
+		 
+		 if(daughter_.vx()!=gen.vx())
+		   { 
+		     Bhadron_daughter_.push_back(daughter_);
+		   }
+		 //	 else {
+		 //  std::cout << "only b daughters " << endl;
+		 // }
+	       }
+	     else  Bhadron_daughter_.push_back(gen);
+	     
+	   }
+	 else{
+	   //  std::cout<<gen.daughter(0)->vx()<< " oh  " <<gen.vx()<<" "<<gen.pt() <<" "<<  gen.daughter(0)->pdgId() <<std::endl; 
+	  
+	   const reco::GenParticle &daughter_ = static_cast< const reco::GenParticle &>(*gen.daughter(0));
+	   Bhadron_daughter_.push_back(daughter_);
+	 }
+
+       }// if daughter is there
+       else {
+	 
+	 //std::cout << " lonly B hadron, has NO daughter??? "<<std::endl;
+	 Bhadron_daughter_.push_back(gen);
+       }
+     }
+   }
+
+ for (const reco::Candidate &genC : *genParticlesHandle) {
+        const reco::GenParticle &gen = static_cast< const reco::GenParticle &>(genC);
+        if(abs(gen.pdgId())==12||abs(gen.pdgId())==14||abs(gen.pdgId())==16) {
+            const reco::GenParticle* mother =  static_cast< const reco::GenParticle*> (gen.mother());
+            if(mother!=NULL) {
+                if((abs(mother->pdgId())>500&&abs(mother->pdgId())<600)||(abs(mother->pdgId())>5000&&abs(mother->pdgId())<6000)) {
+                    neutrinosLepB.emplace_back(gen);
+                }
+                if((abs(mother->pdgId())>400&&abs(mother->pdgId())<500)||(abs(mother->pdgId())>4000&&abs(mother->pdgId())<5000)) {
+                    neutrinosLepB_C.emplace_back(gen);
+                }
+            }
+            else {
+                std::cout << "No mother" << std::endl;
+            }
+        }
+
+        int id(std::abs(gen.pdgId())); 
+        int status(gen.status());
+
+        if (id == 21 && status >= 21 && status <= 59) { //// Pythia8 hard scatter, ISR, or FSR
+            if ( gen.numberOfDaughters() == 2 ) {
+                const reco::Candidate* d0 = gen.daughter(0);
+                const reco::Candidate* d1 = gen.daughter(1);
+                if ( std::abs(d0->pdgId()) == 5 && std::abs(d1->pdgId()) == 5
+                        && d0->pdgId()*d1->pdgId() < 0 && reco::deltaR(*d0, *d1) < 0.4) gToBB.push_back(gen) ;
+                if ( std::abs(d0->pdgId()) == 4 && std::abs(d1->pdgId()) == 4
+                        && d0->pdgId()*d1->pdgId() < 0 && reco::deltaR(*d0, *d1) < 0.4) gToCC.push_back(gen) ;
+            }
+        }
+
+        if(id == 15 && false){
+            alltaus_.push_back(gen);
+        }
+
+    }
+      */
+      
+
+      for (unsigned i_jet = 0; i_jet < nJets; ++i_jet) {
           // new version of the jet loop which reads tag info instead of constituent info
 
           const auto& taginfo = (*tag_infos)[i_jet];
           const auto& features = taginfo.features();
           
+          /*
+          // ToDo:
+          deep_ntuples::jet_flavour(jet, gToBB, gToCC, neutrinosLepB, neutrinosLepB_C, alltaus_)
+          */
           // jet.pt and jet.eta as well as other jet variables (ShallowTagInfo) already included (via DeepCSV)
           
           // number of elements in different collections
@@ -174,6 +454,8 @@ void DeepJetTableProducer<T>::produce(edm::Event &iEvent, const edm::EventSetup 
             Npfcan_HadFrac_nNpf[n_pf_n][i_jet] = n_pf_features.hadFrac;
             Npfcan_drminsv_nNpf[n_pf_n][i_jet] = n_pf_features.drminsv;
             Npfcan_puppiw_nNpf[n_pf_n][i_jet] = n_pf_features.puppiw;
+            //Npfcan_etarel_nNpf[n_pf_n][i_jet] = n_pf_features.etarel;
+            //Npfcan_phirel_nNpf[n_pf_n][i_jet] = n_pf_features.phirel;
           }
 
           // sv candidates
@@ -192,6 +474,8 @@ void DeepJetTableProducer<T>::produce(edm::Event &iEvent, const edm::EventSetup 
             sv_d3dsig_nSV[sv_n][i_jet] = sv_features.d3dsig;
             sv_costhetasvpv_nSV[sv_n][i_jet] = sv_features.costhetasvpv;
             sv_enratio_nSV[sv_n][i_jet] = sv_features.enratio;
+            //sv_etarel_nSV[sv_n][i_jet] = sv_features.etarel;
+            //sv_phirel_nSV[sv_n][i_jet] = sv_features.phirel;
           }
       }
   }
@@ -218,6 +502,29 @@ void DeepJetTableProducer<T>::produce(edm::Event &iEvent, const edm::EventSetup 
                           "Number of primary vertices",
                           nanoaod::FlatTable::IntColumn);
     
+  /*  
+  // ToDo
+  djTable->addColumn<int>("isB",
+                          jet_isB,
+                          "Boolean: jet flavour b",
+                          nanoaod::FlatTable::BoolColumn);
+  djTable->addColumn<int>("isBB",
+                          jet_isBB,
+                          "Boolean: jet flavour bb",
+                          nanoaod::FlatTable::BoolColumn);
+  djTable->addColumn<int>("isLeptonicB",
+                          jet_isLeptonicB,
+                          "Boolean: jet flavour leptonic b",
+                          nanoaod::FlatTable::BoolColumn);
+  djTable->addColumn<int>("isB",
+                          jet_isB,
+                          "Boolean: jet flavour b",
+                          nanoaod::FlatTable::BoolColumn);
+  djTable->addColumn<int>("isB",
+                          jet_isB,
+                          "Boolean: jet flavour b",
+                          nanoaod::FlatTable::BoolColumn);
+  */ 
     
   // ============================================================== Cpfs ===================================================================
   for (unsigned int p = 0; p < n_cpf_; p++) {
@@ -368,13 +675,13 @@ void DeepJetTableProducer<T>::produce(edm::Event &iEvent, const edm::EventSetup 
                                 nanoaod::FlatTable::FloatColumn, 10);
       /*
       // only relevant if also included in the tag info, not yet, maybe in future versions of the tagger
+      djTable->addColumn<float>("DeepJetExtra_sv_etarel_" + s,
+                                sv_etarel_nSV[p], 
+                                "pseudorapidity relative to parent jet for the " + s + ". SV",
+                                nanoaod::FlatTable::FloatColumn, 10);
       djTable->addColumn<float>("DeepJetExtra_sv_phirel_" + s,
                                 sv_phirel_nSV[p],
                                 "DeltaPhi(sv, jet) for the " + s + ". SV",
-                                nanoaod::FlatTable::FloatColumn, 10);
-      djTable->addColumn<float>("DeepJetExtra_sv_ptrel_" + s,
-                                sv_ptrel_nSV[p], 
-                                "pT relative to parent jet for the " + s + ". SV",
                                 nanoaod::FlatTable::FloatColumn, 10);
       */
       djTable->addColumn<float>("DeepJet_sv_deltaR_" + s,
@@ -398,6 +705,8 @@ void DeepJetTableProducer<T>::fillDescriptions(edm::ConfigurationDescriptions &d
   edm::ParameterSetDescription desc;
   desc.add<std::string>("nameDeepJet", "Jet");
   desc.add<std::string>("idx_nameDeepJet", "djIdx");
+  desc.add<std::string>("storeAK4Truth", "no");
+  desc.add<edm::InputTag>("genparticles", edm::InputTag("prunedGenParticles"));
   desc.add<edm::InputTag>("jets", edm::InputTag("slimmedJets"));
   desc.add<edm::InputTag>("tagInfo_src", edm::InputTag("pfDeepFlavourTagInfosWithDeepInfo"));
   descriptions.addWithDefaultLabel(desc);

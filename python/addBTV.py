@@ -260,7 +260,7 @@ def get_DeepJet_outputs():
     return DeepJetOutputVars
 
 
-def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=['DeepCSV','DDX']):
+def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=['DeepCSV','DDX'], storeAK4Truth='no'):
     addAK4 = not onlyAK8
     addAK8 = not onlyAK4
 
@@ -316,7 +316,8 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=['D
     
     if ('DeepJet' in keepInputs):
         process.customAK4ConstituentsForDeepJetTable = cms.EDProducer("PatJetDeepJetTableProducer",
-                                                                      jets = cms.InputTag("finalJets")
+                                                                      jets = cms.InputTag("finalJets"),
+                                                                      storeAK4Truth = cms.string(storeAK4Truth)
                                                                       )
     
     
