@@ -126,15 +126,18 @@ if args.make:
 if args.submit:
     from multiprocessing import Process
     import imp
-    print("Submitting configs:")
-    for dataset in datasets:
-        print("   ==> "+dataset)
-        dataset_name = dataset.lstrip("/").replace("/", "_")
-        cfg_filename = os.path.join(card['campaign']['workArea'] , 'submit_{}.py'.format(dataset_name))
-        config_file = imp.load_source('config', cfg_filename)
-        p = Process(target=submit, args=(config_file.config,))
-        p.start()
-        p.join()
+    print("Submitting configs.")
+    print("These are the datasets:")
+    print(datasets)
+    if raw_input("Continue? (y/n)") == "y":
+        for dataset in datasets:
+            print("   ==> "+dataset)
+            dataset_name = dataset.lstrip("/").replace("/", "_")
+            cfg_filename = os.path.join(card['campaign']['workArea'] , 'submit_{}.py'.format(dataset_name))
+            config_file = imp.load_source('config', cfg_filename)
+            p = Process(target=submit, args=(config_file.config,))
+            p.start()
+            p.join()
 
 if args.status:
     das_names = []
