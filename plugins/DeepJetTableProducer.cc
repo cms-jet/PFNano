@@ -19,11 +19,11 @@ using namespace btagbtvdeep;
 #include "FWCore/Framework/interface/makeRefToBaseProdFrom.h"
 #include "DataFormats/BTauReco/interface/JetTag.h"
 #include "DataFormats/BTauReco/interface/DeepFlavourTagInfo.h"
-// To store the gen info to get the truth flavour of the jet
 
+// To store the gen info to get the truth flavour of the jet
 #include "DataFormats/PatCandidates/interface/Jet.h"
-#include "DataFormats/PatCandidates/interface/Muon.h"
-#include "DataFormats/PatCandidates/interface/Electron.h"
+//#include "DataFormats/PatCandidates/interface/Muon.h"
+//#include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 
 template<typename T>
@@ -40,11 +40,7 @@ private:
     
   const std::string nameDeepJet_;
   const std::string idx_nameDeepJet_;
-  const std::string storeAK4Truth_;
-
-    
-  //typedef reco::GenParticleCollection GenParticleCollection;
-    
+  const std::string storeAK4Truth_;    
     
     
   const edm::EDGetTokenT<reco::GenParticleCollection> genParticlesToken_;
@@ -74,7 +70,6 @@ DeepJetTableProducer<T>::DeepJetTableProducer(const edm::ParameterSet &iConfig)
     : nameDeepJet_(iConfig.getParameter<std::string>("nameDeepJet")),
       idx_nameDeepJet_(iConfig.getParameter<std::string>("idx_nameDeepJet")),
       storeAK4Truth_(iConfig.getParameter<std::string>("storeAK4Truth")),
-      //genParticlesToken_(consumes<GenParticleCollection>(iConfig.getParameter<edm::InputTag>("genparticles"))),
       genParticlesToken_(consumes<reco::GenParticleCollection>(iConfig.getParameter<edm::InputTag>("genparticles"))),
       jet_token_(consumes<edm::View<T>>(iConfig.getParameter<edm::InputTag>("jets"))),
       tag_info_src_(consumes<TagInfoCollection>(iConfig.getParameter<edm::InputTag>("tagInfo_src"))){
@@ -90,12 +85,6 @@ void DeepJetTableProducer<T>::produce(edm::Event &iEvent, const edm::EventSetup 
     
   // only necessary to explicitly check correct matching of jets
   // std::vector<int> jetIdx_dj;
-  
-  /*  
-  edm::Handle<reco::GenParticleCollection> genParticlesHandle;  
-  iEvent.getByToken(genParticlesToken_, genParticlesHandle);
-  */
-  //auto genparts = iEvent.getHandle(genParticlesToken_);
     
   edm::Handle<reco::GenParticleCollection> genParticlesHandle;
   iEvent.getByToken(genParticlesToken_, genParticlesHandle);
@@ -113,9 +102,7 @@ void DeepJetTableProducer<T>::produce(edm::Event &iEvent, const edm::EventSetup 
   std::vector<reco::GenParticle> gToCC;
   std::vector<reco::GenParticle> alltaus;
     
-  //std::cout << "storeAK4Truth_ " << storeAK4Truth_  << std::endl;
-  
-  //unsigned nGenParts = genParticlesHandle->size();  
+    
   unsigned nJets = jets->size();
     
   std::vector<int> jet_N_CPFCands(nJets);
@@ -123,21 +110,6 @@ void DeepJetTableProducer<T>::produce(edm::Event &iEvent, const edm::EventSetup 
   std::vector<int> jet_N_PVs(nJets); 
   std::vector<int> jet_N_SVs(nJets); 
     
-  /*
-  std::vector<bool> jet_isGBB(nJets); // 511
-  std::vector<bool> jet_isBB(nJets); // 510
-  std::vector<bool> jet_isLeptonicB(nJets); // 520
-  std::vector<bool> jet_isLeptonicB_C(nJets); // 521
-  std::vector<bool> jet_isB(nJets); // 500
-  std::vector<bool> jet_isG(nJets); // 0
-  std::vector<bool> jet_isS(nJets); // 2
-  std::vector<bool> jet_isUD(nJets); // 1
-  std::vector<bool> jet_isUndefined(nJets); // 1000 
-  std::vector<bool> jet_isGCC(nJets); // 411
-  std::vector<bool> jet_isCC(nJets); // 410
-  std::vector<bool> jet_isC(nJets); // 400
-  */
-  std::vector<bool> jet_isTAU(nJets); // 600
     
   std::vector<unsigned> jet_FlavSplit(nJets); 
     
@@ -210,10 +182,9 @@ void DeepJetTableProducer<T>::produce(edm::Event &iEvent, const edm::EventSetup 
                 alltaus
                based on GenParticles.
   
-               Once these are all available, fill in the truth flavour info
+               Once these are all available, fill in the truth flavour info.
             */      
             
-            //std::cout << "Start building genparticle info" << std::endl;
               
             neutrinosLepB.clear();
             neutrinosLepB_C.clear();
@@ -257,13 +228,6 @@ void DeepJetTableProducer<T>::produce(edm::Event &iEvent, const edm::EventSetup 
               }
   
             }
-            /*
-            // ToDo:
-            deep_ntuples::jet_flavour(jet, gToBB, gToCC, neutrinosLepB, neutrinosLepB_C, alltaus)
-            */
-            
-            
-            //std::cout << "Built genparticle info" << std::endl;
             
             int hflav = abs(jet.hadronFlavour());
             int pflav = abs(jet.partonFlavour());
@@ -367,8 +331,8 @@ void DeepJetTableProducer<T>::produce(edm::Event &iEvent, const edm::EventSetup 
             }
           
           }
-          //std::cout << "Built flavor truth info columns" << std::endl;
-          // new version of the jet loop which reads tag info instead of constituent info
+          
+          // jet loop reads tag info instead of constituent info
 
           const auto& taginfo = (*tag_infos)[i_jet];
           const auto& features = taginfo.features();
@@ -440,7 +404,6 @@ void DeepJetTableProducer<T>::produce(edm::Event &iEvent, const edm::EventSetup 
       }
   }
     
-  //std::cout << "Start filling table" << std::endl;
   // DeepJetInputs table
   auto djTable = std::make_unique<nanoaod::FlatTable>(jet_N_CPFCands.size(), nameDeepJet_, false, true);
   //djTable->addColumn<int>("DeepJet_jetIdx", jetIdx_dj, "Index of the parent jet", nanoaod::FlatTable::IntColumn);
@@ -466,63 +429,23 @@ void DeepJetTableProducer<T>::produce(edm::Event &iEvent, const edm::EventSetup 
   //if (true) { 
   if (storeAK4Truth_ == "yes") { 
       //std::cout << "Start filling table with truth info" << std::endl;
-      /*
-      djTable->addColumn<bool>("isB",
-                              jet_isB,
-                              "Boolean: jet flavour b",
-                              nanoaod::FlatTable::BoolColumn);
-      djTable->addColumn<bool>("isBB",
-                              jet_isBB,
-                              "Boolean: jet flavour bb",
-                              nanoaod::FlatTable::BoolColumn);
-      djTable->addColumn<bool>("isGBB",
-                              jet_isGBB,
-                              "Boolean: jet flavour gbb",
-                              nanoaod::FlatTable::BoolColumn);
-      djTable->addColumn<bool>("isLeptonicB",
-                              jet_isLeptonicB,
-                              "Boolean: jet flavour leptonic b",
-                              nanoaod::FlatTable::BoolColumn);
-      djTable->addColumn<bool>("isLeptonicB_C",
-                              jet_isLeptonicB_C,
-                              "Boolean: jet flavour leptonic b, neutrino from c hadron",
-                              nanoaod::FlatTable::BoolColumn);
-      djTable->addColumn<bool>("isC",
-                              jet_isC,
-                              "Boolean: jet flavour c",
-                              nanoaod::FlatTable::BoolColumn);
-      djTable->addColumn<bool>("isCC",
-                              jet_isCC,
-                              "Boolean: jet flavour cc",
-                              nanoaod::FlatTable::BoolColumn);
-      djTable->addColumn<bool>("isGCC",
-                              jet_isGCC,
-                              "Boolean: jet flavour gcc",
-                              nanoaod::FlatTable::BoolColumn);
-      djTable->addColumn<bool>("isUD",
-                              jet_isUD,
-                              "Boolean: jet flavour ud",
-                              nanoaod::FlatTable::BoolColumn);
-      djTable->addColumn<bool>("isS",
-                              jet_isS,
-                              "Boolean: jet flavour s",
-                              nanoaod::FlatTable::BoolColumn);
-      djTable->addColumn<bool>("isG",
-                              jet_isG,
-                              "Boolean: jet flavour g",
-                              nanoaod::FlatTable::BoolColumn);
-      djTable->addColumn<bool>("isUndefined",
-                              jet_isUndefined,
-                              "Boolean: jet flavour undefined",
-                              nanoaod::FlatTable::BoolColumn);
-      djTable->addColumn<bool>("isTAU",
-                              jet_isTAU,
-                              "Boolean: jet flavour TAU",
-                              nanoaod::FlatTable::BoolColumn);
-      */
       djTable->addColumn<int>("FlavSplit",
                               jet_FlavSplit,
-                              "Flavour of the jet, numerical codes:",
+                              "Flavour of the jet, numerical codes: "
+                              "isG: 0, "
+                              "isUD: 1, "
+                              "isS: 2, "
+                              "isC: 400, "
+                              "isCC: 410, "
+                              "isGCC: 411, "
+                              "isB: 500, "
+                              "isBB: 510, "
+                              "isGBB: 511, "
+                              "isLeptonicB: 520, "
+                              "isLeptonicB_C: 521, "
+                              "isTAU: 600, "
+                              "isUndefined: 1000. "
+                              "May be combined to form coarse labels for tagger training and flavour dependent attacks using the loss surface.",
                               nanoaod::FlatTable::IntColumn);
   }
     

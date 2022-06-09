@@ -315,6 +315,8 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=['D
         ))
     
     if ('DeepJet' in keepInputs):
+        if runOnMC == False and storeAK4Truth == "yes":
+            storeAK4Truth = "no" # data does not have truth information, avoid crashes in producer.
         process.customAK4ConstituentsForDeepJetTable = cms.EDProducer("PatJetDeepJetTableProducer",
                                                                       jets = cms.InputTag("finalJets"),
                                                                       storeAK4Truth = cms.string(storeAK4Truth)
