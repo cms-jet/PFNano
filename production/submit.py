@@ -96,6 +96,9 @@ if __name__ == '__main__':
                 this_config.Data.outputDatasetTag = dataset_shortname
                 # Outputs land at outLFNDirBase/outputDatasetTag
                 this_config.Data.inputDBS = 'global'
+                if "private" in info.keys():
+                    if info["private"]:
+                        this_config.Data.inputDBS = 'phys03'
                 this_config.Data.inputDataset = dataset
                 splitting_mode = info.get("splitting", "Automatic")
                 if not splitting_mode in ["Automatic", "FileBased", "LumiBased"]:

@@ -1,10 +1,8 @@
 import FWCore.ParameterSet.Config as cms
-# from  PhysicsTools.NanoAOD.common_cff import *
-from PhysicsTools.NanoAOD.common_cff import Var
+from PhysicsTools.NanoAOD.common_cff import Var,P4Vars
 from PhysicsTools.NanoAOD.jets_cff import jetTable, fatJetTable, subJetTable
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 from PhysicsTools.PatAlgos.tools.helpers import addToProcessAndTask, getPatAlgosToolsTask
-
 
 def update_jets_AK4(process):
     # Based on ``nanoAOD_addDeepInfo``
@@ -55,6 +53,8 @@ def update_jets_AK8(process):
         ]
     from RecoBTag.ONNXRuntime.pfParticleNet_cff import _pfParticleNetJetTagsAll as pfParticleNetJetTagsAll
     _btagDiscriminators += pfParticleNetJetTagsAll
+    from RecoBTag.ONNXRuntime.pfParticleNet_cff import _pfParticleNetMassRegressionOutputs
+    _btagDiscriminators += _pfParticleNetMassRegressionOutputs
     updateJetCollection(
         process,
         jetSource=cms.InputTag('slimmedJetsAK8'),
@@ -358,6 +358,26 @@ def add_BTV(process, runOnMC=False, addAK4=True, addAK8=True, addAK15=False, kee
             get_DDX_vars() if keepInputs else cms.PSet(),
         ))
 
+    if runOnMC:
+        from RecoJets.JetProducers.ak8GenJets_cfi import ak8GenJets, ak8GenJetsSoftDrop, ak8GenJetsConstituents
+        process.genJetsAK8ConstituentsCustom = cms.EDProducer(
+            "GenJetPackedConstituentPtrSelector",
+            src = cms.InputTag("slimmedGenJetsAK8"),
+            cut = cms.string("pt > 100.")
+        )
+        process.ak8GenJetsNoNuSoftDropCustom = ak8GenJetsSoftDrop.clone(src=cms.InputTag('genJetsAK8ConstituentsCustom', 'constituents'))
+        process.customGenJetAK8Table = cms.EDProducer("SimpleCandidateFlatTableProducer",
+            src=cms.InputTag("ak8GenJetsNoNuSoftDropCustom"),
+            cut=cms.string("pt > 100."),
+            name=cms.string("SoftDropGenJetAK8"),
+            doc=cms.string("AK8 GenJets made with visible genparticles"),
+            singleton=cms.bool(False),  # the number of entries is variable
+            extension=cms.bool(False),  # this is the main table for the genjets
+            variables=cms.PSet(P4Vars,
+            )
+        )
+        process.customGenJetAK8Table.variables.pt.precision = 10
+
     # AK15
     process.customFatJetAK15ExtTable = cms.EDProducer(
         "SimpleCandidateFlatTableProducer",
@@ -449,6 +469,9 @@ def add_BTV(process, runOnMC=False, addAK4=True, addAK8=True, addAK15=False, kee
         process.customizeJetTask.add(process.customSubJetExtTable)
         if runOnMC: 
             process.customizeJetTask.add(process.customSubJetMCExtTable)
+            process.customizeJetTask.add(process.genJetsAK8ConstituentsCustom)
+            process.customizeJetTask.add(process.ak8GenJetsNoNuSoftDropCustom)
+            process.customizeJetTask.add(process.customGenJetAK8Table)
     if addAK15:
         process.customizeJetTask.add(process.customFatJetAK15ExtTable)
         process.customizeJetTask.add(process.customAK15SubJetExtTable)

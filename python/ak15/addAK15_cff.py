@@ -3,7 +3,7 @@ from Configuration.Eras.Modifier_run2_jme_2016_cff import run2_jme_2016
 from Configuration.Eras.Modifier_run2_jme_2017_cff import run2_jme_2017
 from Configuration.Eras.Modifier_run2_nanoAOD_106Xv1_cff import run2_nanoAOD_106Xv1
 
-from PhysicsTools.NanoAOD.common_cff import *
+from PhysicsTools.NanoAOD.common_cff import Var,P4Vars
 from PhysicsTools.PFNano.addPFCands_cff import addPFCands
 from PhysicsTools.PFNano.addBTV import add_BTV
 
@@ -45,8 +45,8 @@ def setupAK15(process, runOnMC=False, path=None, runParticleNet=False, runPartic
 
     ### EXPERIMENTAL
     ### Try to add jetCorrFactors like in jets_cff.py
-    from  PhysicsTools.PatAlgos.recoLayer0.jetCorrFactors_cfi import *
-    from  PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cfi import *
+    from  PhysicsTools.PatAlgos.recoLayer0.jetCorrFactors_cfi import patJetCorrFactors
+    from  PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cfi import updatedPatJets
     process.jetCorrFactorsAK15 = patJetCorrFactors.clone(src='packedPatJetsAK15PFPuppiSoftDrop',
         levels = cms.vstring('L1FastJet',
             'L2Relative',
@@ -106,24 +106,31 @@ def setupAK15(process, runOnMC=False, path=None, runParticleNet=False, runPartic
 
     # configure DeepAK15
     from RecoBTag.ONNXRuntime.pfDeepBoostedJet_cff import pfDeepBoostedJetTags as _pfDeepBoostedJetTags
-    if runParticleNet:
-        process.pfParticleNetTagInfosAK15.jet_radius = 1.5
-        from PhysicsTools.PFNano.ak15.pfParticleNetPreprocessParamsAK15_cfi import pfParticleNetPreprocessParamsAK15
-        process.pfParticleNetJetTagsAK15ParticleNet.preprocessParams = pfParticleNetPreprocessParamsAK15
-        process.pfParticleNetJetTagsAK15ParticleNet.model_path = 'PhysicsTools/PFNano/data/ParticleNet/ak15/ParticleNet-symbol.json'
-        process.pfParticleNetJetTagsAK15ParticleNet.param_path = 'PhysicsTools/PFNano/data/ParticleNet/ak15/ParticleNet-0000.params'
+    # if runParticleNet:
+    #     process.pfParticleNetTagInfosAK15.jet_radius = 1.5
+    #     from PhysicsTools.PFNano.ak15.pfParticleNetPreprocessParamsAK15_cfi import pfParticleNetPreprocessParamsAK15
+    #     process.pfParticleNetJetTagsAK15ParticleNet.preprocessParams = pfParticleNetPreprocessParamsAK15
+    #     process.pfParticleNetJetTagsAK15ParticleNet.model_path = 'PhysicsTools/PFNano/data/ParticleNet/ak15/v00/ParticleNet-symbol.json'
+    #     process.pfParticleNetJetTagsAK15ParticleNet.param_path = 'PhysicsTools/PFNano/data/ParticleNet/ak15/v00/ParticleNet-0000.params'
 
     if runParticleNetMD:
-        process.pfParticleNetTagInfosAK15.jet_radius = 1.5
-        from PhysicsTools.PFNano.ak15.pfMassDecorrelatedParticleNetPreprocessParamsAK15_cfi import pfMassDecorrelatedParticleNetPreprocessParamsAK15
-        # FIXME
-        process.pfMassDecorrelatedParticleNetJetTagsAK15 = _pfDeepBoostedJetTags.clone(
-            src = process.pfMassDecorrelatedParticleNetJetTagsAK15.src,
-            flav_names = ak15_flav_names,
-            preprocessParams = pfMassDecorrelatedParticleNetPreprocessParamsAK15,
-            model_path = 'PhysicsTools/PFNano/data/ParticleNet-MD/ak15/ParticleNetMD.onnx',
-#             debugMode=True
-            )
+        from RecoBTag.ONNXRuntime.pfParticleNet_cff import pfMassDecorrelatedParticleNetJetTags
+        process.pfParticleNetTagInfosAK15.jet_radius = 1.5                                                                                                                                                
+        process.pfMassDecorrelatedParticleNetJetTagsAK15ParticleNet = pfMassDecorrelatedParticleNetJetTags.clone(
+            src = 'pfParticleNetTagInfos',
+            preprocess_json = 'PhysicsTools/PFNano/data/ParticleNet-MD/ak15/v00/preprocess.json',
+            model_path = 'PhysicsTools/PFNano/data/ParticleNet-MD/ak15/v00/particle-net.onnx',
+        )
+
+#         process.pfParticleNetTagInfosAK15.jet_radius = 1.5
+#         from PhysicsTools.PFNano.ak15.pfMassDecorrelatedParticleNetPreprocessParamsAK15_cfi import pfMassDecorrelatedParticleNetPreprocessParamsAK15
+#         process.pfMassDecorrelatedParticleNetJetTagsAK15 = _pfDeepBoostedJetTags.clone(
+#             src = process.pfMassDecorrelatedParticleNetJetTagsAK15.src,
+#             flav_names = ak15_flav_names,
+#             preprocessParams = pfMassDecorrelatedParticleNetPreprocessParamsAK15,
+#             model_path = 'PhysicsTools/PFNano/data/ParticleNet-MD/ak15/ParticleNetMD.onnx',
+# #             debugMode=True
+#             )
 
     # src
     srcJets = cms.InputTag('selectedUpdatedPatJetsAK15')
@@ -318,14 +325,14 @@ def setupPFNanoAK15_data(process):
         process.patJetsPuppi.addGenJetMatch = cms.bool(False)
         process.patJetsPuppi.JetPartonMapSource = cms.InputTag("")
         process.patJetsPuppi.JetFlavourInfoSource = cms.InputTag("")
-    setupAK15(process, runOnMC=False, runParticleNet=False, runParticleNetMD=True)
+    setupAK15(process, runOnMC=False, runParticleNet=True, runParticleNetMD=True)
     addPFCands(process, runOnMC=False, saveAll=False, addAK4=False, addAK8=True, addAK15=True)
     add_BTV(process, runOnMC=False, addAK4=True, addAK8=True, addAK15=True)
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process
 
 def setupPFNanoAK15_mc(process):
-    setupAK15(process, runOnMC=True, runParticleNet=False, runParticleNetMD=True)
+    setupAK15(process, runOnMC=True, runParticleNet=True, runParticleNetMD=True)
     addPFCands(process, runOnMC=False, saveAll=False, addAK4=False, addAK8=True, addAK15=True, saveAllGen=False) # runOnMC=False because we don't need GenCands associated to GenJets
     add_BTV(process, runOnMC=True, addAK4=True, addAK8=True, addAK15=True)
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
