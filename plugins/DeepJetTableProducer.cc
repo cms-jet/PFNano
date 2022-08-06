@@ -21,9 +21,7 @@ using namespace btagbtvdeep;
 #include "DataFormats/BTauReco/interface/DeepFlavourTagInfo.h"
 
 // To store the gen info to get the truth flavour of the jet
-#include "DataFormats/PatCandidates/interface/Jet.h"
-//#include "DataFormats/PatCandidates/interface/Muon.h"
-//#include "DataFormats/PatCandidates/interface/Electron.h"
+//#include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 
 template<typename T>
@@ -169,22 +167,10 @@ void DeepJetTableProducer<T>::produce(edm::Event &iEvent, const edm::EventSetup 
 
       for (unsigned i_jet = 0; i_jet < nJets; ++i_jet) {
           
-          //if (true) { 
+          
           if (storeAK4Truth_ == "yes") { 
+            // from DeepNTuples
             const auto &jet = jets->at(i_jet);
-            
-            /* 
-               For a single jet, fill in
-                gToBB,
-                gToCC,
-                neutrinosLepB,
-                neurtrinosLepB_C,
-                alltaus
-               based on GenParticles.
-  
-               Once these are all available, fill in the truth flavour info.
-            */      
-            
               
             neutrinosLepB.clear();
             neutrinosLepB_C.clear();

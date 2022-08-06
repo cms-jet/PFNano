@@ -1,0 +1,21 @@
+campaign:
+  name: 'test'  # irrelevant
+  crab_template: template_crab.py
+
+  # User specific
+  workArea: v5_adversarial_data17_DYSelSimple_yml
+  storageSite: T2_DE_RWTH
+  outLFNDirBase: /store/user/anstein/PFNano
+  voGroup: dcms
+
+  # Campaign specific
+  tag_extension: PFtestNano # Will get appended after the current tag
+  tag_mod: # Will modify name in-place for MC eg. "PFNanoAODv1" will replace MiniAODv2 -> PFNanoAODv1
+  publication: False
+  config: nano_data_2017_UL_Adversarial_NANO.py
+  # Specify if running on data
+  data: True
+  # data: False
+  lumiMask:  /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/Legacy_2017/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt # json file
+  # datasets will take either a list of DAS names or a text file containing them
+  datasets: datasets/SF_adversarial_data17_DYSelSimplified.txt
