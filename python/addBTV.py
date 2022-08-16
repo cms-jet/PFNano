@@ -1,9 +1,14 @@
 import FWCore.ParameterSet.Config as cms
 # from  PhysicsTools.NanoAOD.common_cff import *
 from PhysicsTools.NanoAOD.common_cff import Var
-from PhysicsTools.NanoAOD.jets_cff import jetTable, fatJetTable, subJetTable
+#from PhysicsTools.NanoAOD.jets_cff import jetTable, fatJetTable, subJetTable
+from PhysicsTools.NanoAOD.jetsAK4_CHS_cff import jetTable, jetCorrFactorsNano, updatedJets, finalJets, qgtagger, hfJetShowerShapeforNanoAOD
+#from PhysicsTools.NanoAOD.jetsAK4_CHS_cff import jetTable, jetCorrFactorsNano, qgtagger, hfJetShowerShapeforNanoAOD
+from PhysicsTools.NanoAOD.jetsAK4_Puppi_cff import jetPuppiTable, jetPuppiCorrFactorsNano, updatedJetsPuppi, updatedJetsPuppiWithUserData
+from PhysicsTools.NanoAOD.jetsAK8_cff import fatJetTable, subJetTable
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 from PhysicsTools.PatAlgos.tools.helpers import addToProcessAndTask, getPatAlgosToolsTask
+
 
 
 def update_jets_AK4(process):
@@ -26,6 +31,27 @@ def update_jets_AK4(process):
         'pfDeepFlavourJetTags:probg'
     ]
     
+    from PhysicsTools.PatAlgos.recoLayer0.jetCorrFactors_cfi import patJetCorrFactors
+    # Note: Safe to always add 'L2L3Residual' as MC contains dummy L2L3Residual corrections (always set to 1)
+    #      (cf. https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#CMSSW_7_6_4_and_above )
+    jetCorrFactorsNano = patJetCorrFactors.clone(src='slimmedJets',
+        levels = cms.vstring('L1FastJet',
+            'L2Relative',
+            'L3Absolute',
+            'L2L3Residual'),
+        primaryVertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
+    )
+
+    from  PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cfi import updatedPatJets
+    updatedJets = updatedPatJets.clone(
+        addBTagInfo=False,
+        jetSource='slimmedJets',
+        jetCorrFactorsSource=cms.VInputTag(cms.InputTag("jetCorrFactorsNano") ),
+        tagInfoSources=["pfDeepCSVTagInfosWithDeepInfo","pfDeepFlavourTagInfosWithDeepInfo"],
+        addTagInfos=cms.bool(True),
+        discriminatorSources=_btagDiscriminators,
+    )
+    
     updateJetCollection(
         process,
         jetSource=cms.InputTag('slimmedJets'),
@@ -33,17 +59,30 @@ def update_jets_AK4(process):
                         cms.vstring(
                             ['L1FastJet', 'L2Relative', 'L3Absolute',
                              'L2L3Residual']), 'None'),
+        #jetSource=cms.InputTag('slimmedJetsPuppi'),
+        #jetCorrections=('AK4PFPuppi',
+        #                cms.vstring(
+        #                    ['L1FastJet', 'L2Relative', 'L3Absolute',
+        #                     'L2L3Residual']), 'None'),
         btagDiscriminators=_btagDiscriminators,
         postfix='WithDeepInfo',
     )
     process.load("Configuration.StandardSequences.MagneticField_cff")
     process.jetCorrFactorsNano.src = "selectedUpdatedPatJetsWithDeepInfo"
     process.updatedJets.jetSource = "selectedUpdatedPatJetsWithDeepInfo"
-
+    
+    #process.updatedJetsWithDeepInfo = updatedJets
     process.updatedPatJetsTransientCorrectedWithDeepInfo.tagInfoSources.append(cms.InputTag("pfDeepCSVTagInfosWithDeepInfo"))
     process.updatedPatJetsTransientCorrectedWithDeepInfo.tagInfoSources.append(cms.InputTag("pfDeepFlavourTagInfosWithDeepInfo"))
     
+    #process.updatedJetsWithDeepInfo.tagInfoSources.append(cms.InputTag("pfDeepFlavourTagInfosWithDeepInfo"))
+    
     process.updatedPatJetsTransientCorrectedWithDeepInfo.addTagInfos = cms.bool(True)
+    
+    finalJets = cms.EDFilter("PATJetRefSelector",
+        src = cms.InputTag("selectedUpdatedPatJetsWithDeepInfo"),
+        cut = cms.string("pt > 15")
+    )
     
     return process
 
@@ -302,7 +341,7 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=['D
     # AK4
     process.customJetExtTable = cms.EDProducer(
         "SimpleCandidateFlatTableProducer",
-        src=jetTable.src,
+        src=cms.InputTag("linkedObjects","jets"),
         cut=jetTable.cut,
         name=jetTable.name,
         doc=jetTable.doc,
@@ -317,9 +356,46 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=['D
     if ('DeepJet' in keepInputs):
         if runOnMC == False and storeAK4Truth == "yes":
             storeAK4Truth = "no" # data does not have truth information, avoid crashes in producer.
+        #process.finalJets = finalJets
+        #process.content = cms.EDAnalyzer("EventContentAnalyzer")
+        
+        #finalJets = cms.EDFilter("PATJetRefSelector",
+        #    src = cms.InputTag("updatedPatJetsWithDeepInfo"),
+        #    cut = cms.string("pt > 15") # test with -1 to not require sth
+        #)
+        #process.finalJets = finalJets
+        
+        
+        #   from  PhysicsTools.PatAlgos.recoLayer0.jetCorrFactors_cfi import patJetCorrFactors
+        #   # Note: Safe to always add 'L2L3Residual' as MC contains dummy L2L3Residual corrections (always set to 1)
+        #   #      (cf. https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#CMSSW_7_6_4_and_above )
+        #   jetCorrFactorsNano = patJetCorrFactors.clone(src='slimmedJets',
+        #       levels = cms.vstring('L1FastJet',
+        #           'L2Relative',
+        #           'L3Absolute',
+        #           'L2L3Residual'),
+        #       primaryVertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
+        #   )
+
+        #   from  PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cfi import updatedPatJets
+        #   updatedJets = updatedPatJets.clone(
+        #       addBTagInfo=False,
+        #       jetSource='slimmedJets',
+        #       jetCorrFactorsSource=cms.VInputTag(cms.InputTag("jetCorrFactorsNano") ),
+        #   )
+        #   finalJets = cms.EDFilter("PATJetRefSelector",
+        #       src = cms.InputTag("updatedJets"),
+        #       cut = cms.string("pt > 15")
+        #   )
+        
+        
         process.customAK4ConstituentsForDeepJetTable = cms.EDProducer("PatJetDeepJetTableProducer",
-                                                                      jets = cms.InputTag("finalJets"),
-                                                                      storeAK4Truth = cms.string(storeAK4Truth)
+                                                                      #jets = cms.InputTag("finalJets"),
+                                                                      jets = cms.InputTag("linkedObjects","jets"),
+                                                                      #jets = jetTable.src,
+                                                                      #jets = cms.InputTag("slimmedJets"),
+                                                                      storeAK4Truth = cms.string(storeAK4Truth),
+                                                                      #nameDeepJet = cms.string("JetCHS"),
                                                                       )
     
     
@@ -376,14 +452,17 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=['D
     )
 
     if addAK4:
-        process.customizeJetTask.add(process.customJetExtTable)
+        #process.customizeJetTask.add(process.customJetExtTable)
         if ('DeepJet' in keepInputs):
+            #process.customizeJetTask.add(process.content)
+            #process.customizeJetTask.add(process.updatedJets)
+            #process.customizeJetTask.add(process.finalJets)
             process.customizeJetTask.add(process.customAK4ConstituentsForDeepJetTable)
 
     if addAK8:
         process.customizeJetTask.add(process.customFatJetExtTable)
         process.customizeJetTask.add(process.customSubJetExtTable)
-    if runOnMC and addAK8:
-        process.customizeJetTask.add(process.customSubJetMCExtTable)
+        if runOnMC:
+            process.customizeJetTask.add(process.customSubJetMCExtTable)
 
     return process

@@ -62,6 +62,7 @@ private:
   edm::Handle<reco::CandidateView> cands_;
   edm::Handle<SVCollection> svs_;
   edm::ESHandle<TransientTrackBuilder> track_builder_;
+  const edm::ESGetToken<TransientTrackBuilder, TransientTrackRecord> track_builder_token_;
 
   const reco::Vertex *pv_ = nullptr;
   
@@ -81,7 +82,9 @@ JetConstituentTableProducer<T>::JetConstituentTableProducer(const edm::Parameter
       jet_token_(consumes<edm::View<T>>(iConfig.getParameter<edm::InputTag>("jets"))),
       vtx_token_(consumes<VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"))),
       cand_token_(consumes<reco::CandidateView>(iConfig.getParameter<edm::InputTag>("candidates"))),
-      sv_token_(consumes<SVCollection>(iConfig.getParameter<edm::InputTag>("secondary_vertices"))){
+      sv_token_(consumes<SVCollection>(iConfig.getParameter<edm::InputTag>("secondary_vertices"))),
+      track_builder_token_(
+          esConsumes<TransientTrackBuilder, TransientTrackRecord>(edm::ESInputTag("", "TransientTrackBuilder"))){
   //produces<nanoaod::FlatTable>(name_);
   produces<nanoaod::FlatTable>(name_);
   produces<nanoaod::FlatTable>(nameSV_);
@@ -109,7 +112,10 @@ void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::Even
   iEvent.getByToken(sv_token_, svs_);
 
   if(readBtag_){
-    iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder", track_builder_);
+    //iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder", track_builder_);
+    edm::ESHandle<TransientTrackBuilder> track_builder_ = iSetup.getHandle(track_builder_token_);
+      //auto const& data = iEventSetup.getData(esToken_);
+      //auto transientHandle = iEventSetup.getTransientHandle(esToken_));
   }
 
   for (unsigned i_jet = 0; i_jet < jets->size(); ++i_jet) {
@@ -216,40 +222,40 @@ void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::Even
 
   auto candTable = std::make_unique<nanoaod::FlatTable>(outCands->size(), name_, false);
   // We fill from here only stuff that cannot be created with the SimpleFlatTableProducer
-  candTable->addColumn<int>(idx_name_, pfcandIdx, "Index in the candidate list", nanoaod::FlatTable::IntColumn);
-  candTable->addColumn<int>("jetIdx", jetIdx_pf, "Index of the parent jet", nanoaod::FlatTable::IntColumn);
+  candTable->addColumn<int>(idx_name_, pfcandIdx, "Index in the candidate list");
+  candTable->addColumn<int>("jetIdx", jetIdx_pf, "Index of the parent jet");
   if (readBtag_) {
-    candTable->addColumn<float>("pt", cand_pt, "pt", nanoaod::FlatTable::FloatColumn, 10);  // to check matchind down the line
-    candTable->addColumn<float>("btagEtaRel", btagEtaRel, "btagEtaRel", nanoaod::FlatTable::FloatColumn, 10);
-    candTable->addColumn<float>("btagPtRatio", btagPtRatio, "btagPtRatio", nanoaod::FlatTable::FloatColumn, 10);
-    candTable->addColumn<float>("btagPParRatio", btagPParRatio, "btagPParRatio", nanoaod::FlatTable::FloatColumn, 10);
-    candTable->addColumn<float>("btagSip3dVal", btagSip3dVal, "btagSip3dVal", nanoaod::FlatTable::FloatColumn, 10);
-    candTable->addColumn<float>("btagSip3dSig", btagSip3dSig, "btagSip3dSig", nanoaod::FlatTable::FloatColumn, 10);
-    candTable->addColumn<float>("btagJetDistVal", btagJetDistVal, "btagJetDistVal", nanoaod::FlatTable::FloatColumn, 10);
+    candTable->addColumn<float>("pt", cand_pt, "pt", 10);  // to check matchind down the line
+    candTable->addColumn<float>("btagEtaRel", btagEtaRel, "btagEtaRel", 10);
+    candTable->addColumn<float>("btagPtRatio", btagPtRatio, "btagPtRatio", 10);
+    candTable->addColumn<float>("btagPParRatio", btagPParRatio, "btagPParRatio", 10);
+    candTable->addColumn<float>("btagSip3dVal", btagSip3dVal, "btagSip3dVal", 10);
+    candTable->addColumn<float>("btagSip3dSig", btagSip3dSig, "btagSip3dSig", 10);
+    candTable->addColumn<float>("btagJetDistVal", btagJetDistVal, "btagJetDistVal", 10);
   }
   iEvent.put(std::move(candTable), name_);
 
    // SV table
   auto svTable = std::make_unique<nanoaod::FlatTable>(outSVs->size(), nameSV_, false);
   // We fill from here only stuff that cannot be created with the SimpleFlatTnameableProducer
-  svTable->addColumn<int>("jetIdx", jetIdx_sv, "Index of the parent jet", nanoaod::FlatTable::IntColumn);
-  svTable->addColumn<int>(idx_nameSV_, svIdx, "Index in the SV list", nanoaod::FlatTable::IntColumn);
+  svTable->addColumn<int>("jetIdx", jetIdx_sv, "Index of the parent jet");
+  svTable->addColumn<int>(idx_nameSV_, svIdx, "Index in the SV list");
   if (readBtag_) {
-    svTable->addColumn<float>("mass", sv_mass, "SV mass", nanoaod::FlatTable::FloatColumn, 10);
-    svTable->addColumn<float>("pt", sv_pt, "SV pt", nanoaod::FlatTable::FloatColumn, 10);
-    svTable->addColumn<float>("ntracks", sv_ntracks, "Number of tracks associated to SV", nanoaod::FlatTable::FloatColumn, 10);
-    svTable->addColumn<float>("chi2", sv_chi2, "chi2", nanoaod::FlatTable::FloatColumn, 10);
-    svTable->addColumn<float>("normchi2", sv_normchi2, "chi2/ndof", nanoaod::FlatTable::FloatColumn, 10);
-    svTable->addColumn<float>("dxy", sv_dxy, "", nanoaod::FlatTable::FloatColumn, 10);
-    svTable->addColumn<float>("dxysig", sv_dxysig, "", nanoaod::FlatTable::FloatColumn, 10);
-    svTable->addColumn<float>("d3d", sv_d3d, "", nanoaod::FlatTable::FloatColumn, 10);
-    svTable->addColumn<float>("d3dsig", sv_d3dsig, "", nanoaod::FlatTable::FloatColumn, 10);
-    svTable->addColumn<float>("costhetasvpv", sv_costhetasvpv, "", nanoaod::FlatTable::FloatColumn, 10);
+    svTable->addColumn<float>("mass", sv_mass, "SV mass", 10);
+    svTable->addColumn<float>("pt", sv_pt, "SV pt", 10);
+    svTable->addColumn<float>("ntracks", sv_ntracks, "Number of tracks associated to SV", 10);
+    svTable->addColumn<float>("chi2", sv_chi2, "chi2", 10);
+    svTable->addColumn<float>("normchi2", sv_normchi2, "chi2/ndof", 10);
+    svTable->addColumn<float>("dxy", sv_dxy, "", 10);
+    svTable->addColumn<float>("dxysig", sv_dxysig, "", 10);
+    svTable->addColumn<float>("d3d", sv_d3d, "", 10);
+    svTable->addColumn<float>("d3dsig", sv_d3dsig, "", 10);
+    svTable->addColumn<float>("costhetasvpv", sv_costhetasvpv, "", 10);
     // Jet related
-    svTable->addColumn<float>("phirel", sv_phirel, "DeltaPhi(sv, jet)", nanoaod::FlatTable::FloatColumn, 10);
-    svTable->addColumn<float>("ptrel", sv_ptrel, "pT relative to parent jet", nanoaod::FlatTable::FloatColumn, 10);
-    svTable->addColumn<float>("deltaR", sv_deltaR, "dR from parent jet", nanoaod::FlatTable::FloatColumn, 10);
-    svTable->addColumn<float>("enration", sv_enratio, "energy relative to parent jet", nanoaod::FlatTable::FloatColumn, 10);
+    svTable->addColumn<float>("phirel", sv_phirel, "DeltaPhi(sv, jet)", 10);
+    svTable->addColumn<float>("ptrel", sv_ptrel, "pT relative to parent jet", 10);
+    svTable->addColumn<float>("deltaR", sv_deltaR, "dR from parent jet", 10);
+    svTable->addColumn<float>("enration", sv_enratio, "energy relative to parent jet", 10);
   }
   iEvent.put(std::move(svTable), nameSV_);
 

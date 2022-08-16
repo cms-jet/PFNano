@@ -64,7 +64,7 @@ def addPFCands(process, runOnMC=False, allPF = False, onlyAK4=False, onlyAK8=Fal
     process.customAK4ConstituentsTable = cms.EDProducer("PatJetConstituentTableProducer",
                                                         #candidates = cms.InputTag("packedPFCandidates"),
                                                         candidates = candInput,
-                                                        jets = cms.InputTag("finalJets"),
+                                                        jets = cms.InputTag("linkedObjects","jets"), # was finalJets before
                                                         jet_radius = cms.double(0.4),
                                                         name = cms.string("JetPFCands"),
                                                         idx_name = cms.string("pFCandsIdx"),

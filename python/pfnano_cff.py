@@ -66,7 +66,7 @@ def PFnano_customizeData(process):
     return process
 
 def PFnano_customizeData_add_DeepJet(process):
-    addPFCands(process, False)
+    #addPFCands(process, False)
     add_BTV(process, False, keepInputs=['DeepCSV','DeepJet','DDX'])
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process
