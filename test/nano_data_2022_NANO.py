@@ -2,7 +2,7 @@
 # using: 
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
-# with command line options: nano_data_2022_Adversarial --data --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO --conditions 124X_dataRun3_Prompt_v4 --era Run3,run3_nanoAOD_devel --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=100 --nThreads 4 -n -1 --filein /store/data/Run2022A/DoubleMuon/MINIAOD/PromptReco-v1/000/352/505/00000/56e473a0-5c0f-4577-b9b6-01ed3e76d5f3.root --fileout file:nano_data2022.root --customise PhysicsTools/PFNano/pfnano_cff.PFnano_customizeData_add_DeepJet --no_exec
+# with command line options: nano_data_2022 --data --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO --conditions 124X_dataRun3_Prompt_v4 --era Run3,run3_nanoAOD_devel --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=100 --nThreads 4 -n -1 --filein /store/data/Run2022A/DoubleMuon/MINIAOD/PromptReco-v1/000/352/505/00000/56e473a0-5c0f-4577-b9b6-01ed3e76d5f3.root --fileout file:nano_data2022.root --customise PhysicsTools/PFNano/pfnano_cff.PFnano_customizeData_add_DeepJet --no_exec
 import FWCore.ParameterSet.Config as cms
 
 from Configuration.Eras.Era_Run3_cff import Run3
@@ -28,8 +28,7 @@ process.maxEvents = cms.untracked.PSet(
 
 # Input source
 process.source = cms.Source("PoolSource",
-    #fileNames = cms.untracked.vstring('/store/data/Run2022A/DoubleMuon/MINIAOD/PromptReco-v1/000/352/505/00000/56e473a0-5c0f-4577-b9b6-01ed3e76d5f3.root'),
-    fileNames = cms.untracked.vstring('file:datarun3.root'),
+    fileNames = cms.untracked.vstring('/store/data/Run2022A/DoubleMuon/MINIAOD/PromptReco-v1/000/352/505/00000/56e473a0-5c0f-4577-b9b6-01ed3e76d5f3.root'),
     secondaryFileNames = cms.untracked.vstring()
 )
 
@@ -65,7 +64,7 @@ process.options = cms.untracked.PSet(
 
 # Production Info
 process.configurationMetadata = cms.untracked.PSet(
-    annotation = cms.untracked.string('nano_data_2022_Adversarial nevts:-1'),
+    annotation = cms.untracked.string('nano_data_2022 nevts:-1'),
     name = cms.untracked.string('Applications'),
     version = cms.untracked.string('$Revision: 1.19 $')
 )
