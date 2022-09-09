@@ -1,12 +1,16 @@
+#! /usr/bin/env python3
 import yaml
 import argparse
 import os
 import pprint
 import re
 import copy
+# use python3 because crab client needs to call LumiList with python3 script
 
 from CRABAPI.RawCommand import crabCommand
-from httplib import HTTPException
+#from httplib import HTTPException
+from http.client import HTTPException
+# in python3, http.client replaces httplib
 import string
 import random
 import hashlib
@@ -48,7 +52,8 @@ with open(args.card, 'r') as f:
 work_area = card['campaign']['workArea']
 if os.path.isdir(work_area):
     if args.submit or args.make:
-        if raw_input("``workArea: {}`` already exists. Continue? (y/n)".format(work_area)) != "y":
+        # in python3, input replaces raw_input
+        if input("``workArea: {}`` already exists. Continue? (y/n)".format(work_area)) != "y":
             exit()
 else:
     os.mkdir(work_area)
@@ -147,7 +152,7 @@ if args.status:
         cfg_dir = os.path.join(card['campaign']['workArea'] , 'crab_'+request_name)
         o = os.popen('crab status '+cfg_dir).read().split("\n")
         for i, line in enumerate(o):
-            if line.startswith("CRAB project directory:"): print line
+            if line.startswith("CRAB project directory:"): print(line) # in python3, print(line) replaces print line
             if line.startswith("Jobs status"):
                 for j in range(5):
                     if len(o[i+j]) < 2:
