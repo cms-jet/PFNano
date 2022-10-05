@@ -2,13 +2,12 @@
 # using: 
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
-# with command line options: nano_data_2022 --data --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO --conditions 124X_dataRun3_Prompt_v4 --era Run3,run3_nanoAOD_devel --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=100 --nThreads 4 -n -1 --filein /store/data/Run2022A/DoubleMuon/MINIAOD/PromptReco-v1/000/352/505/00000/56e473a0-5c0f-4577-b9b6-01ed3e76d5f3.root --fileout file:nano_data2022.root --customise PhysicsTools/PFNano/pfnano_cff.PFnano_customizeData_add_DeepJet --no_exec
+# with command line options: nano_data_2022 --data --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO --conditions 124X_dataRun3_Prompt_v4 --era Run3 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=100 --nThreads 4 -n -1 --filein /store/data/Run2022C/DoubleMuon/MINIAOD/PromptReco-v1/000/355/863/00000/ab45899e-f1b8-49e7-be41-ee694b17b31d.root --fileout file:nano_data2022.root --customise=PhysicsTools/NanoAOD/V10/nano_cff.nanoAOD_customizeV10,PhysicsTools/PFNano/pfnano_cff.PFnano_customizeData_add_DeepJet --no_exec
 import FWCore.ParameterSet.Config as cms
 
 from Configuration.Eras.Era_Run3_cff import Run3
-from Configuration.Eras.Modifier_run3_nanoAOD_devel_cff import run3_nanoAOD_devel
 
-process = cms.Process('NANO',Run3,run3_nanoAOD_devel)
+process = cms.Process('NANO',Run3)
 
 # import of standard configurations
 process.load('Configuration.StandardSequences.Services_cff')
@@ -28,7 +27,7 @@ process.maxEvents = cms.untracked.PSet(
 
 # Input source
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('/store/data/Run2022A/DoubleMuon/MINIAOD/PromptReco-v1/000/352/505/00000/56e473a0-5c0f-4577-b9b6-01ed3e76d5f3.root'),
+    fileNames = cms.untracked.vstring('/store/data/Run2022C/DoubleMuon/MINIAOD/PromptReco-v1/000/355/863/00000/ab45899e-f1b8-49e7-be41-ee694b17b31d.root'),
     secondaryFileNames = cms.untracked.vstring()
 )
 
@@ -109,6 +108,12 @@ from PhysicsTools.NanoAOD.nano_cff import nanoAOD_customizeData
 
 #call to customisation function nanoAOD_customizeData imported from PhysicsTools.NanoAOD.nano_cff
 process = nanoAOD_customizeData(process)
+
+# Automatic addition of the customisation function from PhysicsTools.NanoAOD.V10.nano_cff
+from PhysicsTools.NanoAOD.V10.nano_cff import nanoAOD_customizeV10 
+
+#call to customisation function nanoAOD_customizeV10 imported from PhysicsTools.NanoAOD.V10.nano_cff
+process = nanoAOD_customizeV10(process)
 
 # Automatic addition of the customisation function from PhysicsTools.PFNano.pfnano_cff
 from PhysicsTools.PFNano.pfnano_cff import PFnano_customizeData_add_DeepJet 

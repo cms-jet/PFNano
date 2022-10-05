@@ -24,7 +24,7 @@ def submit(config):
     
 def rnd_str(N, seedstr='test'):
     # Seed with dataset name hash to be reproducible
-    random.seed(int(hashlib.sha512(seedstr).hexdigest(), 16))
+    random.seed(int(hashlib.sha512(seedstr.encode('utf-8')).hexdigest(), 16))
     letters = string.ascii_letters
     return ''.join(random.choice(letters) for _ in range(N))
 

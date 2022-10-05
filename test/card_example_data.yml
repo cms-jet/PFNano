@@ -3,20 +3,21 @@ campaign:
   crab_template: template_crab.py
 
   # User specific
-  workArea: data22_yml
-  storageSite: T2_DE_RWTH
-  outLFNDirBase: /store/user/anstein/PFNano
-  voGroup: dcms
+  workArea: doublemuon22_pub_yml # New each time
+  storageSite: T2_DE_RWTH # Make sure you have write access
+  outLFNDirBase: /store/user/anstein/PFNano # Change unsername and path
+  voGroup: dcms # or empty
 
   # Campaign specific
   tag_extension: PFtestNano # Will get appended after the current tag
   tag_mod: # Will modify name in-place for MC eg. "PFNanoAODv1" will replace MiniAODv2 -> PFNanoAODv1
-  # publication set to False if starting with private samples first
-  publication: False
+  # If others shall be able to access dataset via DAS:
+  publication: True
   config: nano_data_2022_NANO.py
   # Specify if running on data
   data: True
   # data: False
   lumiMask: # json file TBA
   # datasets will take either a list of DAS names or a text file containing them
-  datasets: datasets/DoubleMuon_22.txt
+  datasets: datasets/DoubleMuon_22.txt # But: keep the number of datasets reasonable
+  # wait for tasks to finish before submitting entire campaigns
