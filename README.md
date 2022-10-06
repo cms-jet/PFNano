@@ -1,6 +1,13 @@
 # PFNano
 
-**Warning: you are currently viewing a branch that has been tested with Run2022C data, using the `PFnano_customizeData_add_DeepJet` option**
+**Warning: you are currently viewing a development branch that has been tested with Run2022C data, using the `PFnano_customizeData_allPF_add_DeepJet` option**  
+Uses PUPPI Jets as default for Run3.
+
+Run2022 data _before_ RunC as well as MC for Run3 (Run3Winter22) is still WIP and will not run with this exact setup.
+
+If you are searching for a recipe to run with Run2 samples, please have a look at the master branch (106X).
+
+Links and recommendations will be updated in due course.
 
 This is a [NanoAOD](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD) framework for advance developments of jet algorithms. 
 The current full content of this development branch can be seen [ToDo](https://annika-stein.web.cern.ch/PFNano/AddDeepJetTagInfo_desc.html) and the size [ToDo](https://annika-stein.web.cern.ch/PFNano/AddDeepJetTagInfo_size.html).
@@ -9,7 +16,7 @@ This format can be used with [fastjet](http://fastjet.fr) directly.
 
 ## Recipe
 
-For 2022 data and MC **NanoAOD Pre-v10** according to the [XPOG](https://gitlab.cern.ch/cms-nanoAOD/nanoaod-doc/-/wikis/Releases/NanoAODv10) and [PPD](https://twiki.cern.ch/twiki/bin/view/CMS/PdmVRun3Analysis) recommendations:
+For 2022 data and MC **NanoAOD (Pre-)v10** according to the [XPOG](https://gitlab.cern.ch/cms-nanoAOD/nanoaod-doc/-/wikis/Releases/NanoAODv10) and [PPD](https://twiki.cern.ch/twiki/bin/view/CMS/PdmVRun3Analysis) recommendations:
 
 ```
 cmsrel CMSSW_12_4_8
@@ -34,6 +41,7 @@ process = PFnano_customizeMC(process)
 #process = PFnano_customizeMC_add_DeepJet_and_Truth(process)        ##### DeepJet inputs as well as a truth branch with fine-grained labels
 #process = PFnano_customizeMC_allPF(process)                        ##### PFcands will contain ALL the PF Cands
 #process = PFnano_customizeMC_allPF_add_DeepJet(process)            ##### PFcands will contain ALL the PF Cands; + DeepJet inputs for Jets
+#process = PFnano_customizeMC_allPF_add_DeepJet_and_Truth(process)  ##### PFcands will contain ALL the PF Cands; + DeepJet inputs + truth labels for Jets
 #process = PFnano_customizeMC_AK4JetsOnly(process)                  ##### PFcands will contain only the AK4 jets PF cands
 #process = PFnano_customizeMC_AK4JetsOnly_add_DeepJet(process)      ##### PFcands will contain only the AK4 jets PF cands; + DeepJet inputs for Jets
 #process = PFnano_customizeMC_AK8JetsOnly(process)                  ##### PFcands will contain only the AK8 jets PF cands
@@ -46,15 +54,37 @@ In general, whenever `_add_DeepJet` is specified (does not apply to `AK8JetsOnly
 All python config files were produced with `cmsDriver.py`.
 
 Two imporant parameters that one needs to verify in the central nanoAOD documentation are `--conditions` and `--era`. 
-- `--era` options from [WorkBookNanoAOD](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD) or [XPOG](https://gitlab.cern.ch/cms-nanoAOD/nanoaod-doc/-/wikis/Releases/NanoAODv10) and ToDo for Run3!
+- `--era` options from [WorkBookNanoAOD](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD) or [XPOG](https://gitlab.cern.ch/cms-nanoAOD/nanoaod-doc/-/wikis/Releases/NanoAODv10)
 - `--conditions` can be found here [PdMV](https://twiki.cern.ch/twiki/bin/view/CMS/PdmV)
 
+<details>
+    <summary>Here are two example commands</summary>
+    
+    
+```
+cmsDriver.py nano_data_2022 --data --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO \
+--conditions 124X_dataRun3_Prompt_v4   --era Run3 \
+--customise_commands="process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=100" --nThreads 4 \
+-n -1 --filein /store/data/Run2022C/DoubleMuon/MINIAOD/PromptReco-v1/000/355/863/00000/ab45899e-f1b8-49e7-be41-ee694b17b31d.root --fileout file:nano_data2022.root \
+--customise="PhysicsTools/PFNano/pfnano_cff.PFnano_customizeData_allPF_add_DeepJet"  --no_exec
+```
+<br>
+    
+```    
+cmsDriver.py nano_mc_Run3 --mc --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO \
+--conditions 124X_mcRun3_2022_realistic_v11   --era Run3,run3_nanoAOD_122 \
+--customise_commands="process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=100" --nThreads 4 \
+-n -1 --filein /store/relval/CMSSW_12_4_8/RelValTTbar_SemiLeptonic_PU_13p6/MINIAODSIM/PU_124X_mcRun3_2022_realistic_v11_summer22-v1/2580000/23bf3611-4033-4c70-9bf7-5ae65290e14f.root --fileout file:nano_mcRun3.root \
+--customise="PhysicsTools/PFNano/pfnano_cff.PFnano_customizeMC_allPF_add_DeepJet_and_Truth"  --no_exec
+```
+    
+</details>
 
 
 ## Submission to CRAB
 
 For crab submission a handler script `crabby.py`, a crab baseline template `template_crab.py` and an example 
-submission yaml card `card_example_data.yml` are provided.
+submission yaml card `card_example_data.yml` are provided. Fill out the individual entries for each new submission, e.g. dataset from DAS. @Commissioning Team: this is also the file to put "BTV_Run3_2022_Comm_v1" for the output folder.
 
 - A single campaign (data/mc, year, config, output path) should be configured statically in a copy of `card_example_data.yml`.
 - To submit:
@@ -68,7 +98,16 @@ submission yaml card `card_example_data.yml` are provided.
   cd PhysicsTools/PFNano/test
   python3 crabby.py -c card_example_data.yml --make --submit
   ```
-- `--make` and `--submit` calls are independent, allowing manual inspection of submit configs
+
+
+  Or alternatively, split creation and submission of config which allows manual inspection before submission:
+  ```
+  python3 crabby.py -c card_example_data.yml --make
+  ```
+  then inspect manually if configuration is correct, and if all is fine:
+  ```
+  python3 crabby.py -c card_example_data.yml --submit
+  ```
 - Add `--test True` to disable publication on otherwise publishable config and produce a single file per dataset
 
 
@@ -76,9 +115,14 @@ submission yaml card `card_example_data.yml` are provided.
 
 When processing data, a lumi mask should be applied. The so called golden JSON should be applicable in most cases. Should also be checked here https://twiki.cern.ch/twiki/bin/view/CMS/PdmV
 
+ * Golden JSON prompt
+```
+# 2022: /eos/user/c/cmsdqm/www/CAF/certification/Collisions22/Cert_Collisions2022_355100_357900_Golden.json
+```
+
+
  * Golden JSON, UL
  
-2022 ToDo
 ```
 # 2017: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/Legacy_2017/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt
 # 2018: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/13TeV/Legacy_2018/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt
@@ -87,7 +131,6 @@ When processing data, a lumi mask should be applied. The so called golden JSON s
 
  * Golden JSON, pre-UL
  
-2022 ToDo
 ```
 # 2016
 jsons/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt
@@ -97,7 +140,7 @@ jsons/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt
 jsons/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt
 ```
 
-Include in `card.yml` for `crabby.py` submission. (In deprecated interactive submissiong add `--lumiMask jsons/...txt`)
+Include in `card.yml` for `crabby.py` submission.
 
 
 ## How to create website with nanoAOD content

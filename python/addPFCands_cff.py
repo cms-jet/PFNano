@@ -1,5 +1,5 @@
 import FWCore.ParameterSet.Config as cms
-from  PhysicsTools.NanoAOD.common_cff import *
+from  PhysicsTools.NanoAOD.common_cff import Var, CandVars
 
 def addPFCands(process, runOnMC=False, allPF = False, onlyAK4=False, onlyAK8=False):
     process.customizedPFCandsTask = cms.Task( )
@@ -10,7 +10,7 @@ def addPFCands(process, runOnMC=False, allPF = False, onlyAK4=False, onlyAK8=Fal
                                             cut = cms.string("")
                                             )
     process.finalJetsAK4Constituents = cms.EDProducer("PatJetConstituentPtrSelector",
-                                            src = cms.InputTag("finalJets"),
+                                            src = cms.InputTag("finalJetsPuppi"),
                                             cut = cms.string("")
                                             )
     if allPF:
@@ -49,6 +49,8 @@ def addPFCands(process, runOnMC=False, allPF = False, onlyAK4=False, onlyAK8=Fal
                                                             d0Err = Var("?hasTrackDetails()?dxyError():-1", float, doc="pf d0 err", precision=10),
                                                             pvAssocQuality = Var("pvAssociationQuality()", int, doc="primary vertex association quality"),
                                                             lostInnerHits = Var("lostInnerHits()", int, doc="lost inner hits"),
+                                                            numberOFHits = Var("numberOfHits()", int, doc="number of hits"),
+                                                            numberOfPixelHits = Var("numberOfPixelHits()", int, doc="number of pixel hits"),
                                                             trkQuality = Var("?hasTrackDetails()?pseudoTrack().qualityMask():0", int, doc="track quality mask"),
                                                          )
                                     )
@@ -62,9 +64,8 @@ def addPFCands(process, runOnMC=False, allPF = False, onlyAK4=False, onlyAK8=Fal
                                                         idx_nameSV = cms.string("sVIdx"),
                                                         )
     process.customAK4ConstituentsTable = cms.EDProducer("PatJetConstituentTableProducer",
-                                                        #candidates = cms.InputTag("packedPFCandidates"),
                                                         candidates = candInput,
-                                                        jets = cms.InputTag("linkedObjects","jets"), # was finalJets before
+                                                        jets = cms.InputTag("finalJetsPuppi"), # was finalJets before
                                                         jet_radius = cms.double(0.4),
                                                         name = cms.string("JetPFCands"),
                                                         idx_name = cms.string("pFCandsIdx"),
@@ -74,6 +75,7 @@ def addPFCands(process, runOnMC=False, allPF = False, onlyAK4=False, onlyAK8=Fal
     if not allPF:
         process.customizedPFCandsTask.add(process.finalJetsConstituents)
     process.customizedPFCandsTask.add(process.customConstituentsExtTable)
+    # linkedObjects are WIP for Run3
     process.customizedPFCandsTask.add(process.customAK8ConstituentsTable)
     process.customizedPFCandsTask.add(process.customAK4ConstituentsTable)
     

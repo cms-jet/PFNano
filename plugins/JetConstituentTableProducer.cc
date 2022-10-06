@@ -62,7 +62,7 @@ private:
   edm::Handle<reco::CandidateView> cands_;
   edm::Handle<SVCollection> svs_;
   edm::ESHandle<TransientTrackBuilder> track_builder_;
-  const edm::ESGetToken<TransientTrackBuilder, TransientTrackRecord> track_builder_token_;
+  edm::ESGetToken<TransientTrackBuilder, TransientTrackRecord> track_builder_token_;
 
   const reco::Vertex *pv_ = nullptr;
   
@@ -85,7 +85,6 @@ JetConstituentTableProducer<T>::JetConstituentTableProducer(const edm::Parameter
       sv_token_(consumes<SVCollection>(iConfig.getParameter<edm::InputTag>("secondary_vertices"))),
       track_builder_token_(
           esConsumes<TransientTrackBuilder, TransientTrackRecord>(edm::ESInputTag("", "TransientTrackBuilder"))){
-  //produces<nanoaod::FlatTable>(name_);
   produces<nanoaod::FlatTable>(name_);
   produces<nanoaod::FlatTable>(nameSV_);
   produces<std::vector<reco::CandidatePtr>>();
@@ -112,10 +111,7 @@ void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::Even
   iEvent.getByToken(sv_token_, svs_);
 
   if(readBtag_){
-    //iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder", track_builder_);
-    edm::ESHandle<TransientTrackBuilder> track_builder_ = iSetup.getHandle(track_builder_token_);
-      //auto const& data = iEventSetup.getData(esToken_);
-      //auto transientHandle = iEventSetup.getTransientHandle(esToken_));
+    track_builder_ = iSetup.getHandle(track_builder_token_);
   }
 
   for (unsigned i_jet = 0; i_jet < jets->size(); ++i_jet) {
