@@ -1,0 +1,3 @@
+/SingleMuon/Run2022A-PromptReco-v1/MINIAOD
+/SingleMuon/Run2022B-PromptReco-v1/MINIAOD
+/SingleMuon/Run2022C-PromptReco-v1/MINIAOD
