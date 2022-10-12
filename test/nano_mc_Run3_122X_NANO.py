@@ -2,12 +2,13 @@
 # using: 
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
-# with command line options: nano_mc_Run3 --mc --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO --conditions 124X_mcRun3_2022_realistic_v11 --era Run3 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=100 --nThreads 4 -n -1 --filein /store/relval/CMSSW_12_4_8/RelValTTbar_SemiLeptonic_PU_13p6/MINIAODSIM/PU_124X_mcRun3_2022_realistic_v11_summer22-v1/2580000/23bf3611-4033-4c70-9bf7-5ae65290e14f.root --fileout file:nano_mcRun3.root --customise=PhysicsTools/NanoAOD/V10/nano_cff.nanoAOD_customizeV10,PhysicsTools/PFNano/pfnano_cff.PFnano_customizeMC_allPF_add_DeepJet_and_Truth --no_exec
+# with command line options: nano_mc_Run3_122X --mc --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO --conditions 124X_mcRun3_2022_realistic_v11 --era Run3,run3_nanoAOD_122 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=100 --nThreads 4 -n -1 --filein /store/mc/Run3Winter22MiniAOD/TTTo2L2Nu_CP5_13p6TeV_powheg-pythia8/MINIAODSIM/122X_mcRun3_2021_realistic_v9-v2/2550000/0d44f6e9-6961-4d60-b2c1-0e21c1249100.root --fileout file:nano_mcRun3_122X.root --customise=PhysicsTools/NanoAOD/V10/nano_cff.nanoAOD_customizeV10,PhysicsTools/PFNano/pfnano_cff.PFnano_customizeMC_allPF_add_DeepJet_and_Truth --no_exec
 import FWCore.ParameterSet.Config as cms
 
 from Configuration.Eras.Era_Run3_cff import Run3
+from Configuration.Eras.Modifier_run3_nanoAOD_122_cff import run3_nanoAOD_122
 
-process = cms.Process('NANO',Run3)
+process = cms.Process('NANO',Run3,run3_nanoAOD_122)
 
 # import of standard configurations
 process.load('Configuration.StandardSequences.Services_cff')
@@ -28,7 +29,7 @@ process.maxEvents = cms.untracked.PSet(
 
 # Input source
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('/store/relval/CMSSW_12_4_8/RelValTTbar_SemiLeptonic_PU_13p6/MINIAODSIM/PU_124X_mcRun3_2022_realistic_v11_summer22-v1/2580000/23bf3611-4033-4c70-9bf7-5ae65290e14f.root'),
+    fileNames = cms.untracked.vstring('/store/mc/Run3Winter22MiniAOD/TTTo2L2Nu_CP5_13p6TeV_powheg-pythia8/MINIAODSIM/122X_mcRun3_2021_realistic_v9-v2/2550000/0d44f6e9-6961-4d60-b2c1-0e21c1249100.root'),
     secondaryFileNames = cms.untracked.vstring()
 )
 
@@ -64,7 +65,7 @@ process.options = cms.untracked.PSet(
 
 # Production Info
 process.configurationMetadata = cms.untracked.PSet(
-    annotation = cms.untracked.string('nano_mc_Run3 nevts:-1'),
+    annotation = cms.untracked.string('nano_mc_Run3_122X nevts:-1'),
     name = cms.untracked.string('Applications'),
     version = cms.untracked.string('$Revision: 1.19 $')
 )
@@ -78,7 +79,7 @@ process.NANOAODSIMoutput = cms.OutputModule("NanoAODOutputModule",
         dataTier = cms.untracked.string('NANOAODSIM'),
         filterName = cms.untracked.string('')
     ),
-    fileName = cms.untracked.string('file:nano_mcRun3.root'),
+    fileName = cms.untracked.string('file:nano_mcRun3_122X.root'),
     outputCommands = process.NANOAODSIMEventContent.outputCommands
 )
 
