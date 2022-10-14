@@ -1,16 +1,16 @@
 # PFNano
 
-**Warning: you are currently viewing a development branch that has been tested with Run2022C data, using the `PFnano_customizeData_allPF_add_DeepJet` option**  
+**You are currently viewing a development branch**  
 Uses PUPPI Jets as default for Run3.
 
-Run2022 data _before_ RunC as well as MC for Run3 (Run3Winter22) is still WIP and will not run with this exact setup.
+Tested with data (Run2022C onwards), MC for Run3 (Run3Summer22 made with 124X), MC for Run3 (Run3Winter22 made with 122X).
+
+Run2022 data _before_ RunC is still WIP and will not run with this exact setup.
 
 If you are searching for a recipe to run with Run2 samples, please have a look at the master branch (106X).
 
-Links and recommendations will be updated in due course.
-
 This is a [NanoAOD](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD) framework for advance developments of jet algorithms. 
-The current full content of this development branch can be seen [ToDo](https://annika-stein.web.cern.ch/PFNano/AddDeepJetTagInfo_desc.html) and the size [ToDo](https://annika-stein.web.cern.ch/PFNano/AddDeepJetTagInfo_size.html).
+For data, the current full content of this development branch can be seen [here](https://annika-stein.web.cern.ch/PFNano/desc_data2022.html) and the size [here](https://annika-stein.web.cern.ch/PFNano/size_data2022.html). For MC (124X) the description can be accessed [here](https://annika-stein.web.cern.ch/PFNano/desc_mc2022.html) and the size [here](https://annika-stein.web.cern.ch/PFNano/size_mc2022.html), the same for 122X MC: [description](https://annika-stein.web.cern.ch/PFNano/desc_mc2022_122X.html) and [size](https://annika-stein.web.cern.ch/PFNano/size_mc2022_122X.html).
 In this version, PFcandidates can be saved for AK4 only, AK8 only, or all the PF candidates. More below.
 This format can be used with [fastjet](http://fastjet.fr) directly.
 
@@ -34,7 +34,11 @@ Note: When running over a new dataset you should check with [the nanoAOD workboo
 
 ## Local Usage:
 
-There are python config files ready to run in `PhysicsTools/PFNano/test/`. Examples to include or exclude the input features for the DeepJet tagger are given in `nano_data_2022_NANO.py`. The list of options that are currently implemented inside `pfnano_cff.py` (e.g. for MC) looks like that:
+There are python config files ready to run in `PhysicsTools/PFNano/test/`, where the full set of inputs (and for all PF candidates) was used as an example.
+
+@BTV-Commissioning-Team: the recommended PFNano customization for commissioning (as of October 2022) for data is `PFnano_customizeData_add_DeepJet` and for MC `PFnano_customizeMC_add_DeepJet_and_Truth`, so without the `allPF` tag.
+
+The list of options that are currently implemented inside `pfnano_cff.py` (e.g. for MC) looks like that:
 ```
 process = PFnano_customizeMC(process)
 #process = PFnano_customizeMC_add_DeepJet(process)                  ##### DeepJet inputs are added to the Jet collection
@@ -47,7 +51,7 @@ process = PFnano_customizeMC(process)
 #process = PFnano_customizeMC_AK8JetsOnly(process)                  ##### PFcands will contain only the AK8 jets PF cands
 #process = PFnano_customizeMC_noInputs(process)                     ##### No PFcands but all the other content is available.
 ```
-In general, whenever `_add_DeepJet` is specified (does not apply to `AK8JetsOnly` and `noInputs`), the DeepJet inputs are added to the Jet collection. For all other cases that involve adding tagger inputs, only DeepCSV and / or DDX are taken into account as default (= the old behaviour when `keepInputs=True`). Internally, this is handled by selecting a list of taggers, namely choosing from `DeepCSV`, `DeepJet`, and `DDX` (or an empty list for the `noInputs`-case, formerly done by setting `keepInputs=False`, now set `keepInputs=[]`). This refers to a change of the logic inside `pfnano_cff.py` and `addBTV.py`. If one wants to use this new flexibility, one can also define new customization functions with other combinations of taggers. Currently, there are all configurations to reproduce the ones that were available previously, and all configuations that extend the old ones by adding DeepJet inputs. DeepJet outputs, on top of the discriminators already present in NanoAOD, are added in any case where AK4Jets are added, i.e. there is no need to require the full set of inputs to get the individual output nodes / probabilities. The updated description using `PFnano_customizeMC_add_DeepJet` can be viewed here: [ToDo](https://annika-stein.web.cern.ch/PFNano/AddDeepJetTagInfo_desc.html) and the size [ToDo](https://annika-stein.web.cern.ch/PFNano/AddDeepJetTagInfo_size.html).
+In general, whenever `_add_DeepJet` is specified (does not apply to `AK8JetsOnly` and `noInputs`), the DeepJet inputs are added to the Jet collection. For all other cases that involve adding tagger inputs, only DeepCSV and / or DDX are taken into account as default (= the old behaviour when `keepInputs=True`). Internally, this is handled by selecting a list of taggers, namely choosing from `DeepCSV`, `DeepJet`, and `DDX` (or an empty list for the `noInputs`-case, formerly done by setting `keepInputs=False`, now set `keepInputs=[]`). This refers to a change of the logic inside `pfnano_cff.py` and `addBTV.py`. If one wants to use this new flexibility, one can also define new customization functions with other combinations of taggers. Currently, there are all configurations to reproduce the ones that were available previously, and all configuations that extend the old ones by adding DeepJet inputs. DeepJet outputs, on top of the discriminators already present in NanoAOD, are added in any case where AK4Jets are added, i.e. there is no need to require the full set of inputs to get the individual output nodes / probabilities. The updated description using `PFnano_customizeMC_allPF_add_DeepJet_and_Truth` can be viewed [here](https://annika-stein.web.cern.ch/PFNano/desc_mc2022.html) and the size [here](https://annika-stein.web.cern.ch/PFNano/size_mc2022.html).
 
 ### How to create python files using cmsDriver
 
@@ -57,8 +61,10 @@ Two imporant parameters that one needs to verify in the central nanoAOD document
 - `--era` options from [WorkBookNanoAOD](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD) or [XPOG](https://gitlab.cern.ch/cms-nanoAOD/nanoaod-doc/-/wikis/Releases/NanoAODv10)
 - `--conditions` can be found here [PdMV](https://twiki.cern.ch/twiki/bin/view/CMS/PdmV)
 
+@BTV-Commissioning-Team: the recommended PFNano customization for data is `PFnano_customizeData_add_DeepJet` and for MC `PFnano_customizeMC_add_DeepJet_and_Truth`.
+
 <details>
-    <summary>Here are two example commands</summary>
+    <summary>Here are three example commands, with which the runnable configs in `test` have been created:</summary>
     
     
 ```
@@ -66,16 +72,25 @@ cmsDriver.py nano_data_2022 --data --eventcontent NANOAODSIM --datatier NANOAODS
 --conditions 124X_dataRun3_Prompt_v4   --era Run3 \
 --customise_commands="process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=100" --nThreads 4 \
 -n -1 --filein /store/data/Run2022C/DoubleMuon/MINIAOD/PromptReco-v1/000/355/863/00000/ab45899e-f1b8-49e7-be41-ee694b17b31d.root --fileout file:nano_data2022.root \
---customise="PhysicsTools/PFNano/pfnano_cff.PFnano_customizeData_allPF_add_DeepJet"  --no_exec
+--customise="PhysicsTools/NanoAOD/V10/nano_cff.nanoAOD_customizeV10,PhysicsTools/PFNano/pfnano_cff.PFnano_customizeData_allPF_add_DeepJet"  --no_exec
 ```
 <br>
     
 ```    
 cmsDriver.py nano_mc_Run3 --mc --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO \
---conditions 124X_mcRun3_2022_realistic_v11   --era Run3,run3_nanoAOD_122 \
+--conditions 124X_mcRun3_2022_realistic_v11   --era Run3 \
 --customise_commands="process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=100" --nThreads 4 \
 -n -1 --filein /store/relval/CMSSW_12_4_8/RelValTTbar_SemiLeptonic_PU_13p6/MINIAODSIM/PU_124X_mcRun3_2022_realistic_v11_summer22-v1/2580000/23bf3611-4033-4c70-9bf7-5ae65290e14f.root --fileout file:nano_mcRun3.root \
---customise="PhysicsTools/PFNano/pfnano_cff.PFnano_customizeMC_allPF_add_DeepJet_and_Truth"  --no_exec
+--customise="PhysicsTools/NanoAOD/V10/nano_cff.nanoAOD_customizeV10,PhysicsTools/PFNano/pfnano_cff.PFnano_customizeMC_allPF_add_DeepJet_and_Truth"  --no_exec
+```
+<br>
+    
+```    
+cmsDriver.py nano_mc_Run3_122X --mc --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO \
+--conditions 124X_mcRun3_2022_realistic_v11   --era Run3,run3_nanoAOD_122 \
+--customise_commands="process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=100" --nThreads 4 \
+-n -1 --filein /store/mc/Run3Winter22MiniAOD/TTTo2L2Nu_CP5_13p6TeV_powheg-pythia8/MINIAODSIM/122X_mcRun3_2021_realistic_v9-v2/2550000/0d44f6e9-6961-4d60-b2c1-0e21c1249100.root --fileout file:nano_mcRun3_122X.root \
+--customise="PhysicsTools/NanoAOD/V10/nano_cff.nanoAOD_customizeV10,PhysicsTools/PFNano/pfnano_cff.PFnano_customizeMC_allPF_add_DeepJet_and_Truth"  --no_exec
 ```
     
 </details>
@@ -84,7 +99,7 @@ cmsDriver.py nano_mc_Run3 --mc --eventcontent NANOAODSIM --datatier NANOAODSIM -
 ## Submission to CRAB
 
 For crab submission a handler script `crabby.py`, a crab baseline template `template_crab.py` and an example 
-submission yaml card `card_example_data.yml` are provided. Fill out the individual entries for each new submission, e.g. dataset from DAS. @Commissioning Team: this is also the file to put "BTV_Run3_2022_Comm_v1" for the output folder.
+submission yaml card `card_example_data.yml` are provided. Fill out the individual entries for each new submission, e.g. dataset from DAS. @BTV-Commissioning-Team: this is also the file to put "BTV_Run3_2022_Comm_v1" for the output folder.
 
 - A single campaign (data/mc, year, config, output path) should be configured statically in a copy of `card_example_data.yml`.
 - To submit:

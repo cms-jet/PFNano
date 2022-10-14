@@ -30,11 +30,6 @@ def update_jets_AK4(process):
     
     updateJetCollection(
         process,
-        #jetSource=cms.InputTag('slimmedJets'),
-        #jetCorrections=('AK4PFchs',
-        #                cms.vstring(
-        #                    ['L1FastJet', 'L2Relative', 'L3Absolute',
-        #                     'L2L3Residual']), 'None'),
         jetSource=cms.InputTag('slimmedJetsPuppi'),
         jetCorrections=('AK4PFPuppi',
                         cms.vstring(
@@ -287,12 +282,6 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=['D
                   float,
                   doc="Jet Probability (Usage:BTV)",
                   precision=10),
-        nBHadrons=Var("jetFlavourInfo().getbHadrons().size()",
-                      int,
-                      doc="number of b-hadrons"),
-        nCHadrons=Var("jetFlavourInfo().getcHadrons().size()",
-                      int,
-                      doc="number of c-hadrons"),
         btagDeepB_b=Var("bDiscriminator('pfDeepCSVJetTags:probb')",
                         float,
                         doc="DeepCSV b tag discriminator",
@@ -311,6 +300,15 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=['D
                       precision=10),
     )
     
+    # decouple these from CommonVars, not relevant for data
+    HadronCountingVars = cms.PSet(
+        nBHadrons=Var("jetFlavourInfo().getbHadrons().size()",
+                      int,
+                      doc="number of b-hadrons"),
+        nCHadrons=Var("jetFlavourInfo().getcHadrons().size()",
+                      int,
+                      doc="number of c-hadrons")
+    )
 
     # AK4
     process.customJetExtTable = cms.EDProducer(
@@ -323,6 +321,7 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=['D
         extension=cms.bool(True),  # this is the extension table for Jets
         variables=cms.PSet(
             CommonVars,
+            HadronCountingVars if runOnMC else cms.PSet(), # hadrons from Generator only relevant for MC
             get_DeepCSV_vars() if ('DeepCSV' in keepInputs) else cms.PSet(),
             get_DeepJet_outputs()  # outputs are added in any case, inputs only if requested
         ))
@@ -349,11 +348,7 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=['D
         extension=cms.bool(True),  # this is the extension table for FatJets
         variables=cms.PSet(
             CommonVars,
-           # cms.PSet(
-           #     btagDDBvLV2 = Var("bDiscriminator('pfMassIndependentDeepDoubleBvLV2JetTags:probHbb')",float,doc="DeepDoubleX V2 discriminator for H(Z)->bb vs QCD",precision=10),
-           #     btagDDCvLV2 = Var("bDiscriminator('pfMassIndependentDeepDoubleCvLV2JetTags:probHcc')",float,doc="DeepDoubleX V2 discriminator for H(Z)->cc vs QCD",precision=10),
-           #     btagDDCvBV2 = Var("bDiscriminator('pfMassIndependentDeepDoubleCvBV2JetTags:probHcc')",float,doc="DeepDoubleX V2 discriminator for H(Z)->cc vs H(Z)->bb",precision=10),
-           # ), # already included in Nano, no need to duplicate
+            #HadronCountingVars if runOnMC else cms.PSet(), # only necessary before 106x
             get_DDX_vars() if ('DDX' in keepInputs) else cms.PSet(),
         ))
 
@@ -368,11 +363,7 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=['D
         extension=cms.bool(True),  # this is the extension table for FatJets
         variables=cms.PSet(
             CommonVars,
-            # btagDeepC = Var("bDiscriminator('pfDeepCSVJetTags:probc')",
-            #            float,
-            #            doc="DeepCSV charm btag discriminator",
-            #            precision=10), # already part of CommonVars
-
+            #HadronCountingVars if runOnMC else cms.PSet(), # only necessary before 106x
     ))
 
     process.customSubJetMCExtTable = cms.EDProducer(
@@ -381,10 +372,10 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=['D
     cut = subJetTable.cut,
         name = subJetTable.name,
         doc=subJetTable.doc,
-    singleton = cms.bool(False),
-       extension = cms.bool(True),
+        singleton = cms.bool(False),
+        extension = cms.bool(True),
         variables = cms.PSet(
-            subGenJetAK8Idx = Var("?genJetFwdRef().backRef().isNonnull()?genJetFwdRef().backRef().key():-1",
+        subGenJetAK8Idx = Var("?genJetFwdRef().backRef().isNonnull()?genJetFwdRef().backRef().key():-1",
         int,
         doc="index of matched gen Sub jet"),
        )
