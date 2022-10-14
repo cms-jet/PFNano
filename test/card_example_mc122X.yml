@@ -9,11 +9,11 @@ campaign:
   voGroup: dcms # or leave empty
 
   # Campaign specific
-  tag_extension: PFtestNano # Will get appended after the current tag
+  tag_extension: BTV_Run3_2022_Comm_v1 # Will get appended after the current tag
   tag_mod: # Will modify name in-place for MC eg. "PFNanoAODv1" will replace MiniAODv2 -> PFNanoAODv1
   # If others shall be able to access dataset via DAS (important when collaborating for commissioning!)
   publication: True
-  config: nano_mcRun3_122X_NANO.py
+  config: nano_mc_Run3_122X_NANO.py
   # Specify if running on data
   # data: True
   data: False

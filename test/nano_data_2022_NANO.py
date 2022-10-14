@@ -2,7 +2,7 @@
 # using: 
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
-# with command line options: nano_data_2022 --data --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO --conditions 124X_dataRun3_Prompt_v4 --era Run3 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=100 --nThreads 4 -n -1 --filein /store/data/Run2022C/DoubleMuon/MINIAOD/PromptReco-v1/000/355/863/00000/ab45899e-f1b8-49e7-be41-ee694b17b31d.root --fileout file:nano_data2022.root --customise=PhysicsTools/NanoAOD/V10/nano_cff.nanoAOD_customizeV10,PhysicsTools/PFNano/pfnano_cff.PFnano_customizeData_allPF_add_DeepJet --no_exec
+# with command line options: nano_data_2022 --data --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO --conditions 124X_dataRun3_Prompt_v4 --era Run3 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=100 --nThreads 4 -n -1 --filein /store/data/Run2022C/DoubleMuon/MINIAOD/PromptReco-v1/000/355/863/00000/ab45899e-f1b8-49e7-be41-ee694b17b31d.root --fileout file:nano_data2022.root --customise=PhysicsTools/NanoAOD/V10/nano_cff.nanoAOD_customizeV10,PhysicsTools/PFNano/pfnano_cff.PFnano_customizeData_add_DeepJet --no_exec
 import FWCore.ParameterSet.Config as cms
 
 from Configuration.Eras.Era_Run3_cff import Run3
@@ -116,10 +116,10 @@ from PhysicsTools.NanoAOD.V10.nano_cff import nanoAOD_customizeV10
 process = nanoAOD_customizeV10(process)
 
 # Automatic addition of the customisation function from PhysicsTools.PFNano.pfnano_cff
-from PhysicsTools.PFNano.pfnano_cff import PFnano_customizeData_allPF_add_DeepJet 
+from PhysicsTools.PFNano.pfnano_cff import PFnano_customizeData_add_DeepJet 
 
-#call to customisation function PFnano_customizeData_allPF_add_DeepJet imported from PhysicsTools.PFNano.pfnano_cff
-process = PFnano_customizeData_allPF_add_DeepJet(process)
+#call to customisation function PFnano_customizeData_add_DeepJet imported from PhysicsTools.PFNano.pfnano_cff
+process = PFnano_customizeData_add_DeepJet(process)
 
 # End of customisation functions
 
