@@ -2,7 +2,7 @@
 # using: 
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
-# with command line options: nano_mc_Run3_122X --mc --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO --conditions 124X_mcRun3_2022_realistic_v11 --era Run3,run3_nanoAOD_122 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=100 --nThreads 4 -n -1 --filein /store/mc/Run3Winter22MiniAOD/TTTo2L2Nu_CP5_13p6TeV_powheg-pythia8/MINIAODSIM/122X_mcRun3_2021_realistic_v9-v2/2550000/0d44f6e9-6961-4d60-b2c1-0e21c1249100.root --fileout file:nano_mcRun3_122X.root --customise=PhysicsTools/NanoAOD/V10/nano_cff.nanoAOD_customizeV10,PhysicsTools/PFNano/pfnano_cff.PFnano_customizeMC_allPF_add_DeepJet_and_Truth --no_exec
+# with command line options: nano_mc_Run3_122X --mc --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO --conditions 124X_mcRun3_2022_realistic_v11 --era Run3,run3_nanoAOD_122 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=100 --nThreads 4 -n -1 --filein /store/mc/Run3Winter22MiniAOD/TTTo2L2Nu_CP5_13p6TeV_powheg-pythia8/MINIAODSIM/122X_mcRun3_2021_realistic_v9-v2/2550000/0d44f6e9-6961-4d60-b2c1-0e21c1249100.root --fileout file:nano_mcRun3_122X.root --customise=PhysicsTools/NanoAOD/V10/nano_cff.nanoAOD_customizeV10,PhysicsTools/PFNano/pfnano_cff.PFnano_customizeMC_add_DeepJet_and_Truth --no_exec
 import FWCore.ParameterSet.Config as cms
 
 from Configuration.Eras.Era_Run3_cff import Run3
@@ -118,10 +118,10 @@ from PhysicsTools.NanoAOD.V10.nano_cff import nanoAOD_customizeV10
 process = nanoAOD_customizeV10(process)
 
 # Automatic addition of the customisation function from PhysicsTools.PFNano.pfnano_cff
-from PhysicsTools.PFNano.pfnano_cff import PFnano_customizeMC_allPF_add_DeepJet_and_Truth 
+from PhysicsTools.PFNano.pfnano_cff import PFnano_customizeMC_add_DeepJet_and_Truth 
 
-#call to customisation function PFnano_customizeMC_allPF_add_DeepJet_and_Truth imported from PhysicsTools.PFNano.pfnano_cff
-process = PFnano_customizeMC_allPF_add_DeepJet_and_Truth(process)
+#call to customisation function PFnano_customizeMC_add_DeepJet_and_Truth imported from PhysicsTools.PFNano.pfnano_cff
+process = PFnano_customizeMC_add_DeepJet_and_Truth(process)
 
 # End of customisation functions
 
