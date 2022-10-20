@@ -5,7 +5,7 @@ campaign:
   # User specific
   workArea: summer22_124X_pub_yml # New each time
   storageSite: T2_DE_RWTH # Make sure you have write access
-  outLFNDirBase: /store/user/anstein/PFNano # Change unsername and path
+  outLFNDirBase: /store/user/anstein/PFNano # Change username and path
   voGroup: dcms # or leave empty
 
   # Campaign specific
