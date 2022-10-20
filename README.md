@@ -171,7 +171,7 @@ Please document the input and output datasets on the following twiki: https://tw
 
 
 ## Running brilcalc
-These are condensed instructions from the lumi POG TWiki (https://twiki.cern.ch/twiki/bin/view/CMS/TWikiLUM). Also see the brilcalc quickstart guide: https://twiki.cern.ch/twiki/bin/viewauth/CMS/BrilcalcQuickStart.
+These are condensed instructions from the lumi POG TWiki (https://twiki.cern.ch/twiki/bin/view/CMS/TWikiLUM). Also see the brilcalc quickstart guide: https://twiki.cern.ch/twiki/bin/view/CMS/BrilcalcQuickStart.
 
 Note: brilcalc should be run on lxplus. It does not work on the lpc.
 
@@ -186,6 +186,10 @@ Instructions:
 
     pip install --install-option="--prefix=$HOME/.local" brilws
     
+(Optional: upgrade brilws:)
+
+    pip install --user --upgrade brilws
+    
 3.) Get the json file for your output dataset. In the area in which you submitted your jobs:
 
     crab report -d [your crab directory]
@@ -193,8 +197,9 @@ Instructions:
 The processedLumis.json file will tell you which lumi sections you successfully ran over. The lumi sections for incomplete, failed, or unpublished jobs are listed in notFinishedLumis.json, failedLumis.json, and notPublishedLumis.json. More info can be found at https://twiki.cern.ch/twiki/bin/view/CMSPublic/CRAB3Commands#crab_report.
     
 4.) Run brilcalc on lxplus:
+Note: for Run3, there is no PHYSICS normtag available as of Oct 20, 2022 -> use normtag_BRIL
 
-    brilcalc lumi -i processedLumis.json -u /fb --normtag /cvmfs/cms-bril.cern.ch/cms-lumi-pog/Normtags/normtag_PHYSICS.json -b "STABLE BEAMS"
+    brilcalc lumi -i processedLumis.json -u /fb --normtag /cvmfs/cms-bril.cern.ch/cms-lumi-pog/Normtags/normtag_BRIL.json -b "STABLE BEAMS"
     
 The luminosity of interest will be listed under "totrecorded(/fb)." You can also run this over the other previously mentioned json files.
     
