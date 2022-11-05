@@ -1,7 +1,11 @@
 # PFNano
 
-This is a [NanoAOD](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD) framework for advance developments of jet algorithms. 
-The current full content of this development branch can be seen [here](http://algomez.web.cern.ch/algomez/testWeb/PFnano_content_v02.html) and the size [here](http://algomez.web.cern.ch/algomez/testWeb/PFnano_size_v02.html).
+This is a [NanoAOD](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD) framework for advanced developments of jet algorithms. 
+
+The repository consists of multiple branches which are each dedicated to specific releases of [CMSSW](https://github.com/cms-sw/cmssw). If you came here to run over Run3 samples, please checkout the most up-to-date 12_4_8 branch (e.g. from the dropdown menu above). The master branch you are viewing right now is optimized to run over Run2 samples, using the 106X release cycle.
+
+
+The current full content of this development branch can be seen [here](https://annika-stein.web.cern.ch/PFNano/AddDeepJetTagInfo_desc.html) and the size [here](https://annika-stein.web.cern.ch/PFNano/AddDeepJetTagInfo_size.html).
 In this version, PFcandidates can be saved for AK4 only, AK8 only, or all the PF candidates. More below.
 This format can be used with [fastjet](http://fastjet.fr) directly.
 
@@ -24,15 +28,7 @@ Note: When running over a new dataset you should check with [the nanoAOD workboo
 
 ## Local Usage:
 
-There are python config files ready to run in `PhysicsTools/PFNano/test/` for the UL campaign of nanoAODv8, named `nano106Xv8_on_mini106X_201*_data_NANO.py`. Notice that the current version can create 4 types of files depending on the PF candidates content. 
-In this files, for simplicity, the 4 options are included but only one is commented out for use. For instance:
-```
-process = PFnano_customizeMC(process)
-#process = PFnano_customizeMC_allPF(process)            ##### PFcands will content ALL the PF Cands
-#process = PFnano_customizeMC_AK4JetsOnly(process)      ##### PFcands will content only the AK4 jets PF cands
-#process = PFnano_customizeMC_AK8JetsOnly(process)      ##### PFcands will content only the AK8 jets PF cands
-#process = PFnano_customizeMC_noInputs(process)         ##### No PFcands but all the other content is available.
-```
+There are python config files ready to run in `PhysicsTools/PFNano/test/` for the UL campaign of nanoAODv8, named `nano106Xv8_on_mini106X_201*_data_NANO.py`. Notice that the current version can create different types of files depending on the PF candidates content.
 
 New since Pull Request [#39](https://github.com/cms-jet/PFNano/pull/39): Examples to include or exclude the input features for the DeepJet tagger are given in `nano106Xv8_on_mini106X_2017_mc_NANO.py`. Now the list of options that are currently implemented inside `pfnano_cff.py` (e.g. for MC) looks like that:
 ```
@@ -45,7 +41,9 @@ process = PFnano_customizeMC(process)
 #process = PFnano_customizeMC_AK8JetsOnly(process)                  ##### PFcands will content only the AK8 jets PF cands
 #process = PFnano_customizeMC_noInputs(process)                     ##### No PFcands but all the other content is available.
 ```
-In general, whenever `_add_DeepJet` is specified (does not apply to `AK8JetsOnly` and `noInputs`), the DeepJet inputs are added to the Jet collection. For all other cases that involve adding tagger inputs, only DeepCSV and / or DDX are taken into account as default (= the old behaviour when `keepInputs=True`). Internally, this is handled by selecting a list of taggers, namely choosing from `DeepCSV`, `DeepJet`, and `DDX` (or an empty list for the `noInputs`-case, formerly done by setting `keepInputs=False`, now set `keepInputs=[]`). This refers to a change of the logic inside `pfnano_cff.py` and `addBTV.py`. If one wants to use this new flexibility, one can also define new customization functions with other combinations of taggers. Currently, there are all configurations to reproduce the ones that were available previously, and all configuations that extend the old ones by adding DeepJet inputs. DeepJet outputs, on top of the discriminators already present in NanoAOD, are added in any case where AK4Jets are added, i.e. there is no need to require the full set of inputs to get the individual output nodes / probabilities. The updated description using `PFnano_customizeMC_add_DeepJet` can be viewed here: [here](https://annika-stein.web.cern.ch/PFNano/AddDeepJetTagInfo_desc.html) and the size [here](https://annika-stein.web.cern.ch/PFNano/AddDeepJetTagInfo_size.html).
+In general, whenever `_add_DeepJet` is specified (does not apply to `AK8JetsOnly` and `noInputs`), the DeepJet inputs are added to the Jet collection. For all other cases that involve adding tagger inputs, only DeepCSV and / or DDX are taken into account as default (= the old behaviour when `keepInputs=True`). Internally, this is handled by selecting a list of taggers, namely choosing from `DeepCSV`, `DeepJet`, and `DDX` (or an empty list for the `noInputs`-case, formerly done by setting `keepInputs=False`, now set `keepInputs=[]`). This refers to a change of the logic inside `pfnano_cff.py` and `addBTV.py`. If one wants to use this new flexibility, one can also define new customization functions with other combinations of taggers. Currently, there are all configurations to reproduce the ones that were available previously, and all configuations that extend the old ones by adding DeepJet inputs. DeepJet outputs, on top of the discriminators already present in NanoAOD, are added in any case where AK4Jets are added, i.e. there is no need to require the full set of inputs to get the individual output nodes / probabilities. The updated description using `PFnano_customizeMC_add_DeepJet` can be viewed [here](https://annika-stein.web.cern.ch/PFNano/AddDeepJetTagInfo_desc.html) and the size [here](https://annika-stein.web.cern.ch/PFNano/AddDeepJetTagInfo_size.html).
+
+The latest addition before moving to the Run3 recipe was the inclusion of a fine-grained truth flavour branch, which encodes various bits known from DeepNTuples into one integer. It can be activated for simulated samples by adding the `_and_Truth` flag to the customizer, i.e. using `PFnano_customizeMC_add_DeepJet_and_Truth`.
 
 ### How to create python files using cmsDriver
 
@@ -83,6 +81,35 @@ submission yaml card `card_example.yml` are provided.
 - `--make` and `--submit` calls are independent, allowing manual inspection of submit configs
 - Add `--test` to disable publication on otherwise publishable config and produce a single file per dataset
 
+<details>
+    <summary>If experiencing problems with crab submission using the above instructions, e.g. on NAF-DESY</summary>
+    
+    
+    ```
+    source /cvmfs/grid.cern.ch/centos7-umd4-ui-4_200423/etc/profile.d/setup-c7-ui-example.sh
+    source /cvmfs/cms.cern.ch/common/crab-setup.sh prod
+    source /cvmfs/cms.cern.ch/cmsset_default.sh
+    < navigate to CMSSW_X_Y_Z/src >
+    cmsenv
+    cd PhysicsTools/PFNano/test
+    ```
+    
+    
+    and proceed with `crabby.py` as explained above, activate proxy for submission to be successful.
+</details>
+
+<details>
+    <summary>Useful commands to get paths to individual processed files</summary>
+    
+    ```
+    xrdfs [insert redirector to site] ls /store/path/to/your/crab/output/serialnumber > filelist.txt
+    ( if there is more than one serial number (more than 1k files processed) repeat command but append to textfile using >> instead of > )
+    ( clean textfile for log entries )
+    ( then append the redirector (needs modification by you for specific site) using this helper )
+    python dataset_paths.py name_of_txt_file T2_DE_RWTH
+    ```
+    
+</details>
 
 <details>
   <summary>Deprecated submission.</summary>
