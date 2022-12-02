@@ -28,6 +28,10 @@ def PFnano_customizeMC_allPF(process):
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
     return process
 
+def PFnano_customizeMC_onlyPF(process):
+    addPFCands(process, True, True)
+    return process
+
 def PFnano_customizeMC_allPF_add_DeepJet(process):
     addPFCands(process, True, True)
     add_BTV(process, True, keepInputs=['DeepCSV','DeepJet','DDX'])
@@ -75,6 +79,10 @@ def PFnano_customizeData_allPF(process):
     addPFCands(process, False, True)
     add_BTV(process, False, keepInputs=['DeepCSV','DDX'])
     process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)  # needed for crab publication
+    return process
+
+def PFnano_customizeData_onlyPF(process):
+    addPFCands(process, False, True)
     return process
 
 def PFnano_customizeData_allPF_add_DeepJet(process):
