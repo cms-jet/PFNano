@@ -330,7 +330,10 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=['D
                                                                       jets = cms.InputTag("finalJets"),
                                                                       storeAK4Truth = cms.string(storeAK4Truth)
                                                                       )
-    
+    if ('ParT' in keepInputs):
+        process.customAK4ConstituentsForParTTable = cms.EDProducer("PatJetParTTableProducer",
+                                                                      jets = cms.InputTag("finalJets")
+                                                                      )
     
     # AK8
     process.customFatJetExtTable = cms.EDProducer(
@@ -394,6 +397,8 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=['D
         process.customizeJetTask.add(process.customJetExtTable)
         if ('DeepJet' in keepInputs):
             process.customizeJetTask.add(process.customAK4ConstituentsForDeepJetTable)
+        if ('ParT' in keepInputs):
+            process.customizeJetTask.add(process.customAK4ConstituentsForParTTable)
 
     if addAK8:
         process.customizeJetTask.add(process.customFatJetExtTable)
