@@ -21,9 +21,6 @@
 #include "RecoBTag/FeatureTools/interface/TrackInfoBuilder.h"
 #include "TrackingTools/Records/interface/TransientTrackRecord.h"
 
-#include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
-#include "TrackingTools/IPTools/interface/IPTools.h"
-
 #include "DataFormats/BTauReco/interface/TrackIPTagInfo.h"
 #include "DataFormats/BTauReco/interface/SecondaryVertexTagInfo.h"
 #include "RecoBTag/FeatureTools/interface/deep_helpers.h"
@@ -32,7 +29,6 @@ using namespace btagbtvdeep;
 
 #include "CommonTools/Utils/interface/StringCutObjectSelector.h"
 #include "DataFormats/NanoAOD/interface/FlatTable.h"
-
 
 template<typename T>
 class JetConstituentTableProducer : public edm::stream::EDProducer<> {
@@ -49,10 +45,6 @@ private:
   //=====
   typedef reco::VertexCompositePtrCandidateCollection SVCollection;
 
-	typedef reco::TrackIPTagInfo IPTagInfo;
-  typedef typename reco::TrackIPTagInfo::input_container Tracks;
-  typedef typename reco::TrackIPTagInfo::input_container::value_type TrackRef;
-
   //const std::string name_;
   const std::string name_;
   const std::string nameSV_;
@@ -62,8 +54,6 @@ private:
 	const std::string idx_nameMu_;
   const bool readBtag_;
   const double jet_radius_;
-
-	std::string ipTagInfos_;
 
   edm::EDGetTokenT<edm::View<T>> jet_token_;
   edm::EDGetTokenT<VertexCollection> vtx_token_;
@@ -95,7 +85,6 @@ JetConstituentTableProducer<T>::JetConstituentTableProducer(const edm::Parameter
 			idx_nameMu_(iConfig.getParameter<std::string>("idx_nameMu")),
       readBtag_(iConfig.getParameter<bool>("readBtag")),
       jet_radius_(iConfig.getParameter<double>("jet_radius")),
-			ipTagInfos_(iConfig.getParameter<std::string>("ipTagInfos")),
       jet_token_(consumes<edm::View<T>>(iConfig.getParameter<edm::InputTag>("jets"))),
       vtx_token_(consumes<VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"))),
       cand_token_(consumes<reco::CandidateView>(iConfig.getParameter<edm::InputTag>("candidates"))),
@@ -248,7 +237,7 @@ void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::Even
                 btagJetDistVal.push_back(0);
         }
       }
-    }  // end daughters loop
+    }  // end jet loop
 
 
 		//Muons    
@@ -290,13 +279,7 @@ void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::Even
 			}
 			idx_mu++;
 		}
-
-		//tracks
-		if(readBtag_){
-			const IPTagInfo *ipTagInfo = jet.tagInfoTrackIP(ipTagInfos_.c_str());
-		}
-
-  } //end jet loop
+  }
 
   auto candTable = std::make_unique<nanoaod::FlatTable>(outCands->size(), name_, false);
   // We fill from here only stuff that cannot be created with the SimpleFlatTableProducer
