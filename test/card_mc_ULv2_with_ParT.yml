@@ -3,7 +3,7 @@ campaign:
   crab_template: template_crab.py
 
   # User specific
-  workArea: MC_ULv2_with_ParT_yml
+  workArea: Test2_MC_DYJetsToLL_M-50_ULv2_with_ParT_yml
   storageSite: T2_DE_RWTH
   outLFNDirBase: /store/user/anstein/PFNano
   voGroup: dcms
@@ -18,5 +18,5 @@ campaign:
   data: False
   lumiMask:  # json file
   # datasets will take either a list of DAS names or a text file containing them
-  datasets: /DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM
+  datasets: /DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM
   

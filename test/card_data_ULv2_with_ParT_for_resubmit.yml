@@ -3,7 +3,7 @@ campaign:
   crab_template: template_crab.py
 
   # User specific
-  workArea: DataSingleMuon17C_ULv2v1_with_ParT_yml
+  workArea: DataDoubleMuon17F_recov_ULv2_with_ParT_yml
   storageSite: T2_DE_RWTH
   outLFNDirBase: /store/user/anstein/PFNano
   voGroup: dcms
@@ -16,7 +16,8 @@ campaign:
   # Specify if running on data
   data: True
   # data: False
-  lumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/Legacy_2017/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt
+  # lumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/Legacy_2017/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt
+  lumiMask: /afs/desy.de/user/a/anstein/private/pfnano_dev/CMSSW_10_6_30/src/PhysicsTools/PFNano/test/DataDoubleMuon17F_ULv2_with_ParT_yml/crab_DoubleMuon_Run2017F-UL2017_MiniAODv2-v1_MINIAOD/results/notFinishedLumis.json
   # datasets will take either a list of DAS names or a text file containing them
-  datasets: /SingleMuon/Run2017C-UL2017_MiniAODv2-v1/MINIAOD
+  datasets: /DoubleMuon/Run2017F-UL2017_MiniAODv2-v1/MINIAOD
   

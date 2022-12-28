@@ -243,10 +243,10 @@ def get_DeepJet_outputs():
                                float,
                                doc="DeepJet lepb tag probability",
                                precision=10),
-        #btagDeepFlavC=Var("bDiscriminator('pfDeepFlavourJetTags:probc')",
-        #                    float,
-        #                    doc="DeepJet c tag probability",
-        #                    precision=10), # until 106X already included in nano
+        btagDeepFlavC=Var("bDiscriminator('pfDeepFlavourJetTags:probc')",
+                            float,
+                            doc="DeepJet c tag probability",
+                            precision=10), # until 106X already included in nano
         btagDeepFlavUDS=Var("bDiscriminator('pfDeepFlavourJetTags:probuds')",
                             float,
                             doc="DeepJet uds tag probability",
@@ -280,19 +280,19 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=['D
                   precision=10),
         btagDeepB_b=Var("bDiscriminator('pfDeepCSVJetTags:probb')",
                         float,
-                        doc="DeepCSV b tag discriminator",
+                        doc="DeepCSV Prob(b)",
                         precision=10),
         btagDeepB_bb=Var("bDiscriminator('pfDeepCSVJetTags:probbb')",
                          float,
-                         doc="DeepCSV bb tag discriminator",
+                         doc="DeepCSV Prob(bb)",
                          precision=10),
-        #btagDeepC=Var("bDiscriminator('pfDeepCSVJetTags:probc')",
-        #              float,
-        #              doc="DeepCSV c btag discriminator",
-        #              precision=10), # only necessary after 106X
+        btagDeepC=Var("bDiscriminator('pfDeepCSVJetTags:probc')",
+                      float,
+                      doc="DeepCSV Prob(c)",
+                      precision=10), # only necessary after 106X
         btagDeepL=Var("bDiscriminator('pfDeepCSVJetTags:probudsg')",
                       float,
-                      doc="DeepCSV light btag discriminator",
+                      doc="DeepCSV Prob(udsg)",
                       precision=10),
     )
     
@@ -320,7 +320,11 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=['D
             CommonVars,
             HadronCountingVars if runOnMC else cms.PSet(), # hadrons from Generator only relevant for MC
             get_DeepCSV_vars() if ('DeepCSV' in keepInputs) else cms.PSet(),
-            get_DeepJet_outputs()  # outputs are added in any case, inputs only if requested
+            get_DeepJet_outputs(),  # outputs are added in any case, inputs only if requested
+            #btagDeepC = Var("bDiscriminator('pfDeepCSVJetTags:probc')",
+            #            float,
+            #            doc="DeepCSV Prob(c)",
+            #            precision=10),
         ))
     
     if ('DeepJet' in keepInputs):
@@ -353,10 +357,10 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=['D
             #    btagDDCvBV2 = Var("bDiscriminator('pfMassIndependentDeepDoubleCvBV2JetTags:probHcc')",float,doc="DeepDoubleX V2 discriminator for H(Z)->cc vs H(Z)->bb",precision=10),
             #), # only necessary before 10_6_19
             get_DDX_vars() if ('DDX' in keepInputs) else cms.PSet(),
-            btagDeepC = Var("bDiscriminator('pfDeepCSVJetTags:probc')",
-                        float,
-                        doc="DeepCSV charm btag discriminator",
-                        precision=10),
+            #btagDeepC = Var("bDiscriminator('pfDeepCSVJetTags:probc')",
+            #            float,
+            #            doc="DeepCSV Prob(c)",
+            #            precision=10),
         ))
 
     # Subjets
@@ -371,10 +375,10 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=['D
         variables=cms.PSet(
             CommonVars,
             #HadronCountingVars if runOnMC else cms.PSet(), # only necessary before 106x
-            btagDeepC = Var("bDiscriminator('pfDeepCSVJetTags:probc')",
-                        float,
-                        doc="DeepCSV charm btag discriminator",
-                        precision=10),
+            #btagDeepC = Var("bDiscriminator('pfDeepCSVJetTags:probc')",
+            #            float,
+            #            doc="DeepCSV Prob(c)",
+            #            precision=10),
 
     ))
 

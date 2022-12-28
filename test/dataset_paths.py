@@ -8,7 +8,7 @@ site_redirector = {
 }
 
 txt_name = "doublemuon2017"
-site = "T2_DE_RWTW"
+site = 'T2_DE_RWTH'
 
 if len(sys.argv) > 1:
     txt_name = sys.argv[1]
