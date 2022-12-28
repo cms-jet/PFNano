@@ -3,20 +3,20 @@ campaign:
   crab_template: template_crab.py
 
   # User specific
-  workArea: DYJetsToLL_ULv2_yml
+  workArea: Test2_MC_DYJetsToLL_M-50_ULv2_with_ParT_yml
   storageSite: T2_DE_RWTH
   outLFNDirBase: /store/user/anstein/PFNano
   voGroup: dcms
 
   # Campaign specific
-  tag_extension: PFNanoFromMiniV2 # Will get appended after the current tag
+  tag_extension: PFNanoFromMiniV2WithParT # Will get appended after the current tag
   tag_mod: # Will modify name in-place for MC eg. "PFNanoAODv1" will replace MiniAODv2 -> PFNanoAODv1
-  publication: False
-  config: nano_mc_2017_ULv2_allPF_NANO.py
+  publication: True
+  config: nano_mc_2017_ULv2_allPF_ParT_NANO.py
   # Specify if running on data
   # data: True
   data: False
   lumiMask:  # json file
   # datasets will take either a list of DAS names or a text file containing them
-  datasets: /DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM
+  datasets: /DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM
   

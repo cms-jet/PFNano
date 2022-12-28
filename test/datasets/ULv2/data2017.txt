@@ -1,0 +1,13 @@
+# https://cmsweb.cern.ch/das/request?view=list&limit=50&instance=prod/global&input=dataset=/*/*UL*MiniAODv2*/MINIAOD
+
+/DoubleMuon/Run2017B-UL2017_MiniAODv2-v1/MINIAOD
+/DoubleMuon/Run2017C-UL2017_MiniAODv2-v1/MINIAOD
+/DoubleMuon/Run2017D-UL2017_MiniAODv2-v1/MINIAOD
+/DoubleMuon/Run2017E-UL2017_MiniAODv2-v2/MINIAOD
+/DoubleMuon/Run2017F-UL2017_MiniAODv2-v1/MINIAOD
+
+/SingleMuon/Run2017B-UL2017_MiniAODv2-v1/MINIAOD
+/SingleMuon/Run2017C-UL2017_MiniAODv2-v1/MINIAOD
+/SingleMuon/Run2017D-UL2017_MiniAODv2-v1/MINIAOD
+/SingleMuon/Run2017E-UL2017_MiniAODv2-v1/MINIAOD
+/SingleMuon/Run2017F-UL2017_MiniAODv2-v1/MINIAOD

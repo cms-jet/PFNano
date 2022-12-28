@@ -1,0 +1,22 @@
+campaign:
+  name: 'test'  # irrelevant
+  crab_template: template_crab.py
+
+  # User specific
+  workArea: DataSingleMuon17C_ULv2v1_with_ParT_yml
+  storageSite: T2_DE_RWTH
+  outLFNDirBase: /store/user/anstein/PFNano
+  voGroup: dcms
+
+  # Campaign specific
+  tag_extension: PFNanoFromMiniV2WithParT # Will get appended after the current tag
+  tag_mod: # Will modify name in-place for MC eg. "PFNanoAODv1" will replace MiniAODv2 -> PFNanoAODv1
+  publication: True
+  config: nano_data_2017_ULv2_allPF_ParT_NANO.py
+  # Specify if running on data
+  data: True
+  # data: False
+  lumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/Legacy_2017/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt
+  # datasets will take either a list of DAS names or a text file containing them
+  datasets: /SingleMuon/Run2017C-UL2017_MiniAODv2-v1/MINIAOD
+  
