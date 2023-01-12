@@ -48,10 +48,10 @@ private:
   //const std::string name_;
   const std::string name_;
   const std::string nameSV_;
-	const std::string nameMu_;
+  const std::string nameMu_;
   const std::string idx_name_;
   const std::string idx_nameSV_;
-	const std::string idx_nameMu_;
+  const std::string idx_nameMu_;
   const bool readBtag_;
   const double jet_radius_;
 
@@ -59,12 +59,12 @@ private:
   edm::EDGetTokenT<VertexCollection> vtx_token_;
   edm::EDGetTokenT<reco::CandidateView> cand_token_;
   edm::EDGetTokenT<SVCollection> sv_token_;
-	edm::EDGetTokenT<edm::View<reco::Muon> > muon_token_;
+  edm::EDGetTokenT<edm::View<reco::Muon> > muon_token_;
 
   edm::Handle<VertexCollection> vtxs_;
   edm::Handle<reco::CandidateView> cands_;
   edm::Handle<SVCollection> svs_;
-	edm::Handle<edm::View<reco::Muon> > muons_;
+  edm::Handle<edm::View<reco::Muon> > muons_;
   edm::ESHandle<TransientTrackBuilder> track_builder_;
   edm::ESGetToken<TransientTrackBuilder, TransientTrackRecord> track_builder_token_;
 
@@ -79,22 +79,22 @@ template< typename T>
 JetConstituentTableProducer<T>::JetConstituentTableProducer(const edm::ParameterSet &iConfig)
     : name_(iConfig.getParameter<std::string>("name")),
       nameSV_(iConfig.getParameter<std::string>("nameSV")),
-			nameMu_(iConfig.getParameter<std::string>("nameMu")),
+      nameMu_(iConfig.getParameter<std::string>("nameMu")),
       idx_name_(iConfig.getParameter<std::string>("idx_name")),
       idx_nameSV_(iConfig.getParameter<std::string>("idx_nameSV")),
-			idx_nameMu_(iConfig.getParameter<std::string>("idx_nameMu")),
+      idx_nameMu_(iConfig.getParameter<std::string>("idx_nameMu")),
       readBtag_(iConfig.getParameter<bool>("readBtag")),
       jet_radius_(iConfig.getParameter<double>("jet_radius")),
       jet_token_(consumes<edm::View<T>>(iConfig.getParameter<edm::InputTag>("jets"))),
       vtx_token_(consumes<VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"))),
       cand_token_(consumes<reco::CandidateView>(iConfig.getParameter<edm::InputTag>("candidates"))),
       sv_token_(consumes<SVCollection>(iConfig.getParameter<edm::InputTag>("secondary_vertices"))),
-			muon_token_(consumes<edm::View<reco::Muon> >(iConfig.getParameter<edm::InputTag>("muons"))),
+      muon_token_(consumes<edm::View<reco::Muon> >(iConfig.getParameter<edm::InputTag>("muons"))),
       track_builder_token_(
           esConsumes<TransientTrackBuilder, TransientTrackRecord>(edm::ESInputTag("", "TransientTrackBuilder"))){
   produces<nanoaod::FlatTable>(name_);
   produces<nanoaod::FlatTable>(nameSV_);
-	produces<nanoaod::FlatTable>(nameMu_);
+  produces<nanoaod::FlatTable>(nameMu_);
   produces<std::vector<reco::CandidatePtr>>();
 }
 
@@ -107,34 +107,27 @@ void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::Even
   auto outCands = std::make_unique<std::vector<reco::CandidatePtr>>();
   auto outSVs = std::make_unique<std::vector<const reco::VertexCompositePtrCandidate *>> ();
   auto outMuons = std::make_unique<std::vector<reco::Muon>>();
-	std::vector<int> jetIdx_pf, jetIdx_sv, jetIdx_mu, pfcandIdx, svIdx, muIdx;
+  std::vector<int> jetIdx_pf, jetIdx_sv, jetIdx_mu, pfcandIdx, svIdx, muIdx;
   // PF Cands
   std::vector<float> btagEtaRel, btagPtRatio, btagPParRatio, btagSip3dVal, btagSip3dSig, btagJetDistVal, cand_pt;
   // Secondary vertices
   std::vector<float> sv_mass, sv_pt, sv_ntracks, sv_chi2, sv_normchi2, sv_dxy, sv_dxysig, sv_d3d, sv_d3dsig, sv_costhetasvpv;
   std::vector<float> sv_ptrel, sv_phirel, sv_deltaR, sv_enratio;
-	// Muons
-	std::vector<float> muon_pt, muon_eta, muon_phi, muon_ptrel;
-	std::vector<double> muon_isGlobal, muon_chi2Tk, muon_chi2;
-	std::vector<int> muon_nMuHit, muon_nMatched, muon_nTkHit, muon_nPixHit, muon_nOutHit;
+  // Muons
+  std::vector<float> muon_pt, muon_eta, muon_phi, muon_ptrel;
+  std::vector<double> muon_isGlobal, muon_chi2Tk, muon_chi2;
+  std::vector<int> muon_nMuHit, muon_nMatched, muon_nTkHit, muon_nPixHit, muon_nOutHit;
 
   auto jets = iEvent.getHandle(jet_token_);
   iEvent.getByToken(vtx_token_, vtxs_);
   iEvent.getByToken(cand_token_, cands_);
   iEvent.getByToken(sv_token_, svs_);
-	iEvent.getByToken(muon_token_, muons_);
+  iEvent.getByToken(muon_token_, muons_);
 
   if(readBtag_){
     track_builder_ = iSetup.getHandle(track_builder_token_);
   }
 
-	/*outMuons->clear();
-  jetIdx_mu.clear();
-  muIdx.clear();
-  muon_pt.clear();
-  muon_eta.clear();
-  muon_phi.clear();
-  muon_ptrel.clear();*/
 
 
   for (unsigned i_jet = 0; i_jet < jets->size(); ++i_jet) {
@@ -240,20 +233,19 @@ void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::Even
     }  // end jet loop
 
 
-		//Muons    
-		uint idx_mu=0;
-		for (const auto &mu : *muons_) {
-			if(reco::deltaR2(mu, jet) < jet_radius_ * jet_radius_){
-				outMuons->push_back(mu);
+    //Muons    
+    uint idx_mu=0;
+    for (const auto &mu : *muons_) {
+      if(reco::deltaR2(mu, jet) < jet_radius_ * jet_radius_){
+        outMuons->push_back(mu);
         jetIdx_mu.push_back(i_jet);
         muIdx.push_back(idx_mu);
         muon_pt.push_back(mu.pt());
-				//std::cout<<"muon pt: "<<mu.pt()<<std::endl;
         muon_eta.push_back(mu.eta());
         muon_phi.push_back(mu.phi());
         muon_ptrel.push_back(mu.pt()/jet.pt());
 								
-				if(mu.isGlobalMuon()){
+        if(mu.isGlobalMuon()){
           muon_nMuHit.push_back(mu.outerTrack()->hitPattern().numberOfValidMuonHits());
           muon_nMatched.push_back(mu.numberOfMatchedStations());
           muon_nTkHit.push_back(mu.innerTrack()->hitPattern().numberOfValidHits());
@@ -262,7 +254,7 @@ void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::Even
           muon_chi2.push_back(mu.globalTrack()->normalizedChi2());
           muon_chi2Tk.push_back(mu.innerTrack()->normalizedChi2());
         }
-				else{
+        else{
           muon_nMuHit.push_back(-1);
           muon_nMatched.push_back(-1);
           muon_nTkHit.push_back(-1);
@@ -275,10 +267,9 @@ void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::Even
         muon_isGlobal.push_back(mu.isGlobalMuon()); 
 
 
-
-			}
-			idx_mu++;
-		}
+      }
+      idx_mu++;
+    }
   }
 
   auto candTable = std::make_unique<nanoaod::FlatTable>(outCands->size(), name_, false);
@@ -323,26 +314,26 @@ void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::Even
   iEvent.put(std::move(outCands));
 
 
-	// Muon table
-	auto muonTable = std::make_unique<nanoaod::FlatTable>(outMuons->size(), nameMu_, false);
-	// We fill from here only stuff that cannot be created with the SimpleFlatTnameableProducer
-	muonTable->addColumn<int>("jetIdx", jetIdx_mu, "Index of the parent jet");
-	muonTable->addColumn<int>(idx_nameMu_, muIdx, "Index in the Muon list");
-	if (readBtag_) {
-		muonTable->addColumn<float>("pt", muon_pt, "pt", 20);
-	 	muonTable->addColumn<float>("eta", muon_eta, "eta", 20);
-	 	muonTable->addColumn<float>("phi", muon_phi, "phi", 20);
-	  muonTable->addColumn<double>("isGlobal", muon_isGlobal, "isGlobal", 20);
-	 	muonTable->addColumn<float>("ptrel", muon_ptrel, "pt relative to parent jet", 20);
-		muonTable->addColumn<int>("nMuHit", muon_nMuHit, "number of muon hits", 20);
+  // Muon table
+  auto muonTable = std::make_unique<nanoaod::FlatTable>(outMuons->size(), nameMu_, false);
+  // We fill from here only stuff that cannot be created with the SimpleFlatTnameableProducer
+  muonTable->addColumn<int>("jetIdx", jetIdx_mu, "Index of the parent jet");
+  muonTable->addColumn<int>(idx_nameMu_, muIdx, "Index in the Muon list");
+  if (readBtag_) {
+    muonTable->addColumn<float>("pt", muon_pt, "pt", 20);
+    muonTable->addColumn<float>("eta", muon_eta, "eta", 20);
+    muonTable->addColumn<float>("phi", muon_phi, "phi", 20);
+    muonTable->addColumn<double>("isGlobal", muon_isGlobal, "isGlobal", 20);
+    muonTable->addColumn<float>("ptrel", muon_ptrel, "pt relative to parent jet", 20);
+    muonTable->addColumn<int>("nMuHit", muon_nMuHit, "number of muon hits", 20);
     muonTable->addColumn<int>("nMatched", muon_nMatched, "number of matched stations", 20);
     muonTable->addColumn<int>("nTkHit", muon_nTkHit, "number of tracker hits", 20);
     muonTable->addColumn<int>("nPixHit", muon_nPixHit, "number of pixel hits", 20);
     muonTable->addColumn<int>("nOutHit", muon_nOutHit, "number of missing outer hits", 20);
     muonTable->addColumn<double>("chi2", muon_chi2, "chi2", 20);
     muonTable->addColumn<double>("chi2Tk", muon_chi2Tk, "chi2 inner track", 20);
-	}
-		iEvent.put(std::move(muonTable), nameMu_);
+  }
+  iEvent.put(std::move(muonTable), nameMu_);
 }
 
 template< typename T>
@@ -350,17 +341,17 @@ void JetConstituentTableProducer<T>::fillDescriptions(edm::ConfigurationDescript
   edm::ParameterSetDescription desc;
   desc.add<std::string>("name", "JetPFCands");
   desc.add<std::string>("nameSV", "JetSV");
-	desc.add<std::string>("nameMu", "JetMuons");
+  desc.add<std::string>("nameMu", "JetMuons");
   desc.add<std::string>("idx_name", "candIdx");
   desc.add<std::string>("idx_nameSV", "svIdx");
-	desc.add<std::string>("idx_nameMu", "muIdx");
+  desc.add<std::string>("idx_nameMu", "muIdx");
   desc.add<double>("jet_radius", true);
   desc.add<bool>("readBtag", true);
   desc.add<edm::InputTag>("jets", edm::InputTag("slimmedJetsAK8"));
   desc.add<edm::InputTag>("vertices", edm::InputTag("offlineSlimmedPrimaryVertices"));
   desc.add<edm::InputTag>("candidates", edm::InputTag("packedPFCandidates"));
   desc.add<edm::InputTag>("secondary_vertices", edm::InputTag("slimmedSecondaryVertices"));
-	desc.add<edm::InputTag>("muons", edm::InputTag("slimmedMuons")); 
+  desc.add<edm::InputTag>("muons", edm::InputTag("slimmedMuons")); 
  	descriptions.addWithDefaultLabel(desc);
 }
 
