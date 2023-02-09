@@ -3,13 +3,13 @@ campaign:
   crab_template: template_crab.py
 
   # User specific
-  workArea: summer22_124X_pub_yml # New each time
+  workArea: summer22_126X_pub_yml # New each time
   storageSite: T2_DE_RWTH # Make sure you have write access
   outLFNDirBase: /store/user/anstein/PFNano # Change username and path
   voGroup: dcms # or leave empty
 
   # Campaign specific
-  tag_extension: BTV_Run3_2022_Comm_v1 # Will get appended after the current tag
+  tag_extension: BTV_Run3_2022_Comm_v2 # Will get appended after the current tag
   tag_mod: # Will modify name in-place for MC eg. "PFNanoAODv1" will replace MiniAODv2 -> PFNanoAODv1
   # If others shall be able to access dataset via DAS (important when collaborating for commissioning!)
   publication: True
@@ -23,5 +23,5 @@ campaign:
   # do NOT submit too many tasks at the same time, despite it looking more convenient to you
   # wait for tasks to finish before submitting entire campaigns,
   # it's better to request one dataset at a time (taking fairshare into account)
-  datasets: /RelValTTbar_SemiLeptonic_PU_13p6/CMSSW_12_4_8-PU_124X_mcRun3_2022_realistic_v11_summer22-v1/MINIAODSIM
+  datasets: /QCD_PT-15to20_MuEnrichedPt5_TuneCP5_13p6TeV_pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v1/MINIAODSIM
   
