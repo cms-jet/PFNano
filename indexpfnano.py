@@ -124,8 +124,8 @@ folders_to_index = {
 	"/store/user/lpcpfnano/cmantill/v2_2/2018/HTT",
 
 	"/store/user/lpcpfnano/dryu/v2_2/2016/VectorZPrime",
-	"/store/user/lpcpfnano/jkrupa/v2_2/2016APV/VectorZPrime",
-	"/store/user/lpcpfnano/jkrupa/v2_2/2017/VectorZPrime",
+	"/store/user/lpcpfnano/jekrupa/v2_2/2016APV/VectorZPrime",
+	"/store/user/lpcpfnano/jekrupa/v2_2/2017/VectorZPrime",
 	"/store/user/lpcpfnano/dryu/v2_2/2018/VectorZPrime",
 
 
