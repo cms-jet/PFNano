@@ -2,7 +2,7 @@
 # using: 
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
-# with command line options: nano_data_2022 --data --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO --conditions 124X_dataRun3_Prompt_v4 --era Run3 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=100 --nThreads 4 -n -1 --filein /store/data/Run2022C/DoubleMuon/MINIAOD/PromptReco-v1/000/355/863/00000/ab45899e-f1b8-49e7-be41-ee694b17b31d.root --fileout file:nano_data2022.root --customise=PhysicsTools/NanoAOD/V10/nano_cff.nanoAOD_customizeV10,PhysicsTools/PFNano/pfnano_cff.PFnano_customizeData_add_DeepJet --no_exec
+# with command line options: nano_data_2022 --data --eventcontent NANOAOD --datatier NANOAOD --step NANO --conditions 124X_dataRun3_Prompt_v4 --era Run3 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=1000;process.NANOAODoutput.fakeNameForCrab = cms.untracked.bool(True) --nThreads 4 -n -1 --filein /store/data/Run2022C/DoubleMuon/MINIAOD/PromptReco-v1/000/355/863/00000/ab45899e-f1b8-49e7-be41-ee694b17b31d.root --fileout file:nano_data2022.root --customise=PhysicsTools/NanoAOD/V10/nano_cff.nanoAOD_customizeV10,PhysicsTools/PFNano/pfnano_cff.PFnano_customizeData_add_DeepJet --no_exec
 import FWCore.ParameterSet.Config as cms
 
 from Configuration.Eras.Era_Run3_cff import Run3
@@ -70,15 +70,15 @@ process.configurationMetadata = cms.untracked.PSet(
 
 # Output definition
 
-process.NANOAODSIMoutput = cms.OutputModule("NanoAODOutputModule",
+process.NANOAODoutput = cms.OutputModule("NanoAODOutputModule",
     compressionAlgorithm = cms.untracked.string('LZMA'),
     compressionLevel = cms.untracked.int32(9),
     dataset = cms.untracked.PSet(
-        dataTier = cms.untracked.string('NANOAODSIM'),
+        dataTier = cms.untracked.string('NANOAOD'),
         filterName = cms.untracked.string('')
     ),
     fileName = cms.untracked.string('file:nano_data2022.root'),
-    outputCommands = process.NANOAODSIMEventContent.outputCommands
+    outputCommands = process.NANOAODEventContent.outputCommands
 )
 
 # Additional output definition
@@ -90,10 +90,10 @@ process.GlobalTag = GlobalTag(process.GlobalTag, '124X_dataRun3_Prompt_v4', '')
 # Path and EndPath definitions
 process.nanoAOD_step = cms.Path(process.nanoSequence)
 process.endjob_step = cms.EndPath(process.endOfProcess)
-process.NANOAODSIMoutput_step = cms.EndPath(process.NANOAODSIMoutput)
+process.NANOAODoutput_step = cms.EndPath(process.NANOAODoutput)
 
 # Schedule definition
-process.schedule = cms.Schedule(process.nanoAOD_step,process.endjob_step,process.NANOAODSIMoutput_step)
+process.schedule = cms.Schedule(process.nanoAOD_step,process.endjob_step,process.NANOAODoutput_step)
 from PhysicsTools.PatAlgos.tools.helpers import associatePatAlgosToolsTask
 associatePatAlgosToolsTask(process)
 
@@ -126,7 +126,7 @@ process = PFnano_customizeData_add_DeepJet(process)
 
 # Customisation from command line
 
-process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=100
+process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=1000;process.NANOAODoutput.fakeNameForCrab = cms.untracked.bool(True)
 # Add early deletion of temporary data products to reduce peak memory need
 from Configuration.StandardSequences.earlyDeleteSettings_cff import customiseEarlyDelete
 process = customiseEarlyDelete(process)

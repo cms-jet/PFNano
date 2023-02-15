@@ -17,7 +17,7 @@ campaign:
   # Specify if running on data
   data: True
   # data: False
-  lumiMask: # json file TBA
+  lumiMask: jsons/Cert_Collisions2022_355100_362760_Golden.json # json file /eos/user/c/cmsdqm/www/CAF/certification/Collisions22/Cert_Collisions2022_355100_362760_Golden.json
   # datasets will take either a list of DAS names or a text file containing them
   #datasets: datasets/DoubleMuon_22.txt
   # do NOT submit too many tasks at the same time, despite it looking more convenient to you
