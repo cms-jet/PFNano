@@ -70,7 +70,7 @@ Two imporant parameters that one needs to verify in the central nanoAOD document
 ```
 cmsDriver.py nano_data_2022 --data --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO \
 --conditions 124X_dataRun3_Prompt_v4   --era Run3 \
---customise_commands="process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=100" --nThreads 4 \
+--customise_commands="process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=1000;process.NANOAODoutput.fakeNameForCrab = cms.untracked.bool(True)" --nThreads 4 \
 -n -1 --filein /store/data/Run2022C/DoubleMuon/MINIAOD/PromptReco-v1/000/355/863/00000/ab45899e-f1b8-49e7-be41-ee694b17b31d.root --fileout file:nano_data2022.root \
 --customise="PhysicsTools/NanoAOD/V10/nano_cff.nanoAOD_customizeV10,PhysicsTools/PFNano/pfnano_cff.PFnano_customizeData_add_DeepJet"  --no_exec
 ```
@@ -79,7 +79,7 @@ cmsDriver.py nano_data_2022 --data --eventcontent NANOAODSIM --datatier NANOAODS
 ```    
 cmsDriver.py nano_mc_Run3 --mc --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO \
 --conditions 124X_mcRun3_2022_realistic_v11   --era Run3 \
---customise_commands="process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=100" --nThreads 4 \
+--customise_commands="process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=1000;process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)" --nThreads 4 \
 -n -1 --filein /store/relval/CMSSW_12_4_8/RelValTTbar_SemiLeptonic_PU_13p6/MINIAODSIM/PU_124X_mcRun3_2022_realistic_v11_summer22-v1/2580000/23bf3611-4033-4c70-9bf7-5ae65290e14f.root --fileout file:nano_mcRun3.root \
 --customise="PhysicsTools/NanoAOD/V10/nano_cff.nanoAOD_customizeV10,PhysicsTools/PFNano/pfnano_cff.PFnano_customizeMC_add_DeepJet_and_Truth"  --no_exec
 ```
@@ -88,7 +88,7 @@ cmsDriver.py nano_mc_Run3 --mc --eventcontent NANOAODSIM --datatier NANOAODSIM -
 ```    
 cmsDriver.py nano_mc_Run3_122X --mc --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO \
 --conditions 124X_mcRun3_2022_realistic_v11   --era Run3,run3_nanoAOD_122 \
---customise_commands="process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=100" --nThreads 4 \
+--customise_commands="process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=1000;process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)" --nThreads 4 \
 -n -1 --filein /store/mc/Run3Winter22MiniAOD/TTTo2L2Nu_CP5_13p6TeV_powheg-pythia8/MINIAODSIM/122X_mcRun3_2021_realistic_v9-v2/2550000/0d44f6e9-6961-4d60-b2c1-0e21c1249100.root --fileout file:nano_mcRun3_122X.root \
 --customise="PhysicsTools/NanoAOD/V10/nano_cff.nanoAOD_customizeV10,PhysicsTools/PFNano/pfnano_cff.PFnano_customizeMC_add_DeepJet_and_Truth"  --no_exec
 ```
@@ -132,7 +132,7 @@ When processing data, a lumi mask should be applied. The so called golden JSON s
 
  * Golden JSON prompt
 ```
-# 2022: /eos/user/c/cmsdqm/www/CAF/certification/Collisions22/Cert_Collisions2022_355100_357900_Golden.json
+# 2022: /eos/user/c/cmsdqm/www/CAF/certification/Collisions22/Cert_Collisions2022_355100_362760_Golden.json
 ```
 
 
