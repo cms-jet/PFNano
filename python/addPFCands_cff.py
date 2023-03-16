@@ -62,7 +62,10 @@ def addPFCands(process, runOnMC=False, allPF = False, onlyAK4=False, onlyAK8=Fal
                                                         idx_name = cms.string("pFCandsIdx"),
                                                         nameSV = cms.string("FatJetSVs"),
                                                         idx_nameSV = cms.string("sVIdx"),
-                                                        )
+                                                        nameMu = cms.string("FatJetMuons"),
+                                                        idx_nameMu = cms.string("MuIdx"),
+                                                        addMuonTable = cms.bool(True), 
+                                                       )
     process.customAK4ConstituentsTable = cms.EDProducer("PatJetConstituentTableProducer",
                                                         candidates = candInput,
                                                         jets = cms.InputTag("finalJetsPuppi"), # was finalJets before
@@ -71,6 +74,7 @@ def addPFCands(process, runOnMC=False, allPF = False, onlyAK4=False, onlyAK8=Fal
                                                         idx_name = cms.string("pFCandsIdx"),
                                                         nameSV = cms.string("JetSVs"),
                                                         idx_nameSV = cms.string("sVIdx"),
+                                                        addMuonTable = cms.bool(False),
                                                         )
     if not allPF:
         process.customizedPFCandsTask.add(process.finalJetsConstituents)
@@ -122,7 +126,11 @@ def addPFCands(process, runOnMC=False, allPF = False, onlyAK4=False, onlyAK8=Fal
                                                          nameSV = cms.string("GenFatJetSVs"),
                                                          idx_name = cms.string("pFCandsIdx"),
                                                          idx_nameSV = cms.string("sVIdx"),
-                                                         readBtag = cms.bool(False))
+                                                         nameMu = cms.string("GenFatJetMuons"),
+                                                         idx_nameMu = cms.string("MuIdx"),
+                                                         readBtag = cms.bool(False),
+                                                         addMuonTable = cms.bool(False),
+                                                        )
         process.genAK4ConstituentsTable = cms.EDProducer("GenJetConstituentTableProducer",
                                                          candidates = genCandInput,
                                                          jets = cms.InputTag("genJetsAK4Constituents"), # Note: The name has "Constituents" in it, but these are the jets
@@ -130,7 +138,11 @@ def addPFCands(process, runOnMC=False, allPF = False, onlyAK4=False, onlyAK8=Fal
                                                          nameSV = cms.string("GenJetSVs"),
                                                          idx_name = cms.string("pFCandsIdx"),
                                                          idx_nameSV = cms.string("sVIdx"),
-                                                         readBtag = cms.bool(False))
+                                                         nameMu = cms.string("GenJetMuons"),
+                                                         idx_nameMu = cms.string("MuIdx"),
+                                                         readBtag = cms.bool(False),
+                                                         addMuonTable = cms.bool(False),
+                                                        )
         process.customizedPFCandsTask.add(process.genJetsAK4Constituents) #Note: For gen need to add jets to the process to keep pt cuts.
         process.customizedPFCandsTask.add(process.genJetsAK8Constituents)
         if not allPF:

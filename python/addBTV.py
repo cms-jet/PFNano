@@ -299,6 +299,84 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=['D
                       doc="DeepCSV light btag discriminator",
                       precision=10),
     )
+
+    FatJetVars = cms.PSet(
+        uncorrpt=Var("?availableJECSets().size()>0?correctedJet('Uncorrected').pt():pt()",
+                     float,
+                     doc="Uncorrected pT",
+                     precision=10),
+        residual=Var("?availableJECSets().size()>0 ? pt()/correctedJet('L3Absolute').pt() : 1. ",
+                     float,
+                     doc="residual",
+                     precision=10),
+        jes=Var("?availableJECSets().size()>0 ? pt()/correctedJet('Uncorrected').pt() : 1.",
+                float,
+                doc="jes (jet substructure)",
+                precision=10),
+        CombIVF=Var("bDiscriminator('pfCombinedInclusiveSecondaryVertexV2BJetTags')",
+                    float,
+                    doc="combinedIVF",
+                    precision=10),
+        DeepCSVBDisc=Var("? (bDiscriminator('pfDeepCSVJetTags:probb')+bDiscriminator('pfDeepCSVJetTags:probbb'))>=0 ? bDiscriminator('pfDeepCSVJetTags:probb')+bDiscriminator('pfDeepCSVJetTags:probbb') : -1",
+                         float,
+                         doc="DeepCSVBDisc",
+                         precision=10),
+        btagDeepB_c=Var("bDiscriminator('pfDeepCSVJetTags:probc')",
+                        float,
+                        doc="DeepCSV c tag discriminator",
+                        precision=10),
+        DeepCSVCvsLDisc=Var("? (bDiscriminator('pfDeepCSVJetTags:probc'))>=0 ? bDiscriminator('pfDeepCSVJetTags:probc')/(bDiscriminator('pfDeepCSVJetTags:probc')+bDiscriminator('pfDeepCSVJetTags:probudsg')) : -1",
+                            float,
+                            doc="DeepCSV C vs L discriminator",
+                            precision=10),
+        DeepCSVCvsBDisc=Var("? (bDiscriminator('pfDeepCSVJetTags:probc'))>=0 ? bDiscriminator('pfDeepCSVJetTags:probc')/(bDiscriminator('pfDeepCSVJetTags:probc')+bDiscriminator('pfDeepCSVJetTags:probb')+bDiscriminator('pfDeepCSVJetTags:probbb')) : -1",
+                            float,
+                            doc="DeepCSV C vs B discriminator",
+                            precision=10),
+
+        DoubleSV=Var("bDiscriminator('doubleSVBJetTags')",
+                     float,
+                     doc="DoubleSV discriminator",
+                     precision=10),
+    ) 
+
+    SubJetVars = cms.PSet(
+        uncorrpt=Var("?availableJECSets().size()>0?correctedJet('Uncorrected').pt():pt()",
+                     float,
+                     doc="Uncorrected pT",
+                     precision=10),
+        residual=Var("?availableJECSets().size()>0 ? pt()/correctedJet('L3Absolute').pt() : 1. ",
+                     float,
+                     doc="residual",
+                     precision=10),
+        jes=Var("?availableJECSets().size()>0 ? pt()/correctedJet('Uncorrected').pt() : 1.",
+                float,
+                doc="jes (jet substructure)",
+                precision=10),
+        CombIVF=Var("bDiscriminator('pfCombinedInclusiveSecondaryVertexV2BJetTags')",
+                    float,
+                    doc="combinedIVF",
+                    precision=10),
+        DeepCSVBDisc=Var("? (bDiscriminator('pfDeepCSVJetTags:probb')+bDiscriminator('pfDeepCSVJetTags:probbb'))>=0 ? bDiscriminator('pfDeepCSVJetTags:probb')+bDiscriminator('pfDeepCSVJetTags:probbb') : -1",
+                         float,
+                         doc="DeepCSVBDisc",
+                         precision=10),
+        btagDeepB_c=Var("bDiscriminator('pfDeepCSVJetTags:probc')",
+                        float,
+                        doc="DeepCSV c tag discriminator",
+                        precision=10),
+        DeepCSVCvsLDisc=Var("? (bDiscriminator('pfDeepCSVJetTags:probc'))>=0 ? bDiscriminator('pfDeepCSVJetTags:probc')/(bDiscriminator('pfDeepCSVJetTags:probc')+bDiscriminator('pfDeepCSVJetTags:probudsg')) : -1",
+                            float,
+                            doc="DeepCSV C vs L discriminator",
+                            precision=10),
+        DeepCSVCvsBDisc=Var("? (bDiscriminator('pfDeepCSVJetTags:probc'))>=0 ? bDiscriminator('pfDeepCSVJetTags:probc')/(bDiscriminator('pfDeepCSVJetTags:probc')+bDiscriminator('pfDeepCSVJetTags:probb')+bDiscriminator('pfDeepCSVJetTags:probbb')) : -1",
+                            float,
+                            doc="DeepCSV C vs B discriminator",
+                            precision=10),
+
+    )
+
+
     
     # decouple these from CommonVars, not relevant for data
     HadronCountingVars = cms.PSet(
@@ -348,6 +426,7 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=['D
         extension=cms.bool(True),  # this is the extension table for FatJets
         variables=cms.PSet(
             CommonVars,
+            FatJetVars,
             #HadronCountingVars if runOnMC else cms.PSet(), # only necessary before 106x
             get_DDX_vars() if ('DDX' in keepInputs) else cms.PSet(),
         ))
@@ -363,6 +442,7 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=['D
         extension=cms.bool(True),  # this is the extension table for FatJets
         variables=cms.PSet(
             CommonVars,
+            SubJetVars,
             #HadronCountingVars if runOnMC else cms.PSet(), # only necessary before 106x
     ))
 

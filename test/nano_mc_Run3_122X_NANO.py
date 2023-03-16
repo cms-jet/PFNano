@@ -23,13 +23,13 @@ process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(-1),
+    input = cms.untracked.int32(1000),
     output = cms.optional.untracked.allowed(cms.int32,cms.PSet)
 )
 
 # Input source
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('/store/mc/Run3Winter22MiniAOD/TTTo2L2Nu_CP5_13p6TeV_powheg-pythia8/MINIAODSIM/122X_mcRun3_2021_realistic_v9-v2/2550000/0d44f6e9-6961-4d60-b2c1-0e21c1249100.root'),
+    fileNames = cms.untracked.vstring('/store/mc/Run3Winter22MiniAOD/ZprimeToTT_M3000_W30_TuneCP2_13p6TeV-madgraph-pythiaMLM-pythia8/MINIAODSIM/122X_mcRun3_2021_realistic_v9-v2/60000/0aca854d-fcdb-4523-834d-201c36e4a6ca.root'),
     secondaryFileNames = cms.untracked.vstring()
 )
 
