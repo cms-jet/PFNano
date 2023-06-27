@@ -2,12 +2,13 @@
 # using: 
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
-# with command line options: nano_data_2022 --data --eventcontent NANOAOD --datatier NANOAOD --step NANO --conditions 124X_dataRun3_Prompt_v4 --era Run3 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=1000;process.NANOAODoutput.fakeNameForCrab = cms.untracked.bool(True) --nThreads 4 -n -1 --filein /store/data/Run2022C/DoubleMuon/MINIAOD/PromptReco-v1/000/355/863/00000/ab45899e-f1b8-49e7-be41-ee694b17b31d.root --fileout file:nano_data2022.root --customise=PhysicsTools/NanoAOD/V10/nano_cff.nanoAOD_customizeV10,PhysicsTools/PFNano/pfnano_cff.PFnano_customizeData_add_DeepJet --no_exec
+# with command line options: nano_data_2022E --data --eventcontent NANOAOD --datatier NANOAOD --step NANO --conditions 124X_dataRun3_v14 --era Run3,run3_nanoAOD_124 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=1000;process.NANOAODoutput.fakeNameForCrab = cms.untracked.bool(True) --nThreads 4 -n -1 --filein /store/data/Run2022E/Muon/MINIAOD/10Dec2022-v2/2560000/35d857c4-6c18-4bac-b686-b05540331c10.root --customise=PhysicsTools/PFNano/pfnano_cff.PFnano_customizeData_add_DeepJet --no_exec
 import FWCore.ParameterSet.Config as cms
 
 from Configuration.Eras.Era_Run3_cff import Run3
+from Configuration.Eras.Modifier_run3_nanoAOD_124_cff import run3_nanoAOD_124
 
-process = cms.Process('NANO',Run3)
+process = cms.Process('NANO',Run3,run3_nanoAOD_124)
 
 # import of standard configurations
 process.load('Configuration.StandardSequences.Services_cff')
@@ -27,7 +28,7 @@ process.maxEvents = cms.untracked.PSet(
 
 # Input source
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('/store/data/Run2022C/DoubleMuon/MINIAOD/PromptReco-v1/000/355/863/00000/ab45899e-f1b8-49e7-be41-ee694b17b31d.root'),
+    fileNames = cms.untracked.vstring('/store/data/Run2022E/Muon/MINIAOD/10Dec2022-v2/2560000/35d857c4-6c18-4bac-b686-b05540331c10.root'),
     secondaryFileNames = cms.untracked.vstring()
 )
 
@@ -50,7 +51,9 @@ process.options = cms.untracked.PSet(
     ),
     fileMode = cms.untracked.string('FULLMERGE'),
     forceEventSetupCacheClearOnNewRun = cms.untracked.bool(False),
+    holdsReferencesToDeleteEarly = cms.untracked.VPSet(),
     makeTriggerResults = cms.obsolete.untracked.bool,
+    modulesToIgnoreForDeleteEarly = cms.untracked.vstring(),
     numberOfConcurrentLuminosityBlocks = cms.untracked.uint32(0),
     numberOfConcurrentRuns = cms.untracked.uint32(1),
     numberOfStreams = cms.untracked.uint32(0),
@@ -63,7 +66,7 @@ process.options = cms.untracked.PSet(
 
 # Production Info
 process.configurationMetadata = cms.untracked.PSet(
-    annotation = cms.untracked.string('nano_data_2022 nevts:-1'),
+    annotation = cms.untracked.string('nano_data_2022E nevts:-1'),
     name = cms.untracked.string('Applications'),
     version = cms.untracked.string('$Revision: 1.19 $')
 )
@@ -77,7 +80,7 @@ process.NANOAODoutput = cms.OutputModule("NanoAODOutputModule",
         dataTier = cms.untracked.string('NANOAOD'),
         filterName = cms.untracked.string('')
     ),
-    fileName = cms.untracked.string('file:nano_data2022.root'),
+    fileName = cms.untracked.string('nano_data_2022E_NANO.root'),
     outputCommands = process.NANOAODEventContent.outputCommands
 )
 
@@ -85,7 +88,7 @@ process.NANOAODoutput = cms.OutputModule("NanoAODOutputModule",
 
 # Other statements
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, '124X_dataRun3_Prompt_v4', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, '124X_dataRun3_v14', '')
 
 # Path and EndPath definitions
 process.nanoAOD_step = cms.Path(process.nanoSequence)
@@ -108,12 +111,6 @@ from PhysicsTools.NanoAOD.nano_cff import nanoAOD_customizeData
 
 #call to customisation function nanoAOD_customizeData imported from PhysicsTools.NanoAOD.nano_cff
 process = nanoAOD_customizeData(process)
-
-# Automatic addition of the customisation function from PhysicsTools.NanoAOD.V10.nano_cff
-from PhysicsTools.NanoAOD.V10.nano_cff import nanoAOD_customizeV10 
-
-#call to customisation function nanoAOD_customizeV10 imported from PhysicsTools.NanoAOD.V10.nano_cff
-process = nanoAOD_customizeV10(process)
 
 # Automatic addition of the customisation function from PhysicsTools.PFNano.pfnano_cff
 from PhysicsTools.PFNano.pfnano_cff import PFnano_customizeData_add_DeepJet 
