@@ -121,7 +121,7 @@ submission yaml card `card_example_data.yml` are provided. Fill out the individu
   source /cvmfs/cms.cern.ch/common/crab-setup.sh prod # note: this is new w.r.t. 106X instructions
   source /cvmfs/cms.cern.ch/cmsset_default.sh
   voms-proxy-init --voms cms --valid 192:00
-  cd  CMSSW_12_4_8/src
+  cd  CMSSW_12_6_0_patch1/src
   cmsenv
   cd PhysicsTools/PFNano/test
   python3 crabby.py -c card_example_dataABCD.yml --make --submit
