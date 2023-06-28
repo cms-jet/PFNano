@@ -8,7 +8,7 @@ Tested with 2022 data (ReRecoCDE and PromptRecoFG), MC for Run3 (Run3Summer22 an
 If you are searching for a recipe to run with Run2 samples, please have a look at the master branch (106X).
 
 This is a [NanoAOD](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD) framework for advance developments of jet algorithms. 
-For data, the current full content of this development branch can be seen [here](https://annika-stein.web.cern.ch/PFNano/desc_data2022.html) and the size [here](https://annika-stein.web.cern.ch/PFNano/size_data2022.html). For MC (124X) the description can be accessed [here](https://annika-stein.web.cern.ch/PFNano/desc_mc2022.html) and the size [here](https://annika-stein.web.cern.ch/PFNano/size_mc2022.html), the same for 122X MC: [description](https://annika-stein.web.cern.ch/PFNano/desc_mc2022_122X.html) and [size](https://annika-stein.web.cern.ch/PFNano/size_mc2022_122X.html).
+For data, the current full content of this development branch can be seen [here](https://denise-muller.web.cern.ch/PFNano/desc_data2022.html) and the size [here](https://denise-muller.web.cern.ch/PFNano/size_data2022.html). For MC, the description can be accessed [here](https://denise-muller.web.cern.ch/PFNano/desc_mc2022.html) and the size [here](https://denise-muller.web.cern.ch/PFNano/size_mc2022.html).
 In this version, PFcandidates can be saved for AK4 only, AK8 only, or all the PF candidates. More below.
 This format can be used with [fastjet](http://fastjet.fr) directly.
 
@@ -179,7 +179,7 @@ Include in `card.yml` for `crabby.py` submission.
 
 ## How to create website with nanoAOD content
 
-To create nice websites like [this one](http://algomez.web.cern.ch/algomez/testWeb/JMECustomNano102x_mc_v01.html#Jet) with the content of nanoAOD, use the `inspectNanoFile.py` file from the `PhysicsTools/nanoAOD` package as:
+To create nice websites like [this one](http://algomez.web.cern.ch/algomez/testWeb/JMECustomNano102x_mc_v01.html#Jet) with the content of nanoAOD, use the `inspectNanoFile.py` file from the `PhysicsTools/NanoAOD` package as:
 ```
 python PhysicsTools/NanoAOD/test/inspectNanoFile.py NANOAOD.root -s website_with_collectionsize.html -d website_with_collectiondescription.html
 ```
