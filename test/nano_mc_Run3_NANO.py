@@ -2,7 +2,7 @@
 # using: 
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
-# with command line options: nano_mc_Run3 --mc --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO --conditions 126X_mcRun3_2022_realistic_v2 --era Run3,run3_nanoAOD_124 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=1000;process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True) --nThreads 4 -n -1 --filein /store/mc/Run3Summer22MiniAODv3/QCD_PT-15to20_MuEnrichedPt5_TuneCP5_13p6TeV_pythia8/MINIAODSIM/124X_mcRun3_2022_realistic_v12-v1/30000/8590bc1e-abd3-4be4-a068-16f4cb6b4994.root --fileout file:nano_mcRun3.root --customise=PhysicsTools/PFNano/pfnano_cff.PFnano_customizeMC_add_DeepJet_and_Truth --no_exec
+# with command line options: nano_mc_Run3 --mc --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO --conditions 126X_mcRun3_2022_realistic_v2 --era Run3,run3_nanoAOD_124 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=1000;process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True) --nThreads 4 -n -1 --filein /store/mc/Run3Summer22MiniAODv3/QCD_PT-15to20_MuEnrichedPt5_TuneCP5_13p6TeV_pythia8/MINIAODSIM/124X_mcRun3_2022_realistic_v12-v1/30000/8590bc1e-abd3-4be4-a068-16f4cb6b4994.root --fileout file:nano_mcRun3.root --customise=PhysicsTools/PFNano/puppiJetMETReclustering_cff.nanoPuppiReclusterCustomize_MC --customise=PhysicsTools/PFNano/pfnano_cff.PFnano_customizeMC_add_DeepJet_and_Truth --no_exec
 import FWCore.ParameterSet.Config as cms
 
 from Configuration.Eras.Era_Run3_cff import Run3
@@ -108,10 +108,16 @@ process.options.numberOfStreams = 0
 # customisation of the process.
 
 # Automatic addition of the customisation function from PhysicsTools.NanoAOD.nano_cff
-from PhysicsTools.NanoAOD.nano_cff import nanoAOD_customizeMC 
+from PhysicsTools.NanoAOD.nano_cff import nanoAOD_customizeCommon 
 
-#call to customisation function nanoAOD_customizeMC imported from PhysicsTools.NanoAOD.nano_cff
-process = nanoAOD_customizeMC(process)
+#call to customisation function nanoAOD_customizeCommon imported from PhysicsTools.NanoAOD.nano_cff
+process = nanoAOD_customizeCommon(process)
+
+# Automatic addition of the customisation function from PhysicsTools.PFNano.puppiJetMETReclustering_cff
+from PhysicsTools.PFNano.puppiJetMETReclustering_cff import nanoPuppiReclusterCustomize_MC 
+
+#call to customisation function nanoPuppiReclusterCustomize_MC imported from PhysicsTools.PFNano.puppiJetMETReclustering_cff
+process = nanoPuppiReclusterCustomize_MC(process)
 
 # Automatic addition of the customisation function from PhysicsTools.PFNano.pfnano_cff
 from PhysicsTools.PFNano.pfnano_cff import PFnano_customizeMC_add_DeepJet_and_Truth 

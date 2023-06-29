@@ -3,7 +3,9 @@
 **You are currently viewing a development branch**  
 Uses PUPPI Jets as default for Run3.
 
-Tested with 2022 data (ReRecoCDE and PromptRecoFG), MC for Run3 (Run3Summer22 and Run3Summer22EE, nanoAODv11).
+This branch runs with 2022 data (ReRecoCDE and PromptRecoFG), MC for Run3 (Run3Summer22 and Run3Summer22EE, nanoAODv11),
+in 13_0_X.
+This branch reruns Puppi v17, reclusters the AK8 Puppi and AK8 taggers, and then reruns the new AK4 taggers (new DeepJet, new ParticleNetAK4 and RobustParTAK4) available from 13_0_X.
 
 If you are searching for a recipe to run with Run2 samples, please have a look at the master branch (106X).
 
@@ -16,15 +18,15 @@ This format can be used with [fastjet](http://fastjet.fr) directly.
 
 For 2022 data and MC **NanoAOD v11** according to the [XPOG](https://gitlab.cern.ch/cms-nanoAOD/nanoaod-doc/-/wikis/Releases/NanoAODv11) and [PPD](https://twiki.cern.ch/twiki/bin/view/CMS/PdmVRun3Analysis) recommendations:
 
+(Note: this branch runs on NanoAOD v11 data and MC in 13_0_X, to mimic the NanoAOD v12 condition)
+
+
 ```
-cmsrel CMSSW_12_6_0_patch1
-cd CMSSW_12_6_0_patch1/src
+cmsrel CMSSW_13_0_8
+cd CMSSW_13_0_8/src
 cmsenv
-git clone https://github.com/cms-jet/PFNano.git PhysicsTools/PFNano
-cd PhysicsTools/PFNano
-git fetch
-git switch 12_6_0
-cd ../..
+git cms-merge-topic colizz:dev-130X-addNegPNet # adding negative tag
+git clone https://github.com/cms-jet/PFNano.git PhysicsTools/PFNano -b 13_0_7_from124MiniAOD
 scram b -j 10
 cd PhysicsTools/PFNano/test
 ```
@@ -70,39 +72,43 @@ cmsDriver.py nano_data_2022ABCD --data --eventcontent NANOAOD --datatier NANOAOD
 --conditions 124X_dataRun3_v11   --era Run3,run3_nanoAOD_124 \
 --customise_commands="process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=1000;process.NANOAODoutput.fakeNameForCrab = cms.untracked.bool(True)" --nThreads 4 \
 -n -1 --filein "/store/data/Run2022C/DoubleMuon/MINIAOD/10Dec2022-v1/2820000/dea1757f-d2ef-467a-9062-714775d00e45.root" --fileout file:nano_data2022ABCD.root \
+--customise="PhysicsTools/PFNano/puppiJetMETReclustering_cff.nanoPuppiReclusterCustomize_Data" \
 --customise="PhysicsTools/PFNano/pfnano_cff.PFnano_customizeData_add_DeepJet"  --no_exec
 ```
-<br>
+
 ```
 cmsDriver.py nano_data_2022E --data --eventcontent NANOAOD --datatier NANOAOD --step NANO \
 --conditions 124X_dataRun3_v14   --era Run3,run3_nanoAOD_124 \
 --customise_commands="process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=1000;process.NANOAODoutput.fakeNameForCrab = cms.untracked.bool(True)" --nThreads 4 \
 -n -1 --filein "/store/data/Run2022E/Muon/MINIAOD/10Dec2022-v2/2560000/35d857c4-6c18-4bac-b686-b05540331c10.root" --fileout file:nano_data2022E.root \
+--customise="PhysicsTools/PFNano/puppiJetMETReclustering_cff.nanoPuppiReclusterCustomize_Data" \
 --customise="PhysicsTools/PFNano/pfnano_cff.PFnano_customizeData_add_DeepJet"  --no_exec
 ```
-<br>
+
 ```
 cmsDriver.py nano_data_2022FG --data --eventcontent NANOAOD --datatier NANOAOD --step NANO \
---conditions 24X_dataRun3_Prompt_v10   --era Run3,run3_nanoAOD_124 \
+--conditions 124X_dataRun3_Prompt_v10   --era Run3,run3_nanoAOD_124 \
 --customise_commands="process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=1000;process.NANOAODoutput.fakeNameForCrab = cms.untracked.bool(True)" --nThreads 4 \
 -n -1 --filein "/store/data/Run2022F/Muon/MINIAOD/PromptReco-v1/000/360/381/00000/0736ad9a-2b1d-4375-9493-9e7e01538978.root" --fileout file:nano_data2022FG.root \
+--customise="PhysicsTools/PFNano/puppiJetMETReclustering_cff.nanoPuppiReclusterCustomize_Data" \
 --customise="PhysicsTools/PFNano/pfnano_cff.PFnano_customizeData_add_DeepJet"  --no_exec
 ```
-<br>    
+
 ```    
 cmsDriver.py nano_mc_Run3 --mc --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO \
 --conditions 126X_mcRun3_2022_realistic_v2   --era Run3,run3_nanoAOD_124 \
 --customise_commands="process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=1000;process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)" --nThreads 4 \
 -n -1 --filein "/store/mc/Run3Summer22MiniAODv3/QCD_PT-15to20_MuEnrichedPt5_TuneCP5_13p6TeV_pythia8/MINIAODSIM/124X_mcRun3_2022_realistic_v12-v1/30000/8590bc1e-abd3-4be4-a068-16f4cb6b4994.root" --fileout file:nano_mcRun3.root \
+--customise="PhysicsTools/PFNano/puppiJetMETReclustering_cff.nanoPuppiReclusterCustomize_MC" \
 --customise="PhysicsTools/PFNano/pfnano_cff.PFnano_customizeMC_add_DeepJet_and_Truth"  --no_exec
 ```
-<br>
-    
+
 ```    
 cmsDriver.py nano_mc_Run3_EE --mc --eventcontent NANOAODSIM --datatier NANOAODSIM --step NANO \
 --conditions 126X_mcRun3_2022_realistic_postEE_v1   --era Run3,run3_nanoAOD_124 \
 --customise_commands="process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=1000;process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)" --nThreads 4 \
 -n -1 --filein "/store/mc/Run3Summer22EEMiniAODv3/QCD_PT-80to120_MuEnrichedPt5_TuneCP5_13p6TeV_pythia8/MINIAODSIM/124X_mcRun3_2022_realistic_postEE_v1-v1/2550000/eddaff63-eb30-4155-afdc-3db5b07105b8.root" --fileout file:nano_mcRun3_EE.root \
+--customise="PhysicsTools/PFNano/puppiJetMETReclustering_cff.nanoPuppiReclusterCustomize_MC" \
 --customise="PhysicsTools/PFNano/pfnano_cff.PFnano_customizeMC_add_DeepJet_and_Truth"  --no_exec
 ```
     
@@ -121,7 +127,7 @@ submission yaml card `card_example_data.yml` are provided. Fill out the individu
   source /cvmfs/cms.cern.ch/common/crab-setup.sh prod # note: this is new w.r.t. 106X instructions
   source /cvmfs/cms.cern.ch/cmsset_default.sh
   voms-proxy-init --voms cms --valid 192:00
-  cd  CMSSW_12_6_0_patch1/src
+  cd CMSSW_13_0_8/src
   cmsenv
   cd PhysicsTools/PFNano/test
   python3 crabby.py -c card_example_dataABCD.yml --make --submit
