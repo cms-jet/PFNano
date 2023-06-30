@@ -326,11 +326,11 @@ def get_ParticleNetAK4_outputs():
         # default discriminants
         btagPNetB = Var("?bDiscriminator('pfParticleNetFromMiniAODAK4PuppiCentralDiscriminatorsJetTags:BvsAll')>0?bDiscriminator('pfParticleNetFromMiniAODAK4PuppiCentralDiscriminatorsJetTags:BvsAll'):-1",
                             float,
-                            doc="ParticleNet b vs. udscg",
+                            doc="ParticleNet b vs. udsg",
                             precision=10),
         btagPNetCvL = Var("?bDiscriminator('pfParticleNetFromMiniAODAK4PuppiCentralDiscriminatorsJetTags:CvsL')>0?bDiscriminator('pfParticleNetFromMiniAODAK4PuppiCentralDiscriminatorsJetTags:CvsL'):-1",
                             float,
-                            doc="ParticleNet c vs. udscg",
+                            doc="ParticleNet c vs. udsg",
                             precision=10),
         btagPNetCvB = Var("?bDiscriminator('pfParticleNetFromMiniAODAK4PuppiCentralDiscriminatorsJetTags:CvsB')>0?bDiscriminator('pfParticleNetFromMiniAODAK4PuppiCentralDiscriminatorsJetTags:CvsB'):-1",
                             float,
