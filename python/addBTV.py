@@ -377,11 +377,11 @@ def get_ParticleNetAK4_outputs():
         # negative taggers
         btagNegPNetB = Var("?(bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probb')+bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probc')+bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probuds')+bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probg'))>0?(bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probb'))/(bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probb')+bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probc')+bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probuds')+bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probg')):-1",
                             float,
-                            doc="Negative ParticleNet b vs. udscg",
+                            doc="Negative ParticleNet b vs. udsg",
                             precision=10),
         btagNegPNetCvL = Var("?(bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probc')+bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probuds')+bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probg'))>0?(bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probc'))/(bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probc')+bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probuds')+bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probg')):-1",
                             float,
-                            doc="Negative ParticleNet c vs. udscg",
+                            doc="Negative ParticleNet c vs. udsg",
                             precision=10),
         btagNegPNetCvB = Var("?(bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probc')+bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probb'))>0?(bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probc'))/(bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probc')+bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probb')):-1",
                             float,
