@@ -26,6 +26,7 @@ def puppiJetMETReclusterFromMiniAOD(process, useExistingWeights, runOnMC):
   gpLabel = "prunedGenParticles"
 
   genJetsCollection = "slimmedGenJets"
+  genJetsCollectionAK8 = "slimmedGenJetsAK8"
   genSubJetsForAK8Collection = "slimmedGenJetsAK8SoftDropSubJets"
 
   JETCorrLevels = ["L2Relative", "L3Absolute"]
@@ -208,7 +209,7 @@ def puppiJetMETReclusterFromMiniAOD(process, useExistingWeights, runOnMC):
     svSource           = cms.InputTag(svLabel),
     muSource           = cms.InputTag(muLabel),
     elSource           = cms.InputTag(elLabel),
-    genJetCollection   = cms.InputTag(genJetsCollection),
+    genJetCollection   = cms.InputTag(genJetsCollectionAK8),
     genParticles       = cms.InputTag(gpLabel),
     jetCorrections     = ("AK8PFPuppi", cms.vstring(["L2Relative", "L3Absolute"]), "None"),
     getJetMCFlavour    = runOnMC,
@@ -265,7 +266,7 @@ def puppiJetMETReclusterFromMiniAOD(process, useExistingWeights, runOnMC):
     svSource = cms.InputTag(svLabel),
     muSource = cms.InputTag(muLabel),
     elSource = cms.InputTag(elLabel),
-    genJetCollection = cms.InputTag(genJetsCollection),
+    genJetCollection = cms.InputTag(genJetsCollectionAK8),
     genParticles = cms.InputTag(gpLabel),
     jetCorrections = ("AK8PFPuppi", cms.vstring(["L2Relative", "L3Absolute"]), "None"),
     getJetMCFlavour = False # jet flavor disabled regardless if running on MC or data
