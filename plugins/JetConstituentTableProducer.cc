@@ -100,7 +100,7 @@ void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::Even
   auto outSVs = std::make_unique<std::vector<const reco::VertexCompositePtrCandidate *>> ();
   std::vector<int> jetIdx_pf, jetIdx_sv, pfcandIdx, svIdx;
   // PF Cands
-  std::vector<float> btagEtaRel, btagPtRatio, btagPParRatio, btagSip3dVal, btagSip3dSig, btagJetDistVal, btagDecayLenVal, cand_pt, cand_dzFromPV, cand_d0FromPV;
+  std::vector<float> btagEtaRel, btagPtRatio, btagPParRatio, btagSip3dVal, btagSip3dSig, btagJetDistVal, btagDecayLenVal, cand_pt, cand_dzFromPV, cand_dxyFromPV, cand_dzErrFromPV, cand_dxyErrFromPV;
   // Secondary vertices
   std::vector<float> sv_mass, sv_pt, sv_ntracks, sv_chi2, sv_normchi2, sv_dxy, sv_dxysig, sv_d3d, sv_d3dsig, sv_costhetasvpv;
   std::vector<float> sv_ptrel, sv_phirel, sv_deltaR, sv_enratio;
@@ -195,10 +195,14 @@ void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::Even
       if (packedCand && packedCand->hasTrackDetails()) {
         const reco::Track* track_ptr = &(packedCand->pseudoTrack());
         cand_dzFromPV.push_back(track_ptr->dz(pv_->position()));
-        cand_d0FromPV.push_back(track_ptr->dxy(pv_->position()));
+        cand_dxyFromPV.push_back(track_ptr->dxy(pv_->position()));
+        cand_dzErrFromPV.push_back(std::hypot(track_ptr->dzError(), pv_->zError()));
+        cand_dxyErrFromPV.push_back(track_ptr->dxyError(pv_->position(), pv_->covariance()));
       } else {
         cand_dzFromPV.push_back(-1);
-        cand_d0FromPV.push_back(-1);
+        cand_dxyFromPV.push_back(-1);
+        cand_dzErrFromPV.push_back(-1);
+        cand_dxyErrFromPV.push_back(-1);
       }
 
       if (readBtag_ && !vtxs_->empty()) {
@@ -244,7 +248,9 @@ void JetConstituentTableProducer<T>::produce(edm::Event &iEvent, const edm::Even
   if (readBtag_) {
     candTable->addColumn<float>("pt", cand_pt, "pt", 10);  // to check matchind down the line
     candTable->addColumn<float>("dzFromPV", cand_dzFromPV, "dzFromPV", 10);
-    candTable->addColumn<float>("d0FromPV", cand_d0FromPV, "d0FromPV", 10);
+    candTable->addColumn<float>("dxyFromPV", cand_dxyFromPV, "dxyFromPV", 10);
+    candTable->addColumn<float>("dzErrFromPV", cand_dzErrFromPV, "dzErrFromPV", 10);
+    candTable->addColumn<float>("dxyErrFromPV", cand_dxyErrFromPV, "dxyErrFromPV", 10);
     candTable->addColumn<float>("btagEtaRel", btagEtaRel, "btagEtaRel", 10);
     candTable->addColumn<float>("btagPtRatio", btagPtRatio, "btagPtRatio", 10);
     candTable->addColumn<float>("btagPParRatio", btagPParRatio, "btagPParRatio", 10);
