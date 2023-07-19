@@ -55,10 +55,10 @@ def addPFCands(process, runOnMC=False, allPF = False, onlyAK4=False, onlyAK8=Fal
                                                             trkQuality = Var("?hasTrackDetails()?pseudoTrack().qualityMask():0", int, doc="track quality mask"),
                                                             trkHighPurity = Var("?hasTrackDetails()?pseudoTrack().quality('highPurity'):0", bool, doc="track is high purity"),
                                                             trkAlgo = Var("?hasTrackDetails()?pseudoTrack().algo():-1", int, doc="track algorithm"),
-                                                            trkP = Var("?hasTrackDetails()?pseudoTrack().p():-1", float, doc="track momemtum", precision=10),
-                                                            trkPt = Var("?hasTrackDetails()?pseudoTrack().pt():-1", float, doc="track pt", precision=10),
-                                                            trkEta = Var("?hasTrackDetails()?pseudoTrack().eta():-1", float, doc="track pt", precision=10),
-                                                            trkPhi = Var("?hasTrackDetails()?pseudoTrack().phi():-1", float, doc="track phi", precision=10),
+                                                            trkP = Var("?hasTrackDetails()?pseudoTrack().p():-1", float, doc="track momemtum", precision=-1),
+                                                            trkPt = Var("?hasTrackDetails()?pseudoTrack().pt():-1", float, doc="track pt", precision=-1),
+                                                            trkEta = Var("?hasTrackDetails()?pseudoTrack().eta():-1", float, doc="track pt", precision=12),
+                                                            trkPhi = Var("?hasTrackDetails()?pseudoTrack().phi():-1", float, doc="track phi", precision=12),
                                                          )
                                     )
     process.customAK8ConstituentsTable = cms.EDProducer("PatJetConstituentTableProducer",
