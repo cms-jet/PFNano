@@ -44,7 +44,7 @@ The list of options that are currently implemented inside `pfnano_cff.py` (e.g. 
 ```
 process = PFnano_customizeMC(process)
 #process = PFnano_customizeMC_allPF(process)                        ##### PFcands will contain ALL the PF Cands
-#process = PFnano_customizeMC_noPF(process)                         ##### no PFcands stored
+#process = PFnano_customizeMC_noPF(process)                         ##### No PFcands stored
 #process = PFnano_customizeMC_AK4JetsOnly(process)                  ##### PFcands will contain only the AK4 jets PF cands
 #process = PFnano_customizeMC_AK8JetsOnly(process)                  ##### PFcands will contain only the AK8 jets PF cands
 #process = PFnano_customizeMC_noInputs(process)                     ##### No PFcands but all the other content is available.
@@ -52,7 +52,7 @@ process = PFnano_customizeMC(process)
 
 Note:
 
-Compared to the previous convention, the default one is the same with the special configuration `_add_DeepJet_Truth` for data and `_add_DeepJet` for MC, with the addition that (1) the DeepCSV inputs only include the jet-based ones and (2) DeepJet inputs for nPF/cPF are truncated to 3 candidates.
+Compared to the previous convention, the default one is the same with the special configuration `_add_DeepJet_Truth` for MC and `_add_DeepJet` for data, with the addition that (1) the DeepCSV inputs only include the jet-based ones and (2) DeepJet inputs for nPF/cPF are truncated to 3 candidates.
 Previous comments:
 In general, whenever `_add_DeepJet` is specified (does not apply to `AK8JetsOnly` and `noInputs`), the DeepJet inputs are added to the Jet collection. For all other cases that involve adding tagger inputs, only DeepCSV and / or DDX are taken into account as default (= the old behaviour when `keepInputs=True`). Internally, this is handled by selecting a list of taggers, namely choosing from `DeepCSV`, `DeepJet`, and `DDX` (or an empty list for the `noInputs`-case, formerly done by setting `keepInputs=False`, now set `keepInputs=[]`). This refers to a change of the logic inside `pfnano_cff.py` and `addBTV.py`. If one wants to use this new flexibility, one can also define new customization functions with other combinations of taggers. Currently, there are all configurations to reproduce the ones that were available previously, and all configuations that extend the old ones by adding DeepJet inputs. DeepJet outputs, on top of the discriminators already present in NanoAOD, are added in any case where AK4Jets are added, i.e. there is no need to require the full set of inputs to get the individual output nodes / probabilities. The updated description using `PFnano_customizeMC_allPF_add_DeepJet_and_Truth` can be viewed [here](https://annika-stein.web.cern.ch/PFNano/desc_mc2022.html) and the size [here](https://annika-stein.web.cern.ch/PFNano/size_mc2022.html).
 
