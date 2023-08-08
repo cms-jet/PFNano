@@ -156,7 +156,7 @@ private:
     
   const std::string nameDeepJet_;
   const std::string idx_nameDeepJet_;
-  const std::string storeAK4Truth_;    
+  const bool storeAK4Truth_;    
     
     
   const edm::EDGetTokenT<reco::GenParticleCollection> genParticlesToken_;
@@ -166,8 +166,8 @@ private:
   typedef std::vector<reco::DeepFlavourTagInfo> TagInfoCollection;
   const edm::EDGetTokenT<TagInfoCollection> tag_info_src_;
     
-  constexpr static unsigned n_cpf_ = 25;
-  constexpr static unsigned n_npf_ = 25;
+  constexpr static unsigned n_cpf_ = 3;
+  constexpr static unsigned n_npf_ = 3;
   constexpr static unsigned n_sv_ = 4; // 5
     
   constexpr static double jetR_ = 0.4;    
@@ -184,7 +184,7 @@ template< typename T>
 DeepJetTableProducer<T>::DeepJetTableProducer(const edm::ParameterSet &iConfig)
     : nameDeepJet_(iConfig.getParameter<std::string>("nameDeepJet")),
       idx_nameDeepJet_(iConfig.getParameter<std::string>("idx_nameDeepJet")),
-      storeAK4Truth_(iConfig.getParameter<std::string>("storeAK4Truth")),
+      storeAK4Truth_(iConfig.getParameter<bool>("storeAK4Truth")),
       genParticlesToken_(consumes<reco::GenParticleCollection>(iConfig.getParameter<edm::InputTag>("genparticles"))),
       jet_token_(consumes<edm::View<T>>(iConfig.getParameter<edm::InputTag>("jets"))),
       tag_info_src_(consumes<TagInfoCollection>(iConfig.getParameter<edm::InputTag>("tagInfo_src"))){
@@ -280,7 +280,7 @@ void DeepJetTableProducer<T>::produce(edm::Event &iEvent, const edm::EventSetup 
   std::vector<std::vector<float>> sv_deltaR_nSV(n_sv_, std::vector<float>(nJets)); 
   std::vector<std::vector<float>> sv_enratio_nSV(n_sv_, std::vector<float>(nJets)); 
   
-  if (storeAK4Truth_ == "yes") { 
+  if (storeAK4Truth_) { 
 
     neutrinosLepB.clear();
     neutrinosLepB_C.clear();
@@ -332,7 +332,7 @@ void DeepJetTableProducer<T>::produce(edm::Event &iEvent, const edm::EventSetup 
       for (unsigned i_jet = 0; i_jet < nJets; ++i_jet) {
           
           
-          if (storeAK4Truth_ == "yes") { 
+          if (storeAK4Truth_) { 
              
             // from DeepNTuples
             const auto &jet = jets->at(i_jet);
@@ -443,7 +443,7 @@ void DeepJetTableProducer<T>::produce(edm::Event &iEvent, const edm::EventSetup 
                           );
     
   //if (true) { 
-  if (storeAK4Truth_ == "yes") { 
+  if (storeAK4Truth_) { 
       //std::cout << "Start filling table with truth info" << std::endl;
       djTable->addColumn<int>("FlavSplit",
                               jet_FlavSplit,
@@ -655,7 +655,7 @@ void DeepJetTableProducer<T>::fillDescriptions(edm::ConfigurationDescriptions &d
   edm::ParameterSetDescription desc;
   desc.add<std::string>("nameDeepJet", "Jet");
   desc.add<std::string>("idx_nameDeepJet", "djIdx");
-  desc.add<std::string>("storeAK4Truth","no");
+  desc.add<bool>("storeAK4Truth", false);
   desc.add<edm::InputTag>("genparticles", edm::InputTag("prunedGenParticles"));
   desc.add<edm::InputTag>("jets", edm::InputTag("slimmedJetsPuppi"));
   desc.add<edm::InputTag>("tagInfo_src", edm::InputTag("pfDeepFlavourTagInfosWithDeepInfo"));
