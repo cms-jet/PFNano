@@ -2,7 +2,7 @@
 # using: 
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
-# with command line options: nano_data_2022CDE --data --eventcontent NANOAOD --datatier NANOAOD --step NANO --conditions 124X_dataRun3_v15 --era Run3,run3_nanoAOD_124 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=1000;process.NANOAODoutput.fakeNameForCrab = cms.untracked.bool(True) --nThreads 4 -n -1 --filein /store/data/Run2022C/BTagMu/MINIAOD/27Jun2023-v2/80000/000213fb-0712-4a0f-b015-e2334144b2a8.root --fileout file:nano_data2022CDE.root --customise=PhysicsTools/PFNano/puppiJetMETReclustering_cff.nanoPuppiReclusterCustomize_Data --customise=PhysicsTools/PFNano/pfnano_cff.PFnano_customizeData --no_exec
+# with command line options: nano_data_2022CDE --data --eventcontent NANOAOD --datatier NANOAOD --step NANO --conditions 124X_dataRun3_v15 --era Run3,run3_nanoAOD_124 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=1000;process.NANOAODoutput.fakeNameForCrab = cms.untracked.bool(True) --nThreads 4 -n -1 --filein /store/data/Run2022C/BTagMu/MINIAOD/27Jun2023-v2/80000/000213fb-0712-4a0f-b015-e2334144b2a8.root --fileout file:nano_data2022CDE.root --customise=PhysicsTools/PFNano/pfnano_cff.PFnano_customizeData --no_exec
 import FWCore.ParameterSet.Config as cms
 
 from Configuration.Eras.Era_Run3_cff import Run3
@@ -107,16 +107,10 @@ process.options.numberOfStreams = 0
 # customisation of the process.
 
 # Automatic addition of the customisation function from PhysicsTools.NanoAOD.nano_cff
-from PhysicsTools.NanoAOD.nano_cff import nanoAOD_customizeCommon 
+from PhysicsTools.NanoAOD.nano_cff import nanoAOD_customizeData 
 
-#call to customisation function nanoAOD_customizeCommon imported from PhysicsTools.NanoAOD.nano_cff
-process = nanoAOD_customizeCommon(process)
-
-# Automatic addition of the customisation function from PhysicsTools.PFNano.puppiJetMETReclustering_cff
-from PhysicsTools.PFNano.puppiJetMETReclustering_cff import nanoPuppiReclusterCustomize_Data 
-
-#call to customisation function nanoPuppiReclusterCustomize_Data imported from PhysicsTools.PFNano.puppiJetMETReclustering_cff
-process = nanoPuppiReclusterCustomize_Data(process)
+#call to customisation function nanoAOD_customizeData imported from PhysicsTools.NanoAOD.nano_cff
+process = nanoAOD_customizeData(process)
 
 # Automatic addition of the customisation function from PhysicsTools.PFNano.pfnano_cff
 from PhysicsTools.PFNano.pfnano_cff import PFnano_customizeData 

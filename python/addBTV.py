@@ -14,16 +14,10 @@ def update_jets_AK4(process):
     # DeepJet flav_names as found in
     # https://github.com/cms-sw/cmssw/blob/master/RecoBTag/ONNXRuntime/plugins/DeepFlavourONNXJetTagsProducer.cc#L86
     # and https://twiki.cern.ch/twiki/bin/view/CMS/DeepJet
-    from RecoBTag.ONNXRuntime.pfParticleTransformerAK4_cff import _pfParticleTransformerAK4JetTagsAll as pfParticleTransformerAK4JetTagsAll
-    from RecoBTag.ONNXRuntime.pfParticleNetFromMiniAODAK4_cff import _pfParticleNetFromMiniAODAK4PuppiCentralJetTagsAll as pfParticleNetFromMiniAODAK4PuppiCentralJetTagsAll
-    from RecoBTag.ONNXRuntime.pfParticleTransformerAK4_cff import _pfNegativeParticleTransformerAK4JetTagsProbs as pfNegativeParticleTransformerAK4JetTagsProbs
-    from RecoBTag.ONNXRuntime.pfParticleNetFromMiniAODAK4_cff import _pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTagsProbs as pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTagsProbs
 
     _btagDiscriminators = [
         'pfJetProbabilityBJetTags',
         'pfJetBProbabilityBJetTags',
-        'pfNegativeOnlyJetProbabilityBJetTags',
-        'pfNegativeOnlyJetBProbabilityBJetTags',
         'pfDeepCSVJetTags:probb',
         'pfDeepCSVJetTags:probc',
         'pfDeepCSVJetTags:probbb',
@@ -40,8 +34,7 @@ def update_jets_AK4(process):
         'pfNegativeDeepFlavourJetTags:probc',
         'pfNegativeDeepFlavourJetTags:probuds',
         'pfNegativeDeepFlavourJetTags:probg',
-    ] + pfParticleTransformerAK4JetTagsAll + pfNegativeParticleTransformerAK4JetTagsProbs \
-        + pfParticleNetFromMiniAODAK4PuppiCentralJetTagsAll + pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTagsProbs
+    ]
     
     updateJetCollection(
         process,
@@ -321,182 +314,6 @@ def get_DeepJet_outputs():
     return DeepJetOutputVars
 
 
-def get_ParticleNetAK4_outputs():
-    ParticleNetAK4OutputVars = cms.PSet(
-        # default discriminants
-        btagPNetB = Var("?bDiscriminator('pfParticleNetFromMiniAODAK4PuppiCentralDiscriminatorsJetTags:BvsAll')>0?bDiscriminator('pfParticleNetFromMiniAODAK4PuppiCentralDiscriminatorsJetTags:BvsAll'):-1",
-                            float,
-                            doc="ParticleNet b vs. udscg",
-                            precision=10),
-        btagPNetCvL = Var("?bDiscriminator('pfParticleNetFromMiniAODAK4PuppiCentralDiscriminatorsJetTags:CvsL')>0?bDiscriminator('pfParticleNetFromMiniAODAK4PuppiCentralDiscriminatorsJetTags:CvsL'):-1",
-                            float,
-                            doc="ParticleNet c vs. udsg",
-                            precision=10),
-        btagPNetCvB = Var("?bDiscriminator('pfParticleNetFromMiniAODAK4PuppiCentralDiscriminatorsJetTags:CvsB')>0?bDiscriminator('pfParticleNetFromMiniAODAK4PuppiCentralDiscriminatorsJetTags:CvsB'):-1",
-                            float,
-                            doc="ParticleNet c vs. b",
-                            precision=10),
-        btagPNetQvG = Var("?abs(eta())<2.5?bDiscriminator('pfParticleNetFromMiniAODAK4PuppiCentralDiscriminatorsJetTags:QvsG'):bDiscriminator('pfParticleNetFromMiniAODAK4PuppiForwardDiscriminatorsJetTags:QvsG')",
-                            float,
-                            doc="ParticleNet q (udsbc) vs. g",
-                            precision=10),
-        btagPNetTauVJet = Var("?bDiscriminator('pfParticleNetFromMiniAODAK4PuppiCentralDiscriminatorsJetTags:TauVsJet')>0?bDiscriminator('pfParticleNetFromMiniAODAK4PuppiCentralDiscriminatorsJetTags:TauVsJet'):-1",
-                            float,
-                            doc="ParticleNet tau vs. jet",
-                            precision=10),
-        PNetRegPtRawCorr = Var("?abs(eta())<2.5?bDiscriminator('pfParticleNetFromMiniAODAK4PuppiCentralJetTags:ptcorr'):bDiscriminator('pfParticleNetFromMiniAODAK4PuppiForwardJetTags:ptcorr')",
-                            float,
-                            doc="ParticleNet universal flavor-aware visible pT regression (no neutrinos), correction relative to raw jet pT",
-                            precision=10),
-        PNetRegPtRawCorrNeutrino = Var("?abs(eta())<2.5?bDiscriminator('pfParticleNetFromMiniAODAK4PuppiCentralJetTags:ptnu'):bDiscriminator('pfParticleNetFromMiniAODAK4PuppiForwardJetTags:ptnu')",
-                            float,
-                            doc="ParticleNet universal flavor-aware pT regression neutrino correction, relative to visible. To apply full regression, multiply raw jet pT by both PNetRegPtRawCorr and PNetRegPtRawCorrNeutrino.",
-                            precision=10),
-        PNetRegPtRawRes = Var("?abs(eta())<2.5?0.5*(bDiscriminator('pfParticleNetFromMiniAODAK4PuppiCentralJetTags:ptreshigh')-bDiscriminator('pfParticleNetFromMiniAODAK4PuppiCentralJetTags:ptreslow')):0.5*(bDiscriminator('pfParticleNetFromMiniAODAK4PuppiForwardJetTags:ptreshigh')-bDiscriminator('pfParticleNetFromMiniAODAK4PuppiForwardJetTags:ptreslow'))",
-                            float,
-                            doc="ParticleNet universal flavor-aware jet pT resolution estimator, (q84 - q16)/2",
-                            precision=10),
-        # raw scores
-        btagPNetProbB = Var("?bDiscriminator('pfParticleNetFromMiniAODAK4PuppiCentralJetTags:probb')>0?bDiscriminator('pfParticleNetFromMiniAODAK4PuppiCentralJetTags:probb'):-1",
-                            float,
-                            doc="ParticleNet b tag probability",
-                            precision=10),
-        btagPNetProbC = Var("?bDiscriminator('pfParticleNetFromMiniAODAK4PuppiCentralJetTags:probc')>0?bDiscriminator('pfParticleNetFromMiniAODAK4PuppiCentralJetTags:probc'):-1",
-                            float,
-                            doc="ParticleNet c tag probability",
-                            precision=10),
-        btagPNetProbUDS = Var("?bDiscriminator('pfParticleNetFromMiniAODAK4PuppiCentralJetTags:probuds')>0?bDiscriminator('pfParticleNetFromMiniAODAK4PuppiCentralJetTags:probuds'):-1",
-                            float,
-                            doc="ParticleNet uds tag probability",
-                            precision=10),
-        btagPNetProbG = Var("?bDiscriminator('pfParticleNetFromMiniAODAK4PuppiCentralJetTags:probg')>0?bDiscriminator('pfParticleNetFromMiniAODAK4PuppiCentralJetTags:probg'):-1",
-                            float,
-                            doc="ParticleNet gluon tag probability",
-                            precision=10),
-        
-        # negative taggers
-        btagNegPNetB = Var("?(bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probb')+bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probc')+bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probuds')+bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probg'))>0?(bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probb'))/(bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probb')+bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probc')+bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probuds')+bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probg')):-1",
-                            float,
-                            doc="Negative ParticleNet b vs. udscg",
-                            precision=10),
-        btagNegPNetCvL = Var("?(bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probc')+bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probuds')+bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probg'))>0?(bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probc'))/(bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probc')+bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probuds')+bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probg')):-1",
-                            float,
-                            doc="Negative ParticleNet c vs. udsg",
-                            precision=10),
-        btagNegPNetCvB = Var("?(bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probc')+bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probb'))>0?(bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probc'))/(bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probc')+bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probb')):-1",
-                            float,
-                            doc="Negative ParticleNet c vs. b",
-                            precision=10),
-        btagNegPNetProbB = Var("?bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probb')>0?bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probb'):-1",
-                            float,
-                            doc="Negative ParticleNet b tag probability",
-                            precision=10),
-        btagNegPNetProbC = Var("?bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probc')>0?bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probc'):-1",
-                            float,
-                            doc="Negative ParticleNet c tag probability",
-                            precision=10),
-        btagNegPNetProbUDS = Var("?bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probuds')>0?bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probuds'):-1",
-                            float,
-                            doc="Negative ParticleNet uds tag probability",
-                            precision=10),
-        btagNegPNetProbG = Var("?bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probg')>0?bDiscriminator('pfNegativeParticleNetFromMiniAODAK4PuppiCentralJetTags:probg'):-1",
-                            float,
-                            doc="Negative ParticleNet gluon tag probability",
-                            precision=10),
-    )
-
-    return ParticleNetAK4OutputVars
-
-
-def get_ParticleTransformerAK4_outputs():
-    ParticleTransformerAK4OutputVars = cms.PSet(
-        btagRobustParTAK4B = Var("bDiscriminator('pfParticleTransformerAK4JetTags:probb')+bDiscriminator('pfParticleTransformerAK4JetTags:probbb')+bDiscriminator('pfParticleTransformerAK4JetTags:problepb')",
-                            float,
-                            doc="Negative RobustParTAK4 b+bb+lepb tag discriminator",
-                            precision=10),
-        btagRobustParTAK4CvL = Var("?(bDiscriminator('pfParticleTransformerAK4JetTags:probc')+bDiscriminator('pfParticleTransformerAK4JetTags:probuds')+bDiscriminator('pfParticleTransformerAK4JetTags:probg'))>0?bDiscriminator('pfParticleTransformerAK4JetTags:probc')/(bDiscriminator('pfParticleTransformerAK4JetTags:probc')+bDiscriminator('pfParticleTransformerAK4JetTags:probuds')+bDiscriminator('pfParticleTransformerAK4JetTags:probg')):-1",
-                            float,
-                            doc="Negative RobustParTAK4 c vs uds+g discriminator",
-                            precision=10),
-        btagRobustParTAK4CvB = Var("?(bDiscriminator('pfParticleTransformerAK4JetTags:probc')+bDiscriminator('pfParticleTransformerAK4JetTags:probb')+bDiscriminator('pfParticleTransformerAK4JetTags:probbb')+bDiscriminator('pfParticleTransformerAK4JetTags:problepb'))>0?bDiscriminator('pfParticleTransformerAK4JetTags:probc')/(bDiscriminator('pfParticleTransformerAK4JetTags:probc')+bDiscriminator('pfParticleTransformerAK4JetTags:probb')+bDiscriminator('pfParticleTransformerAK4JetTags:probbb')+bDiscriminator('pfParticleTransformerAK4JetTags:problepb')):-1",
-                            float,
-                            doc="Negative RobustParTAK4 c vs b+bb+lepb discriminator",
-                            precision=10),
-        btagRobustParTAK4QG = Var("?(bDiscriminator('pfParticleTransformerAK4JetTags:probg')+bDiscriminator('pfParticleTransformerAK4JetTags:probuds'))>0?bDiscriminator('pfParticleTransformerAK4JetTags:probg')/(bDiscriminator('pfParticleTransformerAK4JetTags:probg')+bDiscriminator('pfParticleTransformerAK4JetTags:probuds')):-1",
-                            float,
-                            doc="Negative RobustParTAK4 g vs uds discriminator",
-                            precision=10),        
-        btagRobustParTAK4B_b=Var("bDiscriminator('pfParticleTransformerAK4JetTags:probb')",
-                            float,
-                            doc="RobustParTAK4 b tag probability",
-                            precision=10),
-        btagRobustParTAK4B_bb=Var("bDiscriminator('pfParticleTransformerAK4JetTags:probbb')",
-                            float,
-                            doc="RobustParTAK4 bb tag probability",
-                            precision=10),
-        btagRobustParTAK4B_lepb=Var("bDiscriminator('pfParticleTransformerAK4JetTags:problepb')",
-                            float,
-                            doc="RobustParTAK4 lepb tag probability",
-                            precision=10),
-        btagRobustParTAK4C=Var("bDiscriminator('pfParticleTransformerAK4JetTags:probc')",
-                            float,
-                            doc="RobustParTAK4 c tag probability",
-                            precision=10),
-        btagRobustParTAK4UDS=Var("bDiscriminator('pfParticleTransformerAK4JetTags:probuds')",
-                            float,
-                            doc="RobustParTAK4 uds tag probability",
-                            precision=10),
-        btagRobustParTAK4G=Var("bDiscriminator('pfParticleTransformerAK4JetTags:probg')",
-                            float,
-                            doc="RobustParTAK4 gluon tag probability",
-                            precision=10),
-
-        # negative taggers
-        btagNegRobustParTAK4B = Var("bDiscriminator('pfNegativeParticleTransformerAK4JetTags:probb')+bDiscriminator('pfNegativeParticleTransformerAK4JetTags:probbb')+bDiscriminator('pfNegativeParticleTransformerAK4JetTags:problepb')",
-                            float,
-                            doc="Negative RobustParTAK4 b+bb+lepb tag discriminator",
-                            precision=10),
-        btagNegRobustParTAK4CvL = Var("?(bDiscriminator('pfNegativeParticleTransformerAK4JetTags:probc')+bDiscriminator('pfNegativeParticleTransformerAK4JetTags:probuds')+bDiscriminator('pfNegativeParticleTransformerAK4JetTags:probg'))>0?bDiscriminator('pfNegativeParticleTransformerAK4JetTags:probc')/(bDiscriminator('pfNegativeParticleTransformerAK4JetTags:probc')+bDiscriminator('pfNegativeParticleTransformerAK4JetTags:probuds')+bDiscriminator('pfNegativeParticleTransformerAK4JetTags:probg')):-1",
-                            float,
-                            doc="Negative RobustParTAK4 c vs uds+g discriminator",
-                            precision=10),
-        btagNegRobustParTAK4CvB = Var("?(bDiscriminator('pfNegativeParticleTransformerAK4JetTags:probc')+bDiscriminator('pfNegativeParticleTransformerAK4JetTags:probb')+bDiscriminator('pfNegativeParticleTransformerAK4JetTags:probbb')+bDiscriminator('pfNegativeParticleTransformerAK4JetTags:problepb'))>0?bDiscriminator('pfNegativeParticleTransformerAK4JetTags:probc')/(bDiscriminator('pfNegativeParticleTransformerAK4JetTags:probc')+bDiscriminator('pfNegativeParticleTransformerAK4JetTags:probb')+bDiscriminator('pfNegativeParticleTransformerAK4JetTags:probbb')+bDiscriminator('pfNegativeParticleTransformerAK4JetTags:problepb')):-1",
-                            float,
-                            doc="Negative RobustParTAK4 c vs b+bb+lepb discriminator",
-                            precision=10),
-        btagNegRobustParTAK4QG = Var("?(bDiscriminator('pfNegativeParticleTransformerAK4JetTags:probg')+bDiscriminator('pfNegativeParticleTransformerAK4JetTags:probuds'))>0?bDiscriminator('pfNegativeParticleTransformerAK4JetTags:probg')/(bDiscriminator('pfNegativeParticleTransformerAK4JetTags:probg')+bDiscriminator('pfNegativeParticleTransformerAK4JetTags:probuds')):-1",
-                            float,
-                            doc="Negative RobustParTAK4 g vs uds discriminator",
-                            precision=10),
-        btagNegRobustParTAK4B_b = Var("bDiscriminator('pfNegativeParticleTransformerAK4JetTags:probb')",
-                            float,
-                            doc="Negative RobustParTAK4 b tag probability",
-                            precision=10),
-        btagNegRobustParTAK4B_bb = Var("bDiscriminator('pfNegativeParticleTransformerAK4JetTags:probbb')",
-                            float,
-                            doc="Negative RobustParTAK4 bb tag probability",
-                            precision=10),
-        btagNegRobustParTAK4B_lepb = Var("bDiscriminator('pfNegativeParticleTransformerAK4JetTags:problepb')",
-                            float,
-                            doc="Negative RobustParTAK4 lepb tag probability",
-                            precision=10),
-        btagNegRobustParTAK4C = Var("bDiscriminator('pfNegativeParticleTransformerAK4JetTags:probc')",
-                            float,
-                            doc="Negative RobustParTAK4 c tag probability",
-                            precision=10),
-        btagNegRobustParTAK4UDS = Var("bDiscriminator('pfNegativeParticleTransformerAK4JetTags:probuds')",
-                            float,
-                            doc="Negative RobustParTAK4 uds tag probability",
-                            precision=10),
-        btagNegRobustParTAK4G = Var("bDiscriminator('pfNegativeParticleTransformerAK4JetTags:probg')",
-                            float,
-                            doc="Negative RobustParTAK4 gluon tag probability",
-                            precision=10),
-    )
-
-    return ParticleTransformerAK4OutputVars
-
-
 def customize_BTV_GenTable(process):
     process.finalGenParticles.select += [
         "keep (4 <= abs(pdgId) <= 5) && statusFlags().isLastCopy()", # BTV: keep b/c quarks in their last copy
@@ -582,20 +399,8 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=['D
             CommonVars,
             HadronCountingVars if runOnMC else cms.PSet(), # hadrons from Generator only relevant for MC
             get_DeepCSV_vars() if ('DeepCSV' in keepInputs) else cms.PSet(),
-            get_DeepJet_outputs(),  # outputs are added in any case, inputs only if requested
-            get_ParticleNetAK4_outputs(),
-            get_ParticleTransformerAK4_outputs(),
+            get_DeepJet_outputs()  # outputs are added in any case, inputs only if requested
         ))
-
-    # disable the ParT branches in default jetPuppi table
-    from PhysicsTools.NanoAOD.nano_eras_cff import run3_nanoAOD_122, run3_nanoAOD_124
-    (run3_nanoAOD_122 | run3_nanoAOD_124).toModify(
-        process.jetPuppiTable.variables,
-        btagRobustParTAK4B = None,
-        btagRobustParTAK4CvL = None,
-        btagRobustParTAK4CvB = None,
-        btagRobustParTAK4QG = None,
-    )
     
     if ('DeepJet' in keepInputs):
         # from Run3 onwards, always set storeAK4Truth to True for MC
