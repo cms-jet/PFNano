@@ -4,7 +4,7 @@ from PhysicsTools.PFNano.addBTV import add_BTV
 from PhysicsTools.NanoAOD.common_cff import Var
 
 # keepInputs can take DeepCSV, DeepJet and DDX (any combination, or use empty placeholder list if no inputs are required)
-# from 13_0_X onwards, the default changes to:
+# from 12_6_X onwards, the default changes to:
 #  - for AK4: keep DeepCSV (only jet-based vars), and DeepJet (leading 3 nPF/cPF candidates)
 #  - for AK8: keep DDX
 def PFnano_customizeMC(process):
