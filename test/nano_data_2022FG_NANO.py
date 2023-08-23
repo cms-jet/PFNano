@@ -2,7 +2,7 @@
 # using: 
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
-# with command line options: nano_data_2022FG --data --eventcontent NANOAOD --datatier NANOAOD --step NANO --conditions 124X_dataRun3_Prompt_v10 --era Run3,run3_nanoAOD_124 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=1000;process.NANOAODoutput.fakeNameForCrab = cms.untracked.bool(True) --nThreads 4 -n -1 --filein /store/data/Run2022F/Muon/MINIAOD/PromptReco-v1/000/360/381/00000/0736ad9a-2b1d-4375-9493-9e7e01538978.root --fileout file:nano_data_2022FG.root --customise=PhysicsTools/PFNano/pfnano_cff.PFnano_customizeData_add_DeepJet --no_exec
+# with command line options: nano_data_2022FG --data --eventcontent NANOAOD --datatier NANOAOD --step NANO --conditions 124X_dataRun3_PromptAnalysis_v2 --era Run3,run3_nanoAOD_124 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=1000;process.NANOAODoutput.fakeNameForCrab = cms.untracked.bool(True) --nThreads 4 -n -1 --filein /store/data/Run2022F/Muon/MINIAOD/PromptReco-v1/000/360/381/00000/0736ad9a-2b1d-4375-9493-9e7e01538978.root --fileout file:nano_data2022FG.root --customise=PhysicsTools/PFNano/pfnano_cff.PFnano_customizeData --no_exec
 import FWCore.ParameterSet.Config as cms
 
 from Configuration.Eras.Era_Run3_cff import Run3
@@ -80,7 +80,7 @@ process.NANOAODoutput = cms.OutputModule("NanoAODOutputModule",
         dataTier = cms.untracked.string('NANOAOD'),
         filterName = cms.untracked.string('')
     ),
-    fileName = cms.untracked.string('file:nano_data_2022FG.root'),
+    fileName = cms.untracked.string('file:nano_data2022FG.root'),
     outputCommands = process.NANOAODEventContent.outputCommands
 )
 
@@ -88,7 +88,7 @@ process.NANOAODoutput = cms.OutputModule("NanoAODOutputModule",
 
 # Other statements
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, '124X_dataRun3_Prompt_v10', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, '124X_dataRun3_PromptAnalysis_v2', '')
 
 # Path and EndPath definitions
 process.nanoAOD_step = cms.Path(process.nanoSequence)
@@ -113,10 +113,10 @@ from PhysicsTools.NanoAOD.nano_cff import nanoAOD_customizeData
 process = nanoAOD_customizeData(process)
 
 # Automatic addition of the customisation function from PhysicsTools.PFNano.pfnano_cff
-from PhysicsTools.PFNano.pfnano_cff import PFnano_customizeData_add_DeepJet 
+from PhysicsTools.PFNano.pfnano_cff import PFnano_customizeData 
 
-#call to customisation function PFnano_customizeData_add_DeepJet imported from PhysicsTools.PFNano.pfnano_cff
-process = PFnano_customizeData_add_DeepJet(process)
+#call to customisation function PFnano_customizeData imported from PhysicsTools.PFNano.pfnano_cff
+process = PFnano_customizeData(process)
 
 # End of customisation functions
 
