@@ -412,19 +412,19 @@ def get_ParticleTransformerAK4_outputs():
     ParticleTransformerAK4OutputVars = cms.PSet(
         btagRobustParTAK4B = Var("bDiscriminator('pfParticleTransformerAK4JetTags:probb')+bDiscriminator('pfParticleTransformerAK4JetTags:probbb')+bDiscriminator('pfParticleTransformerAK4JetTags:problepb')",
                             float,
-                            doc="Negative RobustParTAK4 b+bb+lepb tag discriminator",
+                            doc="RobustParTAK4 b+bb+lepb tag discriminator",
                             precision=10),
         btagRobustParTAK4CvL = Var("?(bDiscriminator('pfParticleTransformerAK4JetTags:probc')+bDiscriminator('pfParticleTransformerAK4JetTags:probuds')+bDiscriminator('pfParticleTransformerAK4JetTags:probg'))>0?bDiscriminator('pfParticleTransformerAK4JetTags:probc')/(bDiscriminator('pfParticleTransformerAK4JetTags:probc')+bDiscriminator('pfParticleTransformerAK4JetTags:probuds')+bDiscriminator('pfParticleTransformerAK4JetTags:probg')):-1",
                             float,
-                            doc="Negative RobustParTAK4 c vs uds+g discriminator",
+                            doc="RobustParTAK4 c vs uds+g discriminator",
                             precision=10),
         btagRobustParTAK4CvB = Var("?(bDiscriminator('pfParticleTransformerAK4JetTags:probc')+bDiscriminator('pfParticleTransformerAK4JetTags:probb')+bDiscriminator('pfParticleTransformerAK4JetTags:probbb')+bDiscriminator('pfParticleTransformerAK4JetTags:problepb'))>0?bDiscriminator('pfParticleTransformerAK4JetTags:probc')/(bDiscriminator('pfParticleTransformerAK4JetTags:probc')+bDiscriminator('pfParticleTransformerAK4JetTags:probb')+bDiscriminator('pfParticleTransformerAK4JetTags:probbb')+bDiscriminator('pfParticleTransformerAK4JetTags:problepb')):-1",
                             float,
-                            doc="Negative RobustParTAK4 c vs b+bb+lepb discriminator",
+                            doc="RobustParTAK4 c vs b+bb+lepb discriminator",
                             precision=10),
         btagRobustParTAK4QG = Var("?(bDiscriminator('pfParticleTransformerAK4JetTags:probg')+bDiscriminator('pfParticleTransformerAK4JetTags:probuds'))>0?bDiscriminator('pfParticleTransformerAK4JetTags:probg')/(bDiscriminator('pfParticleTransformerAK4JetTags:probg')+bDiscriminator('pfParticleTransformerAK4JetTags:probuds')):-1",
                             float,
-                            doc="Negative RobustParTAK4 g vs uds discriminator",
+                            doc="RobustParTAK4 g vs uds discriminator",
                             precision=10),        
         btagRobustParTAK4B_b=Var("bDiscriminator('pfParticleTransformerAK4JetTags:probb')",
                             float,
@@ -495,6 +495,63 @@ def get_ParticleTransformerAK4_outputs():
     )
 
     return ParticleTransformerAK4OutputVars
+
+
+def get_ParticleNetAK8_outputs():
+
+    # the new ParticleNet AK8 outputs which are disabled in run3_nanoAOD_124
+    ParticleTransformerAK8OutputVars = cms.PSet(
+        particleNet_QCD = Var("bDiscriminator('pfParticleNetFromMiniAODAK8JetTags:probQCD2hf')+bDiscriminator('pfParticleNetFromMiniAODAK8JetTags:probQCD1hf')+bDiscriminator('pfParticleNetFromMiniAODAK8JetTags:probQCD0hf')",
+                            float,
+                            doc="ParticleNet tagger QCD(0+1+2HF) sum",
+                            precision=10),
+        particleNet_QCD2HF = Var("bDiscriminator('pfParticleNetFromMiniAODAK8JetTags:probQCD2hf')",
+                            float,
+                            doc="ParticleNet tagger QCD 2 HF (b/c) score",
+                            precision=10),
+        particleNet_QCD1HF = Var("bDiscriminator('pfParticleNetFromMiniAODAK8JetTags:probQCD1hf')",
+                            float,
+                            doc="ParticleNet tagger QCD 1 HF (b/c) score",
+                            precision=10),
+        particleNet_QCD0HF = Var("bDiscriminator('pfParticleNetFromMiniAODAK8JetTags:probQCD0hf')",
+                            float,
+                            doc="ParticleNet tagger QCD 0 HF (b/c) score",
+                            precision=10),
+        particleNet_massCorr = Var("bDiscriminator('pfParticleNetFromMiniAODAK8JetTags:masscorr')",
+                            float,
+                            doc="ParticleNet mass regression, relative correction to JEC-corrected jet mass (no softdrop)",
+                            precision=10),
+        particleNet_XbbVsQCD = Var("bDiscriminator('pfParticleNetFromMiniAODAK8DiscriminatorsJetTags:HbbvsQCD')",
+                            float,
+                            doc="ParticleNet X->bb vs. QCD score: Xbb/(Xbb+QCD)",
+                            precision=10),
+        particleNet_XccVsQCD = Var("bDiscriminator('pfParticleNetFromMiniAODAK8DiscriminatorsJetTags:HccvsQCD')",
+                            float,
+                            doc="ParticleNet X->cc vs. QCD score: Xcc/(Xcc+QCD)",
+                            precision=10),
+        particleNet_XqqVsQCD = Var("bDiscriminator('pfParticleNetFromMiniAODAK8DiscriminatorsJetTags:HqqvsQCD')",
+                            float,
+                            doc="ParticleNet X->qq (uds) vs. QCD score: Xqq/(Xqq+QCD)",
+                            precision=10),
+        particleNet_XggVsQCD = Var("bDiscriminator('pfParticleNetFromMiniAODAK8DiscriminatorsJetTags:HggvsQCD')",
+                            float,
+                            doc="ParticleNet X->gg vs. QCD score: Xgg/(Xgg+QCD)",
+                            precision=10),
+        particleNet_XttVsQCD = Var("bDiscriminator('pfParticleNetFromMiniAODAK8DiscriminatorsJetTags:HttvsQCD')",
+                            float,
+                            doc="ParticleNet X->tau_h tau_h vs. QCD score: Xtt/(Xtt+QCD)",
+                            precision=10),
+        particleNet_XtmVsQCD = Var("bDiscriminator('pfParticleNetFromMiniAODAK8DiscriminatorsJetTags:HtmvsQCD')",
+                            float,
+                            doc="ParticleNet X->mu tau_h vs. QCD score: Xtm/(Xtm+QCD)",
+                            precision=10),
+        particleNet_XteVsQCD = Var("bDiscriminator('pfParticleNetFromMiniAODAK8DiscriminatorsJetTags:HtevsQCD')",
+                            float,
+                            doc="ParticleNet X->e tau_h vs. QCD score: Xte/(Xte+QCD)",
+                            precision=10),
+    )
+    
+    return ParticleTransformerAK8OutputVars
 
 
 def customize_BTV_GenTable(process):
@@ -617,6 +674,7 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False, keepInputs=['D
             CommonVars,
             #HadronCountingVars if runOnMC else cms.PSet(), # only necessary before 106x
             get_DDX_vars() if ('DDX' in keepInputs) else cms.PSet(),
+            get_ParticleNetAK8_outputs(),
         ))
 
     # Subjets
