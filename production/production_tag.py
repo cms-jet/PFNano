@@ -7,3 +7,4 @@
 #production_tag = "v2_1" # Add AK15 b tagging variables
 #production_tag = "v2_2" # Remove AK4 PFcands and GenCands to save space
 production_tag = "v2_3" # Add AK8 GenAK8SFJets and PN mass regression
+production_tag = "v2_3_2" # Feb 2024 recovery jobs
