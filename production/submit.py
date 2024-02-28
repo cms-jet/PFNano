@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python2
 
 import os
 import sys
@@ -7,11 +7,11 @@ import yaml
 import datetime
 from fnmatch import fnmatch
 from argparse import ArgumentParser
-from httplib import HTTPException
+from http.client import HTTPException
 from multiprocessing import Process
 import copy
 
-from CRABClient.UserUtilities import config, ClientException, getUsernameFromCRIC
+from CRABClient.UserUtilities import config, ClientException, getUsername
 from CRABAPI.RawCommand import crabCommand
 from CRABClient.ClientExceptions import ClientException
 
@@ -22,7 +22,7 @@ from production_tag import production_tag # Get from a text file
 requestname_base = "pfnano"
 output_site = "T3_US_FNALLPC"
 output_lfn_base = "/store/group/lpcpfnano/{username}/{production_tag}".format(
-                                                    username=getUsernameFromCRIC(), 
+                                                    username=getUsername(), 
                                                     production_tag=production_tag)
 
 if __name__ == '__main__':
@@ -32,10 +32,10 @@ if __name__ == '__main__':
         try:
             crabCommand('submit', config=config)
         except HTTPException as hte:
-            print "Failed submitting task: %s" % (hte.headers)
-            print hte
+            print("Failed submitting task: {}".format(hte.headers))
+            print(hte)
         except ClientException as cle:
-            print "Failed submitting task: %s" % (cle)
+            print("Failed submitting task: {}".format(cle))
 
     parser = ArgumentParser()
     parser.add_argument('-y', '--yaml', default = 'samples_datatest.yaml', help = 'File with dataset descriptions')
@@ -122,7 +122,7 @@ if __name__ == '__main__':
                 if allowInvalid:
                     this_config.Data.allowNonValidInputDataset = True
                 
-                print this_config
+                print(this_config)
                 p = Process(target=submit, args=(this_config,))
                 p.start()
                 p.join()
