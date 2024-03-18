@@ -3,8 +3,10 @@ defaults:
   splitting: Automatic
   reco_version: UL
   globaltag: 106X_dataRun2_v35
+  allowInvalid: True
 
 samples:
+  # https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmVDatasetsUL2016
   JetHT2016: 
     year: 2016
     pset: $CMSSW_BASE/src/PhysicsTools/PFNano/test/ak15/nano_data_2016_UL_NANO.py
@@ -20,6 +22,7 @@ samples:
       JetHT_Run2016G: /JetHT/Run2016G-UL2016_MiniAODv2-v2/MINIAOD
       JetHT_Run2016H: /JetHT/Run2016H-UL2016_MiniAODv2-v2/MINIAOD
 
+  # https://twiki.cern.ch/twiki/bin/view/CMS/PdmVDatasetsUL2017
   JetHT2017: 
     year: 2017
     pset: $CMSSW_BASE/src/PhysicsTools/PFNano/test/ak15/nano_data_2017_UL_NANO.py
@@ -31,12 +34,19 @@ samples:
       JetHT_Run2017E: /JetHT/Run2017E-UL2017_MiniAODv2-v1/MINIAOD
       JetHT_Run2017F: /JetHT/Run2017F-UL2017_MiniAODv2-v1/MINIAOD
 
+  # https://twiki.cern.ch/twiki/bin/view/CMS/PdmVDatasetsUL2018
   JetHT2018: 
     year: 2018
     pset: $CMSSW_BASE/src/PhysicsTools/PFNano/test/ak15/nano_data_2018_UL_NANO.py
     lumimask: https://cms-service-dqmdc.web.cern.ch/CAF/certification/Collisions18/13TeV/Legacy_2018/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt
     datasets: 
-      JetHT_Run2018A: /JetHT/Run2018A-UL2018_MiniAODv2-v1/MINIAOD
-      JetHT_Run2018B: /JetHT/Run2018B-UL2018_MiniAODv2-v1/MINIAOD
-      JetHT_Run2018C: /JetHT/Run2018C-UL2018_MiniAODv2-v1/MINIAOD
-      JetHT_Run2018D: /JetHT/Run2018D-UL2018_MiniAODv2-v1/MINIAOD
+      # superseded by GT36/v2
+      # JetHT_Run2018A: /JetHT/Run2018A-UL2018_MiniAODv2-v1/MINIAOD
+      # JetHT_Run2018B: /JetHT/Run2018B-UL2018_MiniAODv2-v1/MINIAOD
+      # JetHT_Run2018C: /JetHT/Run2018C-UL2018_MiniAODv2-v1/MINIAOD
+      # JetHT_Run2018D: /JetHT/Run2018D-UL2018_MiniAODv2-v1/MINIAOD
+
+      JetHT_Run2018A_GT36: /JetHT/Run2018A-UL2018_MiniAODv2_GT36-v1/MINIAOD
+      JetHT_Run2018B_GT36: /JetHT/Run2018B-UL2018_MiniAODv2_GT36-v1/MINIAOD
+      JetHT_Run2018C_GT36: /JetHT/Run2018C-UL2018_MiniAODv2_GT36-v1/MINIAOD
+      JetHT_Run2018D_v2: /JetHT/Run2018D-UL2018_MiniAODv2-v2/MINIAOD

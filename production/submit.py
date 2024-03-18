@@ -20,8 +20,8 @@ from production_tag import production_tag # Get from a text file
 # Get from git tag (tbd)
 #production_tag = "vTEST9" # Specify by hand
 requestname_base = "pfnano"
-output_site = "T3_US_FNALLPC"
-output_lfn_base = "/store/group/lpcpfnano/{username}/{production_tag}".format(
+output_site = "T2_US_MIT"
+output_lfn_base = "/store/user/{username}/pfnano/{production_tag}".format(
                                                     username=getUsername(), 
                                                     production_tag=production_tag)
 
