@@ -1,4 +1,7 @@
-# PFNano
+# PFNano 
+
+> [!CAUTION]
+> The changes after 130X (NanoV11) are migrate to cmssw with [btvNano](https://btv-wiki.docs.cern.ch/SoftwareAlgorithms/PFNano/)  
 
 This is a [NanoAOD](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD) framework for advanced developments of jet algorithms. 
 
